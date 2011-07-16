@@ -89,6 +89,6 @@ class Departure(object):
             direction=self.direction, pattern=self.pattern)
 
 
-transperth = Operator(name='Transperth',
+transperth = Operator(name='Transperth Trains',
     uri='http://www.transperth.wa.gov.au/TimetablesMaps/LiveTrainTimes.aspx')
 
