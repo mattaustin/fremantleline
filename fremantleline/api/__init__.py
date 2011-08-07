@@ -3,7 +3,7 @@
 #    Fremantle Line: Transperth trains live departure information
 #    Copyright (C) 2011  Matt Austin
 from datetime import datetime
-from fremantleline.useragent import URLOpener
+from fremantleline.api.useragent import URLOpener
 from urllib import urlencode
 import lxml.html
 
