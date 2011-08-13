@@ -21,5 +21,5 @@ from urllib import FancyURLopener
 
 class URLOpener(FancyURLopener):
     version = 'FremantleLine/0.1 (Fremantle Line; ' \
-        '+https://gitorious.org/fremantle-line)'
+        '+http://projects.developer.nokia.com/perthtrains)'
 
