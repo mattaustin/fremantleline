@@ -55,5 +55,16 @@ Page {
         id: header
         title: parent.station.name || "Departures"
     }
+    
+    Text {
+        text: "There are no departing services for this station."
+        visible: if(departureList.count > 0) false;else true;
+        anchors.fill: parent
+        anchors.topMargin: header.height + 16
+        anchors.leftMargin: 16
+        anchors.rightMargin: 16
+        font.pixelSize: 24
+        wrapMode: Text.WordWrap
+    }
 }
 
