@@ -16,40 +16,13 @@
 
 import QtQuick 1.1
 import com.nokia.meego 1.0
+import com.nokia.extras 1.0
 
 
-Page {
-    id: stationPage
-    orientationLock: PageOrientation.LockPortrait
-    tools: ToolBarLayout {
-        ToolIcon {
-            iconId: "toolbar-view-menu"
-            onClicked: (myMenu.status == DialogStatus.Closed) ? myMenu.open() : myMenu.close()
-            anchors.right: parent==undefined ? undefined : parent.right
-        }
-    }
-    
-    Item {
-        anchors.fill: parent
-        anchors.topMargin: header.height
-        
-        StationList {
-            id: stationList
-            model: station_list
-        }
-        
-        //SectionScroller {
-        //    listView: stationList
-        //}
-        
-        ScrollDecorator {
-            flickableItem: stationList
-        }
-    }
-    
-    Header {
-        id: header
-        title: "Perth Trains"
-    }
+ListView {
+    id: departureListView
+    anchors.fill: parent
+    anchors.leftMargin: 16
+    delegate: ListDelegate {}
 }
 

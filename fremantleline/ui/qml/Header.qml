@@ -14,30 +14,27 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see http://www.gnu.org/licenses/
 
-import QtQuick 1.1
-import com.nokia.meego 1.0
-import com.nokia.extras 1.0
+import QtQuick 1.0
 
 
-ListView {
-    id: stationListView
-    anchors.fill: parent
-    anchors.leftMargin: 16
-    delegate: ListDelegate {
-        onClicked: {
-            departurePage.station = model.station;
-            rootWindow.pageStack.push(departurePage);
-            controller.stationSelected(model.station);
-        }
-        
-        Image {
-            source: "image://theme/icon-m-common-drilldown-arrow" + (theme.inverted ? "-inverse" : "")
-            anchors.right: parent.right
-            anchors.rightMargin: 16
-            anchors.verticalCenter: parent.verticalCenter
-        }
+Rectangle {
+    property alias title: heading.text
+    color: "#009635"
+    height: 72
+    width: parent.width
+    
+    Text {
+      id: heading
+      color: "#ffffff"
+      font.pixelSize: 32
+      anchors.fill: parent
+      anchors.topMargin: 20
+      anchors.rightMargin: 16
+      anchors.leftMargin: 16
     }
-    section.property: "title"
-    section.criteria: ViewSection.FirstCharacter
+    
+    MouseArea {
+      anchors.fill: parent
+    }
 }
 

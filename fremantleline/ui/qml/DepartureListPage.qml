@@ -18,47 +18,42 @@ import QtQuick 1.1
 import com.nokia.meego 1.0
 
 
-PageStackWindow {
-    id: rootWindow
-    //platformStyle: defaultStyle
-    //showToolBar: true
-    //showStatusBar: true
-    initialPage: stationPage
+Page {
+    property alias model: departureList.model
+    property alias title: header.title
+    property variant station
     
-    StationListPage {
-      id: stationPage
-    }
-    
-    DepartureListPage {
-      id: departurePage
-    }
-    
-    Menu {
-        id: myMenu
-        MenuLayout {
-            MenuItem {
-                text: "About"
-                onClicked: {aboutDialog.open()}
-            }
-            MenuItem {
-                text: "Project homepage"
-                onClicked: {
-                    Qt.openUrlExternally("http://projects.developer.nokia.com/perthtrains")
-                }
-            }
+    id: departurePage
+    orientationLock: PageOrientation.LockPortrait
+    tools: ToolBarLayout {
+        ToolIcon {
+            iconId: "toolbar-back"
+            onClicked: {rootWindow.pageStack.pop();}
+        }
+        
+        ToolIcon {
+            iconId: "toolbar-refresh"
+            onClicked: {controller.stationSelected(departurePage.station);}
         }
     }
     
-    AboutDialog {
-        id: aboutDialog
+    Item {
+        anchors.fill: parent
+        anchors.topMargin: header.height
+        
+        DepartureList {
+            id: departureList
+            model: departure_list
+        }
+        
+        ScrollDecorator {
+            flickableItem: departureList
+        }
     }
     
-    Component.onCompleted: {
-        //theme.inverted = true
-    }
-    
-    function setDepartureModel(mod) {
-        departurePage.model = mod;
+    Header {
+        id: header
+        title: parent.station.name || "Departures"
     }
 }
 
