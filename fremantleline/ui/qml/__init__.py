@@ -129,7 +129,7 @@ root_context.setContextProperty('station_list', station_list)
 root_context.setContextProperty('departure_list', departure_list)
 
 view.setSource('%(path)s/main.qml' %({'path': os.path.dirname(__file__)}))
-
+view.showFullScreen()
 view.show()
 app.exec_()
 
