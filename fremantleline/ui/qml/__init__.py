@@ -46,9 +46,13 @@ class DepartureWrapper(QtCore.QObject):
         return self._departure.direction.split('To ', 1)[-1]
     
     def get_title(self):
-        return '%(time)s to %(direction)s' %({
+        title = '%(time)s to %(direction)s' %({
             'time': self._departure.time.strftime('%H:%M'),
             'direction': self.get_direction()})
+        if not self._departure.delay == 'On Time':
+            title = '%(title)s (%(delay)s)' %({'title': title,
+                'delay': self._departure.delay})
+        return title
     
     def get_subtitle(self):
         return self._departure.pattern
