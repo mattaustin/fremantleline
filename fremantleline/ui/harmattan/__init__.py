@@ -132,7 +132,7 @@ root_context.setContextProperty('controller', controller)
 root_context.setContextProperty('station_list', station_list)
 root_context.setContextProperty('departure_list', departure_list)
 
-view.setSource('main.qml')
+view.setSource('qml/harmattan/main.qml')
 view.showFullScreen()
 view.show()
 app.exec_()
