@@ -1,0 +1,9 @@
+#!/usr/bin/env python
+
+
+def main():
+    from fremantleline.ui import harmattan
+
+if __name__ == "__main__":
+    main()
+
