@@ -19,5 +19,5 @@
 from distutils.version import StrictVersion
 
 
+PROJECT_URL = 'http://projects.developer.nokia.com/perthtrains'
 VERSION = StrictVersion('0.1')
-
