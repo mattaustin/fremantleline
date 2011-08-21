@@ -16,12 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/
 
-from fremantleline.meta import VERSION
+from fremantleline.meta import PROJECT_URL, VERSION
 from urllib import FancyURLopener
 
 
 class URLOpener(FancyURLopener):
     version = 'FremantleLine/%(version)s (Fremantle Line; ' \
-        '+http://projects.developer.nokia.com/perthtrains)' %(
-        {'version': VERSION})
+        '+%(url)s)' %({'version': VERSION, 'url': PROJECT_URL})
 
