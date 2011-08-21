@@ -1,6 +1,9 @@
+deb_dist/
 bin/
 build/
 include/
 lib/
 share/
 *.py[co~]
+build-deb.log
+fremantleline.base64

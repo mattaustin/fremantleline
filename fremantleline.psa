@@ -1,0 +1,11 @@
+[Project]
+category = Network
+maintainer = Matt Austin
+appname = Fremantle Line
+section = navigation
+pyversion = 2.7
+project = fremantleline
+email = mail@mattaustin.me.uk
+desc = Live departure information for Perth metropolitan trains.
+template = harmattan
+
