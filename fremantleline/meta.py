@@ -16,12 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/
 
-from fremantleline.meta import VERSION
-from urllib import FancyURLopener
+from distutils.version import StrictVersion
 
 
-class URLOpener(FancyURLopener):
-    version = 'FremantleLine/%(version)s (Fremantle Line; ' \
-        '+http://projects.developer.nokia.com/perthtrains)' %(
-        {'version': VERSION})
+VERSION = StrictVersion('0.1')
 
