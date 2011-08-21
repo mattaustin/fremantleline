@@ -111,7 +111,6 @@ class Controller(QtCore.QObject):
     @QtCore.Slot(QtCore.QObject)
     def stationSelected(self, wrapper):
         global view
-        #view.rootObject().setProperty('state', 'Departures')
         departure_list = DepartureListModel(wrapper._station.get_departures())
         view.rootObject().setDepartureModel(departure_list)
 
@@ -132,7 +131,11 @@ root_context.setContextProperty('controller', controller)
 root_context.setContextProperty('station_list', station_list)
 root_context.setContextProperty('departure_list', departure_list)
 
-view.setSource('qml/harmattan/main.qml')
+if os.path.exists('/usr/share/fremantleline/qml/harmattan'):
+    view.setSource('/usr/share/fremantleline/qml/harmattan/main.qml')
+else:
+    view.setSource(os.path.join('qml', 'harmattan', 'main.qml'))
+
 view.showFullScreen()
 view.show()
 app.exec_()
