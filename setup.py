@@ -35,6 +35,7 @@ setup(name='fremantleline', url=PROJECT_URL, version=str(VERSION),
     requires=['lxml', 'PySide'],
     data_files=[('share/applications', ['fremantleline.desktop']),
         ('share/icons/hicolor/64x64/apps', ['fremantleline.png']),
+        ('share/icons/hicolor/scalable/apps', ['fremantleline.svg']),
         ('share/fremantleline/qml/harmattan', glob.glob('qml/harmattan/*.qml'))]
     )
 
