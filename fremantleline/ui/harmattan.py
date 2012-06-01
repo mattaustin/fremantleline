@@ -19,6 +19,7 @@
 import os
 import sys
 from fremantleline.api import transperth
+from fremantleline.meta import VERSION
 from PySide import QtCore, QtDeclarative, QtGui, QtOpenGL
 
 
@@ -127,6 +128,7 @@ glw = QtOpenGL.QGLWidget()
 view.setViewport(glw)
 view.setResizeMode(QtDeclarative.QDeclarativeView.SizeRootObjectToView)
 
+root_context.setContextProperty('version', unicode(VERSION))
 root_context.setContextProperty('controller', controller)
 root_context.setContextProperty('station_list', station_list)
 root_context.setContextProperty('departure_list', departure_list)
