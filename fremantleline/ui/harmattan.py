@@ -20,7 +20,7 @@ import os
 import sys
 from fremantleline.api import transperth
 from fremantleline.meta import VERSION
-from PySide import QtCore, QtDeclarative, QtGui, QtOpenGL
+from PySide import QtCore, QtDeclarative, QtGui, QtNetwork, QtOpenGL
 
 
 class StationWrapper(QtCore.QObject):
@@ -119,24 +119,37 @@ class Controller(QtCore.QObject):
 app = QtGui.QApplication(sys.argv)
 view = QtDeclarative.QDeclarativeView()
 
-controller = Controller()
-station_list = StationListModel()
-departure_list = DepartureListModel([])
-
 root_context = view.rootContext()
+root_context.setContextProperty('version', unicode(VERSION))
+
 glw = QtOpenGL.QGLWidget()
 view.setViewport(glw)
 view.setResizeMode(QtDeclarative.QDeclarativeView.SizeRootObjectToView)
 
-root_context.setContextProperty('version', unicode(VERSION))
-root_context.setContextProperty('controller', controller)
-root_context.setContextProperty('station_list', station_list)
-root_context.setContextProperty('departure_list', departure_list)
 
-if os.path.exists('/usr/share/fremantleline/qml/harmattan'):
-    view.setSource('/usr/share/fremantleline/qml/harmattan/main.qml')
+network_manager = QtNetwork.QNetworkConfigurationManager()
+network_configuration = network_manager.defaultConfiguration()
+network_session = QtNetwork.QNetworkSession(network_configuration)
+network_session.open()
+
+if network_session.waitForOpened():
+    controller = Controller()
+    station_list = StationListModel()
+    departure_list = DepartureListModel([])
+    
+    root_context.setContextProperty('controller', controller)
+    root_context.setContextProperty('station_list', station_list)
+    root_context.setContextProperty('departure_list', departure_list)
+    
+    if os.path.exists('/usr/share/fremantleline/qml/harmattan'):
+        view.setSource('/usr/share/fremantleline/qml/harmattan/main.qml')
+    else:
+        view.setSource(os.path.join('qml', 'harmattan', 'main.qml'))
 else:
-    view.setSource(os.path.join('qml', 'harmattan', 'main.qml'))
+    if os.path.exists('/usr/share/fremantleline/qml/harmattan'):
+        view.setSource('/usr/share/fremantleline/qml/harmattan/networkError.qml')
+    else:
+        view.setSource(os.path.join('qml', 'harmattan', 'networkError.qml'))
 
 view.showFullScreen()
 view.show()
