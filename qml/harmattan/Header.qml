@@ -19,7 +19,7 @@ import QtQuick 1.0
 
 Rectangle {
     property alias title: heading.text
-    color: "#009635"
+    color: "#3d890c"
     height: 72
     width: parent.width
     
@@ -27,10 +27,13 @@ Rectangle {
       id: heading
       color: "#ffffff"
       font.pixelSize: 32
-      anchors.fill: parent
-      anchors.topMargin: 20
-      anchors.rightMargin: 16
-      anchors.leftMargin: 16
+      anchors {
+        verticalCenter: parent.verticalCenter
+        left: parent.left
+        right: parent.right
+        leftMargin: 16
+        rightMargin: 16
+      }
     }
     
     MouseArea {

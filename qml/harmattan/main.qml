@@ -20,9 +20,7 @@ import com.nokia.meego 1.0
 
 PageStackWindow {
     id: rootWindow
-    //platformStyle: defaultStyle
-    //showToolBar: true
-    //showStatusBar: true
+    showStatusBar: screen.currentOrientation == Screen.Portrait
     initialPage: stationPage
     
     StationListPage {
