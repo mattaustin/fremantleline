@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # Fremantle Line: Transperth trains live departure information
-# Copyright (c) 2009-2011 Matt Austin
+# Copyright (c) 2009-2012 Matt Austin
 #
 # Fremantle Line is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -141,13 +141,13 @@ if network_session.waitForOpened():
     root_context.setContextProperty('station_list', station_list)
     root_context.setContextProperty('departure_list', departure_list)
     
-    if os.path.exists('/usr/share/fremantleline/qml/harmattan'):
-        view.setSource('/usr/share/fremantleline/qml/harmattan/main.qml')
+    if os.path.exists('/opt/fremantleline/qml/harmattan'):
+        view.setSource('/opt/fremantleline/qml/harmattan/main.qml')
     else:
         view.setSource(os.path.join('qml', 'harmattan', 'main.qml'))
 else:
-    if os.path.exists('/usr/share/fremantleline/qml/harmattan'):
-        view.setSource('/usr/share/fremantleline/qml/harmattan/networkError.qml')
+    if os.path.exists('/opt/fremantleline/qml/harmattan'):
+        view.setSource('/opt/fremantleline/qml/harmattan/networkError.qml')
     else:
         view.setSource(os.path.join('qml', 'harmattan', 'networkError.qml'))
 
