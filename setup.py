@@ -18,8 +18,10 @@
 
 from distutils.core import setup
 from fremantleline.meta import PROJECT_URL, VERSION
-import os, glob
+import glob, os, sys
 
+
+sys.prefix = sys.exec_prefix = '/opt/fremantleline'
 
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
@@ -33,10 +35,10 @@ setup(name='fremantleline', url=PROJECT_URL, version=str(VERSION),
     packages=['fremantleline', 'fremantleline.api', 'fremantleline.ui'],
     scripts=['scripts/fremantleline'],
     requires=['lxml', 'PySide'],
-    data_files=[('share/applications', ['fremantleline.desktop']),
-        ('share/icons/hicolor/64x64/apps', ['fremantleline.png']),
-        ('share/icons/hicolor/scalable/apps', ['fremantleline.svg']),
-        ('share/fremantleline/splash', ['splash/harmattan.png']),
-        ('share/fremantleline/qml/harmattan', glob.glob('qml/harmattan/*.qml'))]
+    data_files=[('/usr/share/applications', ['fremantleline.desktop']),
+        ('/opt/fremantleline', ['fremantleline.png']),
+        ('/opt/fremantleline', ['fremantleline.svg']),
+        ('/opt/fremantleline/splash', ['splash/harmattan.png']),
+        ('/opt/fremantleline/qml/harmattan', glob.glob('qml/harmattan/*.qml'))]
     )
 
