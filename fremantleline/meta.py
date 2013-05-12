@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # Fremantle Line: Transperth trains live departure information
-# Copyright (c) 2009-2012 Matt Austin
+# Copyright (c) 2009-2013 Matt Austin
 #
 # Fremantle Line is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,8 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/
 
-from distutils.version import StrictVersion
-
 
 PROJECT_URL = 'http://projects.developer.nokia.com/perthtrains'
-VERSION = StrictVersion('0.3')
+VERSION = '0.5.dev'
