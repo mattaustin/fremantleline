@@ -16,36 +16,22 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/
 
-import os
-import sys
 from fremantleline.api import transperth
 from fremantleline.meta import VERSION
+from fremantleline.ui.qml import StationListModel, app
 from PySide import QtCore, QtDeclarative, QtGui, QtNetwork, QtOpenGL
-
-
-class StationWrapper(QtCore.QObject):
-    def __init__(self, station, *args, **kwargs):
-        super(StationWrapper, self).__init__(*args, **kwargs)
-        self._station = station
-    
-    def get_name(self):
-        return self._station.name.rsplit(' Stn', 1)[0]
-    
-    @QtCore.Signal
-    def changed(self):
-        pass
-    
-    name = QtCore.Property(unicode, get_name, notify=changed)
+import os
+import sys
 
 
 class DepartureWrapper(QtCore.QObject):
     def __init__(self, departure, *args, **kwargs):
         super(DepartureWrapper, self).__init__(*args, **kwargs)
         self._departure = departure
-    
+
     def get_direction(self):
         return self._departure.direction.split('To ', 1)[-1]
-    
+
     def get_title(self):
         title = '%(time)s to %(direction)s' %({
             'time': self._departure.time.strftime('%H:%M'),
@@ -54,51 +40,30 @@ class DepartureWrapper(QtCore.QObject):
             title = '%(title)s (%(delay)s)' %({'title': title,
                 'delay': self._departure.delay})
         return title
-    
+
     def get_subtitle(self):
         return self._departure.pattern
-    
+
     @QtCore.Signal
     def changed(self):
         pass
-    
+
     title = QtCore.Property(unicode, get_title, notify=changed)
     subtitle = QtCore.Property(unicode, get_subtitle, notify=changed)
 
 
-class StationListModel(QtCore.QAbstractListModel):
-    columns = ['title', 'subtitle', 'station']
-    
-    def __init__(self, *args, **kwargs):
-        super(StationListModel, self).__init__(*args, **kwargs)
-        stations = transperth.get_stations()
-        self._stations = [StationWrapper(station) for station in stations]
-        self.setRoleNames(dict(enumerate(self.columns)))
-    
-    def rowCount(self, parent=QtCore.QModelIndex()):
-        return len(self._stations)
-    
-    def data(self, index, role):
-        if index.isValid() and role == self.columns.index('title'):
-            return self._stations[index.row()].get_name()
-        if index.isValid() and role == self.columns.index('subtitle'):
-            return ''
-        if index.isValid() and role == self.columns.index('station'):
-            return self._stations[index.row()]
-
-
 class DepartureListModel(QtCore.QAbstractListModel):
     columns = ['title', 'subtitle', 'direction']
-    
+
     def __init__(self, departures, *args, **kwargs):
         super(DepartureListModel, self).__init__(*args, **kwargs)
         self._departures = [DepartureWrapper(departure) for departure in \
             departures]
         self.setRoleNames(dict(enumerate(self.columns)))
-    
+
     def rowCount(self, parent=QtCore.QModelIndex()):
         return len(self._departures)
-    
+
     def data(self, index, role):
         if index.isValid() and role == self.columns.index('title'):
             return self._departures[index.row()].get_title()
@@ -116,7 +81,6 @@ class Controller(QtCore.QObject):
         view.rootObject().setDepartureModel(departure_list)
 
 
-app = QtGui.QApplication(sys.argv)
 view = QtDeclarative.QDeclarativeView()
 
 root_context = view.rootContext()
@@ -136,11 +100,11 @@ if network_session.waitForOpened():
     controller = Controller()
     station_list = StationListModel()
     departure_list = DepartureListModel([])
-    
+
     root_context.setContextProperty('controller', controller)
     root_context.setContextProperty('station_list', station_list)
     root_context.setContextProperty('departure_list', departure_list)
-    
+
     if os.path.exists('/opt/fremantleline/qml/harmattan'):
         view.setSource('/opt/fremantleline/qml/harmattan/main.qml')
     else:
@@ -154,4 +118,3 @@ else:
 view.showFullScreen()
 view.show()
 app.exec_()
-
