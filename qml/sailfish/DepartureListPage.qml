@@ -20,17 +20,22 @@ import Sailfish.Silica 1.0
 
 Page {
 
-    id: stationPage
+    id: departurePage
+    property alias model: departureList.model
+    property alias title: header.title
+    property variant station
+
+    PageHeader {
+        id: header
+        title: parent.station.name || "Departures"
+    }
 
     SilicaListView {
 
-        id: stationList
+        id: departureList
         anchors.fill: parent
-        model: station_list
-
-        header: PageHeader {
-            title: "Perth Trains"
-        }
+        anchors.topMargin: header.height
+        model: departure_list
 
         delegate: BackgroundItem {
             width: stationList.width
@@ -40,15 +45,19 @@ Page {
                 anchors.verticalCenter: parent.verticalCenter
                 x: theme.paddingLarge
             }
-            onClicked: {
-                departurePage.station = model.station;
-                pageStack.push(departurePage);
-                controller.stationSelected(model.station);
-            }
         }
 
         VerticalScrollDecorator {}
 
     }
 
+    Label {
+        text: "There are no departing services for this station."
+        visible: if(departureList.count > 0) false; else true;
+        anchors.fill: parent
+        anchors.topMargin: header.height + theme.paddingLarge
+        anchors.leftMargin: theme.paddingLarge
+        anchors.rightMargin: theme.paddingLarge
+        wrapMode: Text.WordWrap
+    }
 }

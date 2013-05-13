@@ -16,80 +16,21 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/
 
-from fremantleline.api import transperth
+from __future__ import absolute_import, unicode_literals
 from fremantleline.meta import VERSION
-from fremantleline.ui.qml import StationListModel, app
+from fremantleline.ui.qml import (Controller, DepartureListModel,
+                                  StationListModel, app)
 from PySide import QtCore, QtDeclarative, QtGui, QtNetwork, QtOpenGL
 import os
-import sys
-
-
-class DepartureWrapper(QtCore.QObject):
-    def __init__(self, departure, *args, **kwargs):
-        super(DepartureWrapper, self).__init__(*args, **kwargs)
-        self._departure = departure
-
-    def get_direction(self):
-        return self._departure.direction.split('To ', 1)[-1]
-
-    def get_title(self):
-        title = '%(time)s to %(direction)s' %({
-            'time': self._departure.time.strftime('%H:%M'),
-            'direction': self.get_direction()})
-        if not self._departure.delay == 'On Time':
-            title = '%(title)s (%(delay)s)' %({'title': title,
-                'delay': self._departure.delay})
-        return title
-
-    def get_subtitle(self):
-        return self._departure.pattern
-
-    @QtCore.Signal
-    def changed(self):
-        pass
-
-    title = QtCore.Property(unicode, get_title, notify=changed)
-    subtitle = QtCore.Property(unicode, get_subtitle, notify=changed)
-
-
-class DepartureListModel(QtCore.QAbstractListModel):
-    columns = ['title', 'subtitle', 'direction']
-
-    def __init__(self, departures, *args, **kwargs):
-        super(DepartureListModel, self).__init__(*args, **kwargs)
-        self._departures = [DepartureWrapper(departure) for departure in \
-            departures]
-        self.setRoleNames(dict(enumerate(self.columns)))
-
-    def rowCount(self, parent=QtCore.QModelIndex()):
-        return len(self._departures)
-
-    def data(self, index, role):
-        if index.isValid() and role == self.columns.index('title'):
-            return self._departures[index.row()].get_title()
-        if index.isValid() and role == self.columns.index('subtitle'):
-            return self._departures[index.row()].get_subtitle()
-        if index.isValid() and role == self.columns.index('direction'):
-            return self._departures[index.row()].get_direction()
-
-
-class Controller(QtCore.QObject):
-    @QtCore.Slot(QtCore.QObject)
-    def stationSelected(self, wrapper):
-        global view
-        departure_list = DepartureListModel(wrapper._station.get_departures())
-        view.rootObject().setDepartureModel(departure_list)
 
 
 view = QtDeclarative.QDeclarativeView()
-
-root_context = view.rootContext()
-root_context.setContextProperty('version', unicode(VERSION))
-
 glw = QtOpenGL.QGLWidget()
 view.setViewport(glw)
 view.setResizeMode(QtDeclarative.QDeclarativeView.SizeRootObjectToView)
 
+root_context = view.rootContext()
+root_context.setContextProperty('version', unicode(VERSION))
 
 network_manager = QtNetwork.QNetworkConfigurationManager()
 network_configuration = network_manager.defaultConfiguration()
@@ -97,13 +38,9 @@ network_session = QtNetwork.QNetworkSession(network_configuration)
 network_session.open()
 
 if network_session.waitForOpened():
-    controller = Controller()
-    station_list = StationListModel()
-    departure_list = DepartureListModel([])
-
-    root_context.setContextProperty('controller', controller)
-    root_context.setContextProperty('station_list', station_list)
-    root_context.setContextProperty('departure_list', departure_list)
+    root_context.setContextProperty('controller', Controller(view=view))
+    root_context.setContextProperty('station_list', StationListModel())
+    root_context.setContextProperty('departure_list', DepartureListModel())
 
     if os.path.exists('/opt/fremantleline/qml/harmattan'):
         view.setSource('/opt/fremantleline/qml/harmattan/main.qml')

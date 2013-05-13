@@ -28,10 +28,18 @@ ApplicationWindow {
       id: stationPage
     }
 
+    DepartureListPage {
+      id: departurePage
+    }
+
     cover: CoverBackground {
         CoverPlaceholder {
             text: "Perth Trains"
         }
+    }
+
+    function setDepartureModel(mod) {
+        departurePage.model = mod;
     }
 
 }

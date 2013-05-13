@@ -53,6 +53,58 @@ class BaseView(QDeclarativeView):
         return self.qml_source
 
 
+class DepartureWrapper(QtCore.QObject):
+
+    def __init__(self, departure, *args, **kwargs):
+        super(DepartureWrapper, self).__init__(*args, **kwargs)
+        self._departure = departure
+
+    def get_direction(self):
+        return self._departure.direction.split('To ', 1)[-1]
+
+    def get_title(self):
+        title = '{time} to {direction}'.format(
+            time=self._departure.time.strftime('%H:%M'),
+            direction=self.get_direction())
+        if not self._departure.delay == 'On Time':
+            title = '{title} ({delay})'.format(
+                title=title,
+                delay=self._departure.delay)
+        return title
+
+    def get_subtitle(self):
+        return self._departure.pattern
+
+    @QtCore.Signal
+    def changed(self):
+        pass
+
+    title = QtCore.Property(unicode, get_title, notify=changed)
+    subtitle = QtCore.Property(unicode, get_subtitle, notify=changed)
+
+
+class DepartureListModel(QtCore.QAbstractListModel):
+
+    columns = [b'title', b'subtitle', b'direction']
+
+    def __init__(self, departures=None, **kwargs):
+        super(DepartureListModel, self).__init__(**kwargs)
+        self._departures = [] if departures is None else [
+            DepartureWrapper(departure) for departure in departures]
+        self.setRoleNames(dict(enumerate(self.columns)))
+
+    def rowCount(self, parent=QtCore.QModelIndex()):
+        return len(self._departures)
+
+    def data(self, index, role):
+        if index.isValid() and role == self.columns.index(b'title'):
+            return self._departures[index.row()].get_title()
+        if index.isValid() and role == self.columns.index(b'subtitle'):
+            return self._departures[index.row()].get_subtitle()
+        if index.isValid() and role == self.columns.index(b'direction'):
+            return self._departures[index.row()].get_direction()
+
+
 class StationWrapper(QtCore.QObject):
 
     def __init__(self, station, *args, **kwargs):
@@ -91,10 +143,13 @@ class StationListModel(QtCore.QAbstractListModel):
             return self._stations[index.row()]
 
 
-#class Controller(QtCore.QObject):
+class Controller(QtCore.QObject):
 
-#    @QtCore.Slot(QtCore.QObject)
-#    def stationSelected(self, wrapper):
-#        global view
-#        departure_list = DepartureListModel(wrapper._station.get_departures())
-#        view.rootObject().setDepartureModel(departure_list)
+    def __init__(self, view, *args, **kwargs):
+        super(Controller, self).__init__(*args, **kwargs)
+        self.view = view
+
+    @QtCore.Slot(QtCore.QObject)
+    def stationSelected(self, wrapper):
+        departure_list = DepartureListModel(wrapper._station.get_departures())
+        self.view.rootObject().setDepartureModel(departure_list)
