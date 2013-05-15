@@ -22,23 +22,27 @@ Page {
 
     id: departurePage
     property alias model: departureList.model
-    property alias title: header.title
     property variant station
-
-    PageHeader {
-        id: header
-        title: parent.station.name || "Departures"
-    }
 
     SilicaListView {
 
         id: departureList
         anchors.fill: parent
-        anchors.topMargin: header.height
         model: departure_list
 
+        header: PageHeader {
+            title: departurePage.station ? departurePage.station.name : 'Departures'
+        }
+
+        PullDownMenu {
+            MenuItem {
+                text: "Refresh"
+                onClicked: {controller.stationSelected(departurePage.station);}
+            }
+        }
+
         delegate: BackgroundItem {
-            width: stationList.width
+            width: departureList.width
             Label {
                 text: model.title
                 color: parent.down ? theme.highlightColor : theme.primaryColor
@@ -51,13 +55,20 @@ Page {
 
     }
 
-    Label {
-        text: "There are no departing services for this station."
+    Column {
+
         visible: if(departureList.count > 0) false; else true;
         anchors.fill: parent
-        anchors.topMargin: header.height + theme.paddingLarge
-        anchors.leftMargin: theme.paddingLarge
-        anchors.rightMargin: theme.paddingLarge
-        wrapMode: Text.WordWrap
+        anchors.topMargin: theme.itemSizeLarge
+        width: departurePage.width
+        spacing: theme.paddingLarge
+
+        Label {
+            text: 'There are no departing services for this station.'
+            width: parent.width - theme.paddingMedium - theme.paddingMedium
+            x: theme.paddingMedium
+            wrapMode: Text.WordWrap
+        }
+
     }
 }

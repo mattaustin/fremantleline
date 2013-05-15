@@ -32,6 +32,17 @@ Page {
             title: "Perth Trains"
         }
 
+        PullDownMenu {
+            MenuItem {
+                text: "About"
+                onClicked: {aboutDialog.open()}
+            }
+            MenuItem {
+                text: "Project homepage"
+                onClicked: {Qt.openUrlExternally("http://projects.developer.nokia.com/perthtrains")}
+            }
+        }
+
         delegate: BackgroundItem {
             width: stationList.width
             Label {

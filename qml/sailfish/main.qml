@@ -32,6 +32,10 @@ ApplicationWindow {
       id: departurePage
     }
 
+    AboutDialog {
+        id: aboutDialog
+    }
+
     cover: CoverBackground {
         CoverPlaceholder {
             text: "Perth Trains"
