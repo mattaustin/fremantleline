@@ -33,9 +33,13 @@ Page {
         }
 
         PullDownMenu {
+            id: pullDownMenu
             MenuItem {
                 text: "About"
-                onClicked: {aboutDialog.open()}
+                onClicked: {
+                    pullDownMenu.close();
+                    aboutDialog.open();
+                }
             }
             MenuItem {
                 text: "Project homepage"
