@@ -36,19 +36,60 @@ Page {
 
         PullDownMenu {
             MenuItem {
-                text: "Refresh"
+                text: 'Refresh'
                 onClicked: {controller.stationSelected(departurePage.station);}
             }
         }
 
-        delegate: BackgroundItem {
+        delegate: Item {
+
             width: departureList.width
-            Label {
-                text: model.title
-                color: parent.down ? theme.highlightColor : theme.primaryColor
-                anchors.verticalCenter: parent.verticalCenter
+            implicitHeight: theme.itemSizeSmall
+
+            Item {
+
                 x: theme.paddingLarge
+                width: parent.width - 2*theme.paddingLarge
+                height: childrenRect.height
+
+                Label {
+                    id: title
+                    text: model.time + ' to ' + model.direction
+                    font.pixelSize: theme.fontSizeMedium
+                    truncationMode: TruncationMode.Fade
+                    anchors {
+                        left: parent.left
+                        right: status.right
+                    }
+                }
+
+                Label {
+                    id: status
+                    text: model.status
+                    font.pixelSize: theme.fontSizeExtraSmall
+                    horizontalAlignment: Text.AlignRight
+                    anchors {
+                        right: parent.right
+                        baseline: title.baseline
+                    }
+                }
+
+                Label {
+                    id: subtitle
+                    text: model.subtitle
+                    font.pixelSize: theme.fontSizeExtraSmall * 3/4
+                    font.italic: true
+                    truncationMode: TruncationMode.Fade
+                    anchors {
+                        top: title.bottom
+                        topMargin: 4
+                        left: parent.left
+                        right: parent.right
+                    }
+                }
+
             }
+
         }
 
         VerticalScrollDecorator {}
@@ -65,8 +106,8 @@ Page {
 
         Label {
             text: 'There are no departing services for this station.'
-            width: parent.width - theme.paddingMedium - theme.paddingMedium
-            x: theme.paddingMedium
+            width: parent.width - theme.paddingLarge - theme.paddingLarge
+            x: theme.paddingLarge
             wrapMode: Text.WordWrap
         }
 

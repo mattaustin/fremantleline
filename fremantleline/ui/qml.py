@@ -62,14 +62,20 @@ class DepartureWrapper(QtCore.QObject):
     def get_direction(self):
         return self._departure.direction.split('To ', 1)[-1]
 
+    def get_status(self):
+        return '{0}'.format(self._departure.delay)
+
+    def get_time(self):
+        return self._departure.time.strftime('%H:%M')
+
     def get_title(self):
         title = '{time} to {direction}'.format(
-            time=self._departure.time.strftime('%H:%M'),
+            time=self.get_time(),
             direction=self.get_direction())
-        if not self._departure.delay == 'On Time':
-            title = '{title} ({delay})'.format(
+        if not self.get_status() == 'On Time':
+            title = '{title} ({status})'.format(
                 title=title,
-                delay=self._departure.delay)
+                status=self.get_status())
         return title
 
     def get_subtitle(self):
@@ -85,7 +91,7 @@ class DepartureWrapper(QtCore.QObject):
 
 class DepartureListModel(QtCore.QAbstractListModel):
 
-    columns = [b'title', b'subtitle', b'direction']
+    columns = [b'title', b'subtitle', b'direction', b'status', b'time']
 
     def __init__(self, departures=None, **kwargs):
         super(DepartureListModel, self).__init__(**kwargs)
@@ -103,6 +109,10 @@ class DepartureListModel(QtCore.QAbstractListModel):
             return self._departures[index.row()].get_subtitle()
         if index.isValid() and role == self.columns.index(b'direction'):
             return self._departures[index.row()].get_direction()
+        if index.isValid() and role == self.columns.index(b'status'):
+            return self._departures[index.row()].get_status()
+        if index.isValid() and role == self.columns.index(b'time'):
+            return self._departures[index.row()].get_time()
 
 
 class StationWrapper(QtCore.QObject):
