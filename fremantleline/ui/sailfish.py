@@ -17,24 +17,14 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/
 
 from __future__ import absolute_import, unicode_literals
-from fremantleline.ui.qml import (BaseView, Controller, DepartureListModel,
-                                  StationListModel, app)
-import os
+from fremantleline.ui.qml import View, app
 
 
-class View(BaseView):
+class SailfishView(View):
 
-    qml_source = os.path.join('qml', 'sailfish', 'main.qml')
-
-    def get_context_properties(self, *args, **kwargs):
-        context_properties = super(View, self).get_context_properties(*args,
-                                                                      **kwargs)
-        context_properties.update({'controller': Controller(view=self),
-                                   'station_list': StationListModel(),
-                                   'departure_list': DepartureListModel()})
-        return context_properties
+    qml_source_platform = 'sailfish'
 
 
-view = View()
+view = SailfishView()
 view.showFullScreen()
 app.exec_()

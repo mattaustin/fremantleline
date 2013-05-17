@@ -22,6 +22,8 @@ from fremantleline.meta import VERSION
 from PySide import QtCore
 from PySide.QtDeclarative import QDeclarativeView
 from PySide.QtGui import QApplication
+from PySide.QtNetwork import QNetworkSession, QNetworkConfigurationManager
+import os
 import sys
 
 
@@ -31,7 +33,6 @@ app = QApplication(sys.argv)
 class BaseView(QDeclarativeView):
 
     context_properties = {'version': '{0}'.format(VERSION)}
-    qml_source = None
 
     def __init__(self, *args, **kwargs):
         super(BaseView, self).__init__(*args, **kwargs)
@@ -51,6 +52,43 @@ class BaseView(QDeclarativeView):
 
     def get_qml_source(self):
         return self.qml_source
+
+
+class NetworkSessionMixin(object):
+
+    def get_network_configuration(self):
+        network_manager = QNetworkConfigurationManager()
+        network_configuration = network_manager.defaultConfiguration()
+        return network_configuration
+
+    def get_network_session(self):
+        network_session = QNetworkSession(self.get_network_configuration())
+        network_session.open()
+        return network_session
+
+
+class View(NetworkSessionMixin, BaseView):
+
+    qml_source_platform = 'qml'
+
+    def get_context_properties(self, *args, **kwargs):
+        context_properties = super(View, self).get_context_properties(*args,
+                                                                      **kwargs)
+        context_properties.update({'controller': Controller(view=self),
+                                   'station_list': StationListModel(),
+                                   'departure_list': DepartureListModel()})
+        return context_properties
+
+    def get_qml_source_path(self):
+        opt_path = '/opt/fremantleline/qml/{0}'.format(self.qml_source_platform)
+        return opt_path if os.path.exists(opt_path) else os.path.join(
+            'qml', self.qml_source_platform)
+
+    def get_qml_source(self):
+        if self.get_network_session().waitForOpened():
+            return os.path.join(self.get_qml_source_path(), 'main.qml')
+        else:
+            return os.path.join(self.get_qml_source_path(), 'networkError.qml')
 
 
 class DepartureWrapper(QtCore.QObject):
