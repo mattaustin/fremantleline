@@ -17,31 +17,19 @@
 import QtQuick 1.1
 import Sailfish.Silica 1.0
 
+Item {
 
-ApplicationWindow {
+    anchors.fill: parent
 
-    allowedOrientations: Orientation.Portrait
-
-    initialPage: stationPage
-
-    StationListPage {
-      id: stationPage
-    }
-
-    DepartureListPage {
-      id: departurePage
-    }
-
-    AboutDialog {
-        id: aboutDialog
-    }
-
-    cover: CoverBackground {
-        CoverPage {}
-    }
-
-    function setDepartureModel(mod) {
-        departurePage.model = mod;
+    Label {
+        text: departurePage.status == PageStatus.Active ? departurePage.station.name : 'Perth Trains'
+        anchors.centerIn: parent
+        width: parent.width - 2*theme.paddingLarge
+        color: theme.secondaryColor
+        horizontalAlignment: Text.AlignHCenter
+        wrapMode: Text.WordWrap
+        truncationMode: TruncationMode.Fade
+        font.pixelSize: theme.fontSizeSmall
     }
 
 }

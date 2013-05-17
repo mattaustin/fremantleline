@@ -36,5 +36,5 @@ class View(BaseView):
 
 
 view = View()
-view.show()
+view.showFullScreen()
 app.exec_()
