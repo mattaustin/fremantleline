@@ -107,14 +107,9 @@ class DepartureWrapper(QtCore.QObject):
         return self._departure.time.strftime('%H:%M')
 
     def get_title(self):
-        title = '{time} to {direction}'.format(
+        return '{time} to {direction}'.format(
             time=self.get_time(),
             direction=self.get_direction())
-        if not self.get_status() == 'On Time':
-            title = '{title} ({status})'.format(
-                title=title,
-                status=self.get_status())
-        return title
 
     def get_subtitle(self):
         return self._departure.pattern

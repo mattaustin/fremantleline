@@ -22,7 +22,7 @@ Page {
     property alias model: departureList.model
     property alias title: header.title
     property variant station
-    
+
     id: departurePage
     orientationLock: PageOrientation.LockPortrait
     tools: ToolBarLayout {
@@ -30,35 +30,35 @@ Page {
             iconId: "toolbar-back"
             onClicked: {rootWindow.pageStack.pop();}
         }
-        
+
         ToolIcon {
             iconId: "toolbar-refresh"
             onClicked: {controller.stationSelected(departurePage.station);}
         }
     }
-    
+
     Item {
         anchors.fill: parent
         anchors.topMargin: header.height
-        
+
         DepartureList {
             id: departureList
             model: departure_list
         }
-        
+
         ScrollDecorator {
             flickableItem: departureList
         }
     }
-    
+
     Header {
         id: header
-        title: parent.station.name || "Departures"
+        title: departurePage.station ? departurePage.station.name : 'Departures'
     }
-    
+
     Text {
         text: "There are no departing services for this station."
-        visible: if(departureList.count > 0) false;else true;
+        visible: if(departureList.count > 0) false; else true;
         anchors.fill: parent
         anchors.topMargin: header.height + 16
         anchors.leftMargin: 16
@@ -67,4 +67,3 @@ Page {
         wrapMode: Text.WordWrap
     }
 }
-

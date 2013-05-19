@@ -20,9 +20,30 @@ import com.nokia.extras 1.0
 
 
 ListView {
+
     id: departureListView
     anchors.fill: parent
     anchors.leftMargin: 16
-    delegate: ListDelegate {}
-}
+    anchors.rightMargin: 16
 
+    delegate: ListDelegate {
+
+        id: listItem
+
+        Label {
+            id: status
+            text: model.status
+            font.family: listItem.subtitleFont
+            font.pixelSize: listItem.subtitleSize
+            color: listItem.pressed ? listItem.titleColorPressed : listItem.titleColor
+            horizontalAlignment: Text.AlignRight
+            anchors {
+                right: parent.right
+                top: parent.top
+                topMargin: 16
+            }
+        }
+
+    }
+
+}
