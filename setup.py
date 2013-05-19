@@ -17,28 +17,36 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/
 
 from distutils.core import setup
-from fremantleline.meta import PROJECT_URL, VERSION
+from fremantleline import meta
 import glob, os, sys
 
 
 sys.prefix = sys.exec_prefix = '/opt/fremantleline'
 
+
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 
-setup(name='fremantleline', url=PROJECT_URL, version=str(VERSION),
+setup(
+    name='fremantleline',
+    url=meta.PROJECT_URL,
+    version='{0}'.format(meta.VERSION),
     description='Live departure information for Perth metropolitan trains.',
     long_description=read('fremantleline.longdesc'),
-    author='Matt Austin', author_email='mail@mattaustin.me.uk',
-    maintainer='Matt Austin', maintainer_email='mail@mattaustin.me.uk',
+    author='Matt Austin',
+    author_email='mail@mattaustin.me.uk',
+    maintainer='Matt Austin',
+    maintainer_email='mail@mattaustin.me.uk',
     packages=['fremantleline', 'fremantleline.api', 'fremantleline.ui'],
     scripts=['scripts/fremantleline'],
     requires=['lxml', 'PySide'],
-    data_files=[('/usr/share/applications', ['fremantleline.desktop']),
+    data_files=[
+        ('/usr/share/applications', ['fremantleline.desktop']),
         ('/opt/fremantleline', ['fremantleline.png']),
         ('/opt/fremantleline', ['fremantleline.svg']),
         ('/opt/fremantleline/splash', ['splash/harmattan.png']),
-        ('/opt/fremantleline/qml/harmattan', glob.glob('qml/harmattan/*.qml'))]
-    )
-
+        ('/opt/fremantleline/qml/harmattan', glob.glob('qml/harmattan/*.qml'))
+        ('/opt/fremantleline/qml/sailfish', glob.glob('qml/sailfish/*.qml'))
+    ],
+)
