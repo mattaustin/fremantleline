@@ -40,7 +40,7 @@ ListView {
             anchors {
                 right: parent.right
                 top: parent.top
-                topMargin: 16
+                topMargin: 12
             }
         }
 
