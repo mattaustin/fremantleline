@@ -43,7 +43,7 @@ Page {
             }
             MenuItem {
                 text: 'Project homepage'
-                onClicked: {Qt.openUrlExternally('http://projects.developer.nokia.com/perthtrains')}
+                onClicked: {Qt.openUrlExternally(projectUrl)}
             }
         }
 

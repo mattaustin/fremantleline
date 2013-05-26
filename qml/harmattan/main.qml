@@ -41,7 +41,7 @@ PageStackWindow {
             MenuItem {
                 text: 'Project homepage'
                 onClicked: {
-                    Qt.openUrlExternally('http://projects.developer.nokia.com/perthtrains')
+                    Qt.openUrlExternally(projectUrl)
                 }
             }
         }

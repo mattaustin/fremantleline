@@ -18,7 +18,7 @@
 
 from __future__ import absolute_import, unicode_literals
 from fremantleline.api import transperth
-from fremantleline.meta import VERSION
+from fremantleline.meta import PROJECT_URL, VERSION
 from PySide import QtCore
 from PySide.QtDeclarative import QDeclarativeView
 from PySide.QtNetwork import QNetworkSession, QNetworkConfigurationManager
@@ -26,7 +26,8 @@ from PySide.QtNetwork import QNetworkSession, QNetworkConfigurationManager
 
 class BaseView(QDeclarativeView):
 
-    context_properties = {'version': '{0}'.format(VERSION)}
+    context_properties = {'version': '{0}'.format(VERSION),
+                          'projectUrl': PROJECT_URL}
     window_title = 'Fremantle Line'
 
     def __init__(self, *args, **kwargs):
