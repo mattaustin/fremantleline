@@ -88,22 +88,22 @@ class DepartureWrapper(QtCore.QObject):
         super(DepartureWrapper, self).__init__(*args, **kwargs)
         self._departure = departure
 
-    def get_direction(self):
-        return self._departure.direction.split('To ', 1)[-1]
+    def get_destination(self):
+        return self._departure.destination.split('To ', 1)[-1]
 
     def get_status(self):
-        return '{0}'.format(self._departure.delay)
+        return '{0}'.format(self._departure.status)
 
     def get_time(self):
         return self._departure.time.strftime('%H:%M')
 
     def get_title(self):
-        return '{time} to {direction}'.format(
+        return '{time} to {destination}'.format(
             time=self.get_time(),
-            direction=self.get_direction())
+            destination=self.get_destination())
 
     def get_subtitle(self):
-        return self._departure.pattern
+        return self._departure.description
 
     @QtCore.Signal
     def changed(self):
@@ -115,7 +115,7 @@ class DepartureWrapper(QtCore.QObject):
 
 class DepartureListModel(QtCore.QAbstractListModel):
 
-    columns = [b'title', b'subtitle', b'direction', b'status', b'time']
+    columns = [b'title', b'subtitle', b'destination', b'status', b'time']
 
     def __init__(self, departures=None, **kwargs):
         super(DepartureListModel, self).__init__(**kwargs)
@@ -131,8 +131,8 @@ class DepartureListModel(QtCore.QAbstractListModel):
             return self._departures[index.row()].get_title()
         if index.isValid() and role == self.columns.index(b'subtitle'):
             return self._departures[index.row()].get_subtitle()
-        if index.isValid() and role == self.columns.index(b'direction'):
-            return self._departures[index.row()].get_direction()
+        if index.isValid() and role == self.columns.index(b'destination'):
+            return self._departures[index.row()].get_destination()
         if index.isValid() and role == self.columns.index(b'status'):
             return self._departures[index.row()].get_status()
         if index.isValid() and role == self.columns.index(b'time'):

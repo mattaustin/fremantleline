@@ -27,12 +27,12 @@ Page {
     orientationLock: PageOrientation.LockPortrait
     tools: ToolBarLayout {
         ToolIcon {
-            iconId: "toolbar-back"
+            iconId: 'toolbar-back'
             onClicked: {rootWindow.pageStack.pop();}
         }
 
         ToolIcon {
-            iconId: "toolbar-refresh"
+            iconId: 'toolbar-refresh'
             onClicked: {controller.stationSelected(departurePage.station);}
         }
     }
@@ -57,7 +57,7 @@ Page {
     }
 
     Text {
-        text: "There are no departing services for this station."
+        text: 'No departing services were found for this station.'
         visible: if(departureList.count > 0) false; else true;
         anchors.fill: parent
         anchors.topMargin: header.height + 16

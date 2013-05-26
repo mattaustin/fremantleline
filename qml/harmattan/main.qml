@@ -22,41 +22,40 @@ PageStackWindow {
     id: rootWindow
     showStatusBar: screen.currentOrientation == Screen.Portrait
     initialPage: stationPage
-    
+
     StationListPage {
       id: stationPage
     }
-    
+
     DepartureListPage {
       id: departurePage
     }
-    
+
     Menu {
         id: myMenu
         MenuLayout {
             MenuItem {
-                text: "About"
+                text: 'About'
                 onClicked: {aboutDialog.open()}
             }
             MenuItem {
-                text: "Project homepage"
+                text: 'Project homepage'
                 onClicked: {
-                    Qt.openUrlExternally("http://projects.developer.nokia.com/perthtrains")
+                    Qt.openUrlExternally('http://projects.developer.nokia.com/perthtrains')
                 }
             }
         }
     }
-    
+
     AboutDialog {
         id: aboutDialog
     }
-    
+
     Component.onCompleted: {
         //theme.inverted = true
     }
-    
+
     function setDepartureModel(mod) {
         departurePage.model = mod;
     }
 }
-

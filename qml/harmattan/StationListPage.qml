@@ -23,33 +23,32 @@ Page {
     orientationLock: PageOrientation.LockPortrait
     tools: ToolBarLayout {
         ToolIcon {
-            iconId: "toolbar-view-menu"
+            iconId: 'toolbar-view-menu'
             onClicked: (myMenu.status == DialogStatus.Closed) ? myMenu.open() : myMenu.close()
             anchors.right: parent==undefined ? undefined : parent.right
         }
     }
-    
+
     Item {
         anchors.fill: parent
         anchors.topMargin: header.height
-        
+
         StationList {
             id: stationList
             model: station_list
         }
-        
+
         //SectionScroller {
         //    listView: stationList
         //}
-        
+
         ScrollDecorator {
             flickableItem: stationList
         }
     }
-    
+
     Header {
         id: header
-        title: "Perth Trains"
+        title: 'Perth Trains'
     }
 }
-

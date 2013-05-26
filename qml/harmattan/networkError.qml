@@ -20,17 +20,17 @@ import com.nokia.meego 1.0
 
 PageStackWindow {
     initialPage: networkErrorPage
-    
+
     Page {
         id: networkErrorPage
-      
+
         Header {
             id: header
-            title: "Perth Trains"
+            title: 'Perth Trains'
         }
-        
+
         Text {
-            text: "You must be connected to the internet in order to obtain train departure times."
+            text: 'You must be connected to the internet in order to obtain train departure times.'
             anchors.fill: parent
             anchors.topMargin: header.height + 16
             anchors.leftMargin: 16
@@ -40,4 +40,3 @@ PageStackWindow {
         }
     }
 }
-

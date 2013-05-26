@@ -54,7 +54,7 @@ Page {
 
                 Label {
                     id: title
-                    text: model.time + ' to ' + model.direction
+                    text: model.time + ' to ' + model.destination
                     font.pixelSize: theme.fontSizeMedium
                     truncationMode: TruncationMode.Fade
                     anchors {
@@ -105,7 +105,7 @@ Page {
         spacing: theme.paddingLarge
 
         Label {
-            text: 'There are no departing services for this station.'
+            text: 'No departing services were found for this station.'
             width: parent.width - theme.paddingLarge - theme.paddingLarge
             x: theme.paddingLarge
             wrapMode: Text.WordWrap

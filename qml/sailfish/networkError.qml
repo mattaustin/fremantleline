@@ -48,7 +48,7 @@ ApplicationWindow {
                 }
 
                 Label {
-                    text: "You must be connected to the internet in order to obtain train departure times."
+                    text: 'You must be connected to the internet in order to obtain train departure times.'
                     width: parent.width - theme.paddingLarge - theme.paddingLarge
                     x: theme.paddingLarge
                     wrapMode: Text.WordWrap

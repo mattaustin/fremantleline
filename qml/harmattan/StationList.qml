@@ -29,15 +29,14 @@ ListView {
             rootWindow.pageStack.push(departurePage);
             controller.stationSelected(model.station);
         }
-        
+
         Image {
-            source: "image://theme/icon-m-common-drilldown-arrow" + (theme.inverted ? "-inverse" : "")
+            source: 'image://theme/icon-m-common-drilldown-arrow' + (theme.inverted ? '-inverse' : '')
             anchors.right: parent.right
             anchors.rightMargin: 16
             anchors.verticalCenter: parent.verticalCenter
         }
     }
-    section.property: "title"
+    section.property: 'title'
     section.criteria: ViewSection.FirstCharacter
 }
-

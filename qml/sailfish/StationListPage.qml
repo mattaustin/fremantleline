@@ -29,21 +29,21 @@ Page {
         model: station_list
 
         header: PageHeader {
-            title: "Perth Trains"
+            title: 'Perth Trains'
         }
 
         PullDownMenu {
             id: pullDownMenu
             MenuItem {
-                text: "About"
+                text: 'About'
                 onClicked: {
                     pullDownMenu.close();
                     aboutDialog.open();
                 }
             }
             MenuItem {
-                text: "Project homepage"
-                onClicked: {Qt.openUrlExternally("http://projects.developer.nokia.com/perthtrains")}
+                text: 'Project homepage'
+                onClicked: {Qt.openUrlExternally('http://projects.developer.nokia.com/perthtrains')}
             }
         }
 

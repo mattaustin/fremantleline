@@ -75,12 +75,16 @@ class Station(object):
             line = cols[0].xpath('img')[0].attrib['title']
             time = datetime.strptime(cols[1].text_content().strip(),
                                      '%H:%M').time()
-            direction = cols[2].text_content().strip()
-            pattern = cols[3].text_content().strip()
-            delay = cols[5].text_content().strip()
-            departures += [Departure(station=self, line=line, time=time,
-                                     direction=direction, pattern=pattern,
-                                     delay=delay)]
+            destination = cols[2].text_content().strip()
+            description = cols[3].text_content().strip()
+            status = cols[5].text_content().strip()
+            departure = Departure(station=self,
+                                  line=line,
+                                  time=time,
+                                  destination=destination,
+                                  description=description,
+                                  status=status)
+            departures += [departure]
         return departures
 
     def _get_html(self):
@@ -98,19 +102,19 @@ class Departure(object):
 
     """
 
-    def __init__(self, station, line=None, time=None, direction=None,
-                 pattern=None, delay=None):
+    def __init__(self, station, line=None, time=None, destination=None,
+                 description=None, status=None):
         self.station = station
         self.line = line
         self.time = time
-        self.direction = direction
-        self.pattern = pattern
-        self.delay = delay
+        self.destination = destination
+        self.description = description
+        self.status = status
 
     def __repr__(self):
-        return '<{class_name}: {time} {direction} {pattern}>'.format(
+        return '<{class_name}: {time} {destination} {status}>'.format(
             class_name=self.__class__.__name__, time=self.time,
-            direction=self.direction, pattern=self.pattern)
+            destination=self.destination, status=self.status)
 
 
 transperth = Operator()
