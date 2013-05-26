@@ -17,19 +17,27 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/
 
 from __future__ import absolute_import, unicode_literals
-from fremantleline.ui.qml import View, app
+from fremantleline.ui.qml import View
+from PySide.QtGui import QApplication
 from PySide.QtOpenGL import QGLWidget
+import sys
 
 
 class HarmattanView(View):
 
-    qml_source_platform = 'harmattan'
+    platform = 'harmattan'
 
     def __init__(self, *args, **kwargs):
         super(HarmattanView, self).__init__(*args, **kwargs)
         self.setViewport(QGLWidget())
 
 
-view = HarmattanView()
-view.showFullScreen()
-app.exec_()
+def main():
+    app = QApplication(sys.argv)
+    view = HarmattanView()
+    view.showFullScreen()
+    sys.exit(app.exec_())
+
+
+if __name__ == '__main__':
+    main()

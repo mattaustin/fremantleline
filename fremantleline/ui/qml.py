@@ -21,18 +21,13 @@ from fremantleline.api import transperth
 from fremantleline.meta import VERSION
 from PySide import QtCore
 from PySide.QtDeclarative import QDeclarativeView
-from PySide.QtGui import QApplication
 from PySide.QtNetwork import QNetworkSession, QNetworkConfigurationManager
-import os
-import sys
-
-
-app = QApplication(sys.argv)
 
 
 class BaseView(QDeclarativeView):
 
     context_properties = {'version': '{0}'.format(VERSION)}
+    window_title = 'Fremantle Line'
 
     def __init__(self, *args, **kwargs):
         super(BaseView, self).__init__(*args, **kwargs)
@@ -40,18 +35,19 @@ class BaseView(QDeclarativeView):
         self.setAttribute(QtCore.Qt.WA_NoSystemBackground)
         self.viewport().setAttribute(QtCore.Qt.WA_OpaquePaintEvent)
         self.viewport().setAttribute(QtCore.Qt.WA_NoSystemBackground)
-        self.setResizeMode(QDeclarativeView.SizeRootObjectToView)
 
         for key, value in self.get_context_properties().items():
             self.rootContext().setContextProperty(key, value)
 
-        self.setSource(self.get_qml_source())
+        self.setWindowTitle(self.window_title)
+        self.setSource(QtCore.QUrl.fromLocalFile(self.get_qml_path()))
+        self.setResizeMode(QDeclarativeView.SizeRootObjectToView)
 
     def get_context_properties(self):
         return self.context_properties.copy()
 
-    def get_qml_source(self):
-        return self.qml_source
+    def get_qml_path(self):
+        raise NotImplementedError()
 
 
 class NetworkSessionMixin(object):
@@ -69,7 +65,7 @@ class NetworkSessionMixin(object):
 
 class View(NetworkSessionMixin, BaseView):
 
-    qml_source_platform = 'qml'
+    platform = 'qml'
 
     def get_context_properties(self, *args, **kwargs):
         context_properties = super(View, self).get_context_properties(*args,
@@ -79,16 +75,11 @@ class View(NetworkSessionMixin, BaseView):
                                    'departure_list': DepartureListModel()})
         return context_properties
 
-    def get_qml_source_path(self):
-        opt_path = '/opt/fremantleline/qml/{0}'.format(self.qml_source_platform)
-        return opt_path if os.path.exists(opt_path) else os.path.join(
-            'qml', self.qml_source_platform)
-
-    def get_qml_source(self):
+    def get_qml_path(self):
         if self.get_network_session().waitForOpened():
-            return os.path.join(self.get_qml_source_path(), 'main.qml')
+            return 'qml/{0}/main.qml'.format(self.platform)
         else:
-            return os.path.join(self.get_qml_source_path(), 'networkError.qml')
+            return 'qml/{0}/networkError.qml'.format(self.platform)
 
 
 class DepartureWrapper(QtCore.QObject):
@@ -181,7 +172,7 @@ class StationListModel(QtCore.QAbstractListModel):
         if index.isValid() and role == self.columns.index(b'title'):
             return self._stations[index.row()].get_name()
         if index.isValid() and role == self.columns.index(b'subtitle'):
-            return u''
+            return ''
         if index.isValid() and role == self.columns.index(b'station'):
             return self._stations[index.row()]
 

@@ -17,14 +17,21 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/
 
 from __future__ import absolute_import, unicode_literals
-from fremantleline.ui.qml import View, app
+from fremantleline.ui.qml import View
+from PySide.QtGui import QApplication
+import sys
 
 
 class SailfishView(View):
 
-    qml_source_platform = 'sailfish'
+    platform = 'sailfish'
 
 
-view = SailfishView()
-view.showFullScreen()
-app.exec_()
+def main():
+    app = QApplication(sys.argv)
+    view = SailfishView()
+    view.showFullScreen()
+    sys.exit(app.exec_())
+
+if __name__ == '__main__':
+    main()
