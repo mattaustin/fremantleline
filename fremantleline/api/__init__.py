@@ -64,28 +64,12 @@ class Station(object):
             class_name=self.__class__.__name__, name=self.name)
 
     def get_departures(self):
-        """Returns Departure instances, using information processed from
-        the stations departure board html."""
-        departures = []
+        """Returns Departure instances, using rows parsed from the station's
+        departure board html."""
         html = self._get_html()
         rows = html.xpath(
             '//*[@id="dnn_ctr1608_ModuleContent"]//table//table/tr')[1:-1]
-        for row in rows:
-            cols = row.xpath('td')
-            line = cols[0].xpath('img')[0].attrib['title']
-            time = datetime.strptime(cols[1].text_content().strip(),
-                                     '%H:%M').time()
-            destination = cols[2].text_content().strip()
-            description = cols[3].text_content().strip()
-            status = cols[5].text_content().strip()
-            departure = Departure(station=self,
-                                  line=line,
-                                  time=time,
-                                  destination=destination,
-                                  description=description,
-                                  status=status)
-            departures += [departure]
-        return departures
+        return (Departure(self, row) for row in rows)
 
     def _get_html(self):
         """Returns html from the station's departure board web page."""
@@ -102,19 +86,34 @@ class Departure(object):
 
     """
 
-    def __init__(self, station, line=None, time=None, destination=None,
-                 description=None, status=None):
+    def __init__(self, station, row_data):
         self.station = station
-        self.line = line
-        self.time = time
-        self.destination = destination
-        self.description = description
-        self.status = status
+        self._cols = row_data.xpath('td')
 
     def __repr__(self):
         return '<{class_name}: {time} {destination} {status}>'.format(
             class_name=self.__class__.__name__, time=self.time,
             destination=self.destination, status=self.status)
 
+    @property
+    def description(self):
+        return self._cols[3].text_content().strip()
+
+    @property
+    def destination(self):
+        return self._cols[2].text_content().strip()
+
+    @property
+    def line(self):
+        return self._cols[0].xpath('img')[0].attrib['title']
+
+    @property
+    def status(self):
+        return self._cols[5].text_content().strip()
+
+    @property
+    def time(self):
+        return datetime.strptime(self._cols[1].text_content().strip(),
+                                 '%H:%M').time()
 
 transperth = Operator()
