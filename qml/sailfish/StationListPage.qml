@@ -66,4 +66,21 @@ Page {
 
     }
 
+    Column {
+
+        visible: station_list.fetching;
+        anchors.fill: parent
+        anchors.topMargin: theme.itemSizeLarge
+        width: departurePage.width
+        spacing: theme.paddingLarge
+
+        Label {
+            text: 'Loading.'
+            width: parent.width - theme.paddingLarge - theme.paddingLarge
+            x: theme.paddingLarge
+            wrapMode: Text.WordWrap
+        }
+
+    }
+
 }

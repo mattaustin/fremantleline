@@ -22,6 +22,7 @@ from fremantleline.meta import PROJECT_URL, VERSION
 from PySide import QtCore
 from PySide.QtDeclarative import QDeclarativeView
 from PySide.QtNetwork import QNetworkSession, QNetworkConfigurationManager
+import threading
 
 
 class BaseView(QDeclarativeView):
@@ -158,13 +159,33 @@ class StationWrapper(QtCore.QObject):
 
 class StationListModel(QtCore.QAbstractListModel):
 
+    changed = QtCore.Signal()
     columns = [b'title', b'subtitle', b'station']
+    _stations = []
 
     def __init__(self, *args, **kwargs):
         super(StationListModel, self).__init__(*args, **kwargs)
-        stations = transperth.get_stations()
-        self._stations = [StationWrapper(station) for station in stations]
+        self.fetching = False
+        self.operator = transperth
+        self.fetch_stations()
         self.setRoleNames(dict(enumerate(self.columns)))
+
+    def _fetch_stations(self):
+        self.fetching = True
+        try:
+            stations = self.operator.get_stations()
+            self.beginResetModel()
+            self._stations = [StationWrapper(station) for station in stations]
+            self.endResetModel()
+        except:
+            raise
+        finally:
+            self.fetching = False
+
+    def fetch_stations(self):
+        if not self._fetching:
+            thread = threading.Thread(target=self._fetch_stations)
+            thread.start()
 
     def rowCount(self, parent=QtCore.QModelIndex()):
         return len(self._stations)
@@ -176,6 +197,16 @@ class StationListModel(QtCore.QAbstractListModel):
             return ''
         if index.isValid() and role == self.columns.index(b'station'):
             return self._stations[index.row()]
+
+    def _get_fetching(self):
+        return self._fetching
+
+    def _set_fetching(self, value):
+        self._fetching = value
+        self.changed.emit()
+
+    fetching = QtCore.Property(bool, _get_fetching, _set_fetching,
+                               notify=changed)
 
 
 class Controller(QtCore.QObject):
