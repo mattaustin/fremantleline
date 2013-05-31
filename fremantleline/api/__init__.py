@@ -29,25 +29,37 @@ class Operator(object):
     """
 
     name = 'Transperth Trains'
+    stations = None
     uri = 'http://www.transperth.wa.gov.au/TimetablesMaps/LiveTrainTimes.aspx'
 
     def __repr__(self):
-        return '<{class_name}: {name}>'.format(
-            class_name=self.__class__.__name__, name=self.name)
+        return '<{0}: {1}>'.format(self.__class__.__name__, unicode(self))
+
+    def __str__(self):
+        return self.__unicode__().encode('utf-8')
+
+    def __unicode__(self):
+        return self.name
+
+    def _get_html(self, url):
+        url_opener = URLOpener()
+        response = url_opener.open(url)
+        html = lxml.html.parse(response).getroot()
+        return html
+
+    def _parse_stations(self, html):
+        options = html.xpath('.//*[@id="EntryForm"]//select/option')
+        stations = (
+            Station(name=unicode(option.attrib['value']).rsplit(' Stn', 1)[0],
+                    operator=self) for option in options)
+        return stations
 
     def get_stations(self):
         """Returns list of Station instances for this operator."""
-        if not getattr(self, '_stations', False):
-            stations = []
-            url_opener = URLOpener()
-            response = url_opener.open(self.uri)
-            html = lxml.html.parse(response).getroot()
-            options = html.xpath('.//*[@id="EntryForm"]//select/option')
-            for option in options:
-                name = unicode(option.attrib['value'])
-                stations += [Station(name=name, operator=self)]
-            self._stations = stations
-        return self._stations
+        if self.stations is None:
+            html = self._get_html(self.uri)
+            self.stations = list(self._parse_stations(html))
+        return self.stations
 
 
 class Station(object):

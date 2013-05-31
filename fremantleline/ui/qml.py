@@ -147,7 +147,7 @@ class StationWrapper(QtCore.QObject):
         self._station = station
 
     def get_name(self):
-        return self._station.name.rsplit(' Stn', 1)[0]
+        return self._station.name
 
     @QtCore.Signal
     def changed(self):
