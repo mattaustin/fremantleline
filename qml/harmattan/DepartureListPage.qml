@@ -54,8 +54,8 @@ Page {
     }
 
     Text {
-        text: 'No departing services were found for this station.'
-        visible: if(departureList.count > 0) false; else true;
+        text: departure_list.fetching ? 'Loading...' : 'No departing services were found for this station.'
+        visible: departureList.count < 1
         anchors.fill: parent
         anchors.topMargin: header.height + 16
         anchors.leftMargin: 16

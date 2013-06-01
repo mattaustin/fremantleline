@@ -96,14 +96,14 @@ Page {
 
     Column {
 
-        visible: if(departureList.count > 0) false; else true;
+        visible: departureList.count < 1
         anchors.fill: parent
         anchors.topMargin: theme.itemSizeLarge
         width: departurePage.width
         spacing: theme.paddingLarge
 
         Label {
-            text: 'No departing services were found for this station.'
+            text: departure_list.fetching ? 'Loading...' : 'No departing services were found for this station.'
             width: parent.width - theme.paddingLarge - theme.paddingLarge
             x: theme.paddingLarge
             wrapMode: Text.WordWrap

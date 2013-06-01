@@ -190,6 +190,7 @@ class StationListModel(BaseListModel):
 class DepartureListModel(BaseListModel):
 
     _station = None
+    _fetching = False
     changed = QtCore.Signal()
     roles = {'title': lambda i: i.title,
              'subtitle': lambda i: i.subtitle,
@@ -197,14 +198,45 @@ class DepartureListModel(BaseListModel):
              'status': lambda i: i.get_status(),
              'time': lambda i: i.get_time()}
 
+    def _empty_items(self):
+        self.beginResetModel()
+        self.items = []
+        self.endResetModel()
+
     def _get_station(self):
         return self._station
 
     def _set_station(self, value):
         self._station = value
-        self.items = [DepartureWrapper(departure) for departure in
-                          self._station._station.get_departures()]
-        self.reset()
+        self._empty_items()
+        self.fetch_departures()
 
     station = QtCore.Property(StationWrapper, _get_station, _set_station,
                               notify=changed)
+
+    def _fetch_departures(self):
+        self.fetching = True
+        try:
+            departures = self._station._station.get_departures()
+            self.beginResetModel()
+            self.items = [DepartureWrapper(d) for d in departures]
+            self.endResetModel()
+        except:
+            raise
+        finally:
+            self.fetching = False
+
+    def _get_fetching(self):
+        return self._fetching
+
+    def _set_fetching(self, value):
+        self._fetching = value
+        self.changed.emit()
+
+    def fetch_departures(self):
+        if not self._fetching:
+            thread = threading.Thread(target=self._fetch_departures)
+            thread.start()
+
+    fetching = QtCore.Property(bool, _get_fetching, _set_fetching,
+                               notify=changed)
