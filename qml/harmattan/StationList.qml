@@ -26,7 +26,6 @@ ListView {
     delegate: ListDelegate {
         onClicked: {
             departure_list.station = model.station;
-            departurePage.station = model.station;
             rootWindow.pageStack.push(departurePage);
         }
 

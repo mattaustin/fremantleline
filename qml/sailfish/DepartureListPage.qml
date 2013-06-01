@@ -21,8 +21,6 @@ import Sailfish.Silica 1.0
 Page {
 
     id: departurePage
-    property alias model: departureList.model
-    property variant station
 
     SilicaListView {
 
@@ -31,13 +29,13 @@ Page {
         model: departure_list
 
         header: PageHeader {
-            title: departurePage.station ? departurePage.station.name : 'Departures'
+            title: departure_list.station ? departure_list.station.name : 'Departures'
         }
 
         PullDownMenu {
             MenuItem {
                 text: 'Refresh'
-                onClicked: {controller.stationSelected(departurePage.station);}
+                onClicked: {departure_list.station = departure_list.station;}
             }
         }
 

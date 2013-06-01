@@ -22,7 +22,7 @@ Item {
     anchors.fill: parent
 
     Label {
-        text: departurePage.status == PageStatus.Active ? departurePage.station.name : 'Perth Trains'
+        text: departurePage.status == PageStatus.Active ? departure_list.station.name : 'Perth Trains'
         anchors.centerIn: parent
         width: parent.width - 2*theme.paddingLarge
         color: theme.secondaryColor

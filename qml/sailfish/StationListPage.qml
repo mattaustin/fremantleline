@@ -57,7 +57,6 @@ Page {
             }
             onClicked: {
                 departure_list.station = model.station;
-                departurePage.station = model.station;
                 pageStack.push(departurePage);
             }
         }

@@ -19,9 +19,6 @@ import com.nokia.meego 1.0
 
 
 Page {
-    property alias model: departureList.model
-    property alias title: header.title
-    property variant station
 
     id: departurePage
     orientationLock: PageOrientation.LockPortrait
@@ -33,7 +30,7 @@ Page {
 
         ToolIcon {
             iconId: 'toolbar-refresh'
-            onClicked: {controller.stationSelected(departurePage.station);}
+            onClicked: {departure_list.station = departure_list.station;}
         }
     }
 
@@ -53,7 +50,7 @@ Page {
 
     Header {
         id: header
-        title: departurePage.station ? departurePage.station.name : 'Departures'
+        title: departureList.count > 0 ? departure_list.station.name : 'Departures'
     }
 
     Text {
