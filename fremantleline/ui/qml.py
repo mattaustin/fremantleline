@@ -84,6 +84,26 @@ class View(NetworkSessionMixin, BaseView):
             return 'qml/{0}/networkError.qml'.format(self.platform)
 
 
+class BaseListModel(QtCore.QAbstractListModel):
+
+    items = []
+
+    def __init__(self, *args, **kwargs):
+        super(BaseListModel, self).__init__(*args, **kwargs)
+        self._roles = sorted(self.roles.items())
+        self.setRoleNames(
+            dict(enumerate(b'{0}'.format(k) for k, v in self._roles)))
+
+    def rowCount(self, parent=QtCore.QModelIndex()):
+        return len(self.items)
+
+    def data(self, index, role):
+        if index.isValid():
+            item = self.items[index.row()]
+            role_name, func = self._roles[role]
+            return func(item)
+
+
 class DepartureWrapper(QtCore.QObject):
 
     def __init__(self, departure, *args, **kwargs):
@@ -94,7 +114,7 @@ class DepartureWrapper(QtCore.QObject):
         return self._departure.destination
 
     def get_status(self):
-        return '{0}'.format(self._departure.status)
+        return self._departure.status
 
     def get_time(self):
         return self._departure.time.strftime('%H:%M')
@@ -111,30 +131,18 @@ class DepartureWrapper(QtCore.QObject):
     subtitle = QtCore.Property(unicode, get_subtitle)
 
 
-class DepartureListModel(QtCore.QAbstractListModel):
+class DepartureListModel(BaseListModel):
 
-    columns = [b'title', b'subtitle', b'destination', b'status', b'time']
+    roles = {'title': lambda i: i.title,
+             'subtitle': lambda i: i.subtitle,
+             'destination': lambda i: i.get_destination(),
+             'status': lambda i: i.get_status(),
+             'time': lambda i: i.get_time()}
 
     def __init__(self, departures=None, **kwargs):
         super(DepartureListModel, self).__init__(**kwargs)
-        self._departures = [] if departures is None else [
+        self.items = [] if departures is None else [
             DepartureWrapper(departure) for departure in departures]
-        self.setRoleNames(dict(enumerate(self.columns)))
-
-    def rowCount(self, parent=QtCore.QModelIndex()):
-        return len(self._departures)
-
-    def data(self, index, role):
-        if index.isValid() and role == self.columns.index(b'title'):
-            return self._departures[index.row()].get_title()
-        if index.isValid() and role == self.columns.index(b'subtitle'):
-            return self._departures[index.row()].get_subtitle()
-        if index.isValid() and role == self.columns.index(b'destination'):
-            return self._departures[index.row()].get_destination()
-        if index.isValid() and role == self.columns.index(b'status'):
-            return self._departures[index.row()].get_status()
-        if index.isValid() and role == self.columns.index(b'time'):
-            return self._departures[index.row()].get_time()
 
 
 class StationWrapper(QtCore.QObject):
@@ -153,25 +161,25 @@ class StationWrapper(QtCore.QObject):
     name = QtCore.Property(unicode, get_name, notify=changed)
 
 
-class StationListModel(QtCore.QAbstractListModel):
+class StationListModel(BaseListModel):
 
     changed = QtCore.Signal()
-    columns = [b'title', b'subtitle', b'station']
-    _stations = []
+    roles = {'title': lambda i: i.get_name(),
+             'subtitle': lambda i: '',
+             'station': lambda i: i}
 
     def __init__(self, *args, **kwargs):
         super(StationListModel, self).__init__(*args, **kwargs)
         self.fetching = False
         self.operator = transperth
         self.fetch_stations()
-        self.setRoleNames(dict(enumerate(self.columns)))
 
     def _fetch_stations(self):
         self.fetching = True
         try:
             stations = self.operator.get_stations()
             self.beginResetModel()
-            self._stations = [StationWrapper(station) for station in stations]
+            self.items = [StationWrapper(station) for station in stations]
             self.endResetModel()
         except:
             raise
@@ -182,17 +190,6 @@ class StationListModel(QtCore.QAbstractListModel):
         if not self._fetching:
             thread = threading.Thread(target=self._fetch_stations)
             thread.start()
-
-    def rowCount(self, parent=QtCore.QModelIndex()):
-        return len(self._stations)
-
-    def data(self, index, role):
-        if index.isValid() and role == self.columns.index(b'title'):
-            return self._stations[index.row()].get_name()
-        if index.isValid() and role == self.columns.index(b'subtitle'):
-            return ''
-        if index.isValid() and role == self.columns.index(b'station'):
-            return self._stations[index.row()]
 
     def _get_fetching(self):
         return self._fetching
