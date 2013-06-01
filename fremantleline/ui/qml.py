@@ -91,7 +91,7 @@ class DepartureWrapper(QtCore.QObject):
         self._departure = departure
 
     def get_destination(self):
-        return self._departure.destination.split('To ', 1)[-1]
+        return self._departure.destination
 
     def get_status(self):
         return '{0}'.format(self._departure.status)
@@ -107,12 +107,8 @@ class DepartureWrapper(QtCore.QObject):
     def get_subtitle(self):
         return self._departure.description
 
-    @QtCore.Signal
-    def changed(self):
-        pass
-
-    title = QtCore.Property(unicode, get_title, notify=changed)
-    subtitle = QtCore.Property(unicode, get_subtitle, notify=changed)
+    title = QtCore.Property(unicode, get_title)
+    subtitle = QtCore.Property(unicode, get_subtitle)
 
 
 class DepartureListModel(QtCore.QAbstractListModel):

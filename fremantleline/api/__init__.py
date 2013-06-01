@@ -124,7 +124,7 @@ class Departure(object):
 
     @property
     def destination(self):
-        return self._cols[2].text_content().strip()
+        return self._cols[2].text_content().strip().split('To ', 1)[-1]
 
     @property
     def line(self):
