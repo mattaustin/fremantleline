@@ -20,6 +20,8 @@ import com.nokia.meego 1.0
 
 Page {
 
+    property alias title: header.title
+
     id: departurePage
     orientationLock: PageOrientation.LockPortrait
     tools: ToolBarLayout {
@@ -50,12 +52,12 @@ Page {
 
     Header {
         id: header
-        title: departureList.count > 0 ? departure_list.station.name : 'Departures'
+        title: 'Departures'
     }
 
     Text {
-        text: departure_list.fetching ? 'Loading...' : 'No departing services were found for this station.'
-        visible: departureList.count < 1
+        text: 'No departing services were found for this station.'
+        visible: (!departure_list.fetching && departureList.count < 1)
         anchors.fill: parent
         anchors.topMargin: header.height + 16
         anchors.leftMargin: 16
@@ -63,4 +65,12 @@ Page {
         font.pixelSize: 24
         wrapMode: Text.WordWrap
     }
+
+    BusyIndicator {
+        platformStyle: BusyIndicatorStyle {size: 'large'}
+        anchors.centerIn: parent
+        running: departure_list.fetching
+        visible: departure_list.fetching
+    }
+
 }

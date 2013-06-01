@@ -25,6 +25,7 @@ ListView {
     anchors.leftMargin: 16
     delegate: ListDelegate {
         onClicked: {
+            departurePage.title = model.station.name;
             departure_list.station = model.station;
             rootWindow.pageStack.push(departurePage);
         }

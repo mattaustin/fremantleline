@@ -51,4 +51,11 @@ Page {
         id: header
         title: 'Perth Trains'
     }
+
+    BusyIndicator {
+        platformStyle: BusyIndicatorStyle {size: 'large'}
+        anchors.centerIn: parent
+        running: station_list.fetching
+        visible: station_list.fetching
+    }
 }
