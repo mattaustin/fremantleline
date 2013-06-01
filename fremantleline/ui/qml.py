@@ -149,6 +149,7 @@ class BaseListModel(QtCore.QAbstractListModel):
 
 class StationListModel(BaseListModel):
 
+    _fetching = False
     changed = QtCore.Signal()
     roles = {'title': lambda i: i.get_name(),
              'subtitle': lambda i: '',
@@ -156,7 +157,6 @@ class StationListModel(BaseListModel):
 
     def __init__(self, *args, **kwargs):
         super(StationListModel, self).__init__(*args, **kwargs)
-        self.fetching = False
         self.operator = transperth
         self.fetch_stations()
 
@@ -172,17 +172,17 @@ class StationListModel(BaseListModel):
         finally:
             self.fetching = False
 
-    def fetch_stations(self):
-        if not self._fetching:
-            thread = threading.Thread(target=self._fetch_stations)
-            thread.start()
-
     def _get_fetching(self):
         return self._fetching
 
     def _set_fetching(self, value):
         self._fetching = value
         self.changed.emit()
+
+    def fetch_stations(self):
+        if not self._fetching:
+            thread = threading.Thread(target=self._fetch_stations)
+            thread.start()
 
     fetching = QtCore.Property(bool, _get_fetching, _set_fetching,
                                notify=changed)
@@ -196,10 +196,11 @@ class DepartureListModel(BaseListModel):
              'status': lambda i: i.get_status(),
              'time': lambda i: i.get_time()}
 
-    def __init__(self, departures=None, **kwargs):
+    def __init__(self, station=None, **kwargs):
         super(DepartureListModel, self).__init__(**kwargs)
-        self.items = [] if departures is None else [
-            DepartureWrapper(departure) for departure in departures]
+        if station is not None:
+            self.items = [DepartureWrapper(departure) for departure in
+                          station.get_departures()]
 
 
 class Controller(QtCore.QObject):
@@ -210,5 +211,5 @@ class Controller(QtCore.QObject):
 
     @QtCore.Slot(QtCore.QObject)
     def stationSelected(self, wrapper):
-        departure_list = DepartureListModel(wrapper._station.get_departures())
+        departure_list = DepartureListModel(wrapper._station)
         self.view.rootObject().setDepartureModel(departure_list)

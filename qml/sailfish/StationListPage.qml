@@ -56,9 +56,9 @@ Page {
                 x: theme.paddingLarge
             }
             onClicked: {
+                controller.stationSelected(model.station);
                 departurePage.station = model.station;
                 pageStack.push(departurePage);
-                controller.stationSelected(model.station);
             }
         }
 
@@ -71,11 +71,11 @@ Page {
         visible: station_list.fetching;
         anchors.fill: parent
         anchors.topMargin: theme.itemSizeLarge
-        width: departurePage.width
+        width: stationPage.width
         spacing: theme.paddingLarge
 
         Label {
-            text: 'Loading.'
+            text: 'Loading...'
             width: parent.width - theme.paddingLarge - theme.paddingLarge
             x: theme.paddingLarge
             wrapMode: Text.WordWrap
