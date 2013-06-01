@@ -30,7 +30,7 @@ class Operator(object):
 
     name = 'Transperth Trains'
     stations = None
-    uri = 'http://www.transperth.wa.gov.au/TimetablesMaps/LiveTrainTimes.aspx'
+    url = 'http://www.transperth.wa.gov.au/TimetablesMaps/LiveTrainTimes.aspx'
 
     def __repr__(self):
         return '<{0}: {1}>'.format(self.__class__.__name__, unicode(self))
@@ -41,24 +41,27 @@ class Operator(object):
     def __unicode__(self):
         return self.name
 
-    def _get_html(self, url):
+    def _get_html(self):
         url_opener = URLOpener()
-        response = url_opener.open(url)
+        response = url_opener.open(self.url)
         html = lxml.html.parse(response).getroot()
         return html
 
     def _parse_stations(self, html):
         options = html.xpath('.//*[@id="EntryForm"]//select/option')
-        stations = (
-            Station(name=unicode(option.attrib['value']).rsplit(' Stn', 1)[0],
-                    operator=self) for option in options)
+        stations = []
+        for option in options:
+            data = urlencode({'stationname': option.attrib['value']})
+            name = '{0}'.format(option.attrib['value']).rsplit(' Stn', 1)[0]
+            url = '{0}?{1}'.format(self.url, data)
+            stations += [Station(name, url)]
         return stations
 
     def get_stations(self):
         """Returns list of Station instances for this operator."""
         if self.stations is None:
-            html = self._get_html(self.uri)
-            self.stations = list(self._parse_stations(html))
+            html = self._get_html()
+            self.stations = self._parse_stations(html)
         return self.stations
 
 
@@ -67,30 +70,38 @@ class Station(object):
 
     """
 
-    def __init__(self, operator, name):
-        self.operator = operator
+    departures = None
+
+    def __init__(self, name, url):
         self.name = name
+        self.url = url
 
     def __repr__(self):
-        return '<{class_name}: {name}>'.format(
-            class_name=self.__class__.__name__, name=self.name)
+        return '<{0}: {1}>'.format(self.__class__.__name__, unicode(self))
 
-    def get_departures(self):
-        """Returns Departure instances, using rows parsed from the station's
-        departure board html."""
-        html = self._get_html()
-        rows = html.xpath(
-            '//*[@id="dnn_ctr1608_ModuleContent"]//table//table/tr')[1:-1]
-        return (Departure(self, row) for row in rows)
+    def __str__(self):
+        return self.__unicode__().encode('utf-8')
+
+    def __unicode__(self):
+        return self.name
 
     def _get_html(self):
-        """Returns html from the station's departure board web page."""
         url_opener = URLOpener()
-        data = urlencode({'stationname': self.name})
-        response = url_opener.open('{base_url}?{data}'.format(
-            base_url=self.operator.uri, data=data))
+        response = url_opener.open(self.url)
         html = lxml.html.parse(response).getroot()
         return html
+
+    def _parse_departures(self, html):
+        rows = html.xpath(
+            '//*[@id="dnn_ctr1608_ModuleContent"]//table//table/tr')[1:-1]
+        return [Departure(self, row) for row in rows]
+
+    def get_departures(self):
+        """Returns Departure instances for this station."""
+        if self.departures is None:
+            html = self._get_html()
+            self.departures = self._parse_departures(html)
+        return self.departures
 
 
 class Departure(object):
