@@ -72,8 +72,7 @@ class View(NetworkSessionMixin, BaseView):
     def get_context_properties(self, *args, **kwargs):
         context_properties = super(View, self).get_context_properties(*args,
                                                                       **kwargs)
-        context_properties.update({'controller': Controller(view=self),
-                                   'station_list': StationListModel(),
+        context_properties.update({'station_list': StationListModel(),
                                    'departure_list': DepartureListModel()})
         return context_properties
 
@@ -190,26 +189,22 @@ class StationListModel(BaseListModel):
 
 class DepartureListModel(BaseListModel):
 
+    _station = None
+    changed = QtCore.Signal()
     roles = {'title': lambda i: i.title,
              'subtitle': lambda i: i.subtitle,
              'destination': lambda i: i.get_destination(),
              'status': lambda i: i.get_status(),
              'time': lambda i: i.get_time()}
 
-    def __init__(self, station=None, **kwargs):
-        super(DepartureListModel, self).__init__(**kwargs)
-        if station is not None:
-            self.items = [DepartureWrapper(departure) for departure in
-                          station.get_departures()]
+    def _get_station(self):
+        return self._station
 
+    def _set_station(self, value):
+        self._station = value
+        self.items = [DepartureWrapper(departure) for departure in
+                          self._station._station.get_departures()]
+        self.reset()
 
-class Controller(QtCore.QObject):
-
-    def __init__(self, view, *args, **kwargs):
-        super(Controller, self).__init__(*args, **kwargs)
-        self.view = view
-
-    @QtCore.Slot(QtCore.QObject)
-    def stationSelected(self, wrapper):
-        departure_list = DepartureListModel(wrapper._station)
-        self.view.rootObject().setDepartureModel(departure_list)
+    station = QtCore.Property(StationWrapper, _get_station, _set_station,
+                              notify=changed)

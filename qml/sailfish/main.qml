@@ -40,8 +40,4 @@ ApplicationWindow {
         CoverPage {}
     }
 
-    function setDepartureModel(mod) {
-        departurePage.model = mod;
-    }
-
 }

@@ -54,8 +54,4 @@ PageStackWindow {
     Component.onCompleted: {
         //theme.inverted = true
     }
-
-    function setDepartureModel(mod) {
-        departurePage.model = mod;
-    }
 }
