@@ -84,24 +84,20 @@ class View(NetworkSessionMixin, BaseView):
             return 'qml/{0}/networkError.qml'.format(self.platform)
 
 
-class BaseListModel(QtCore.QAbstractListModel):
+class StationWrapper(QtCore.QObject):
 
-    items = []
+    def __init__(self, station, *args, **kwargs):
+        super(StationWrapper, self).__init__(*args, **kwargs)
+        self._station = station
 
-    def __init__(self, *args, **kwargs):
-        super(BaseListModel, self).__init__(*args, **kwargs)
-        self._roles = sorted(self.roles.items())
-        self.setRoleNames(
-            dict(enumerate(b'{0}'.format(k) for k, v in self._roles)))
+    def get_name(self):
+        return self._station.name
 
-    def rowCount(self, parent=QtCore.QModelIndex()):
-        return len(self.items)
+    @QtCore.Signal
+    def changed(self):
+        pass
 
-    def data(self, index, role):
-        if index.isValid():
-            item = self.items[index.row()]
-            role_name, func = self._roles[role]
-            return func(item)
+    name = QtCore.Property(unicode, get_name, notify=changed)
 
 
 class DepartureWrapper(QtCore.QObject):
@@ -131,34 +127,24 @@ class DepartureWrapper(QtCore.QObject):
     subtitle = QtCore.Property(unicode, get_subtitle)
 
 
-class DepartureListModel(BaseListModel):
+class BaseListModel(QtCore.QAbstractListModel):
 
-    roles = {'title': lambda i: i.title,
-             'subtitle': lambda i: i.subtitle,
-             'destination': lambda i: i.get_destination(),
-             'status': lambda i: i.get_status(),
-             'time': lambda i: i.get_time()}
+    items = []
 
-    def __init__(self, departures=None, **kwargs):
-        super(DepartureListModel, self).__init__(**kwargs)
-        self.items = [] if departures is None else [
-            DepartureWrapper(departure) for departure in departures]
+    def __init__(self, *args, **kwargs):
+        super(BaseListModel, self).__init__(*args, **kwargs)
+        self._roles = sorted(self.roles.items())
+        self.setRoleNames(
+            dict(enumerate(b'{0}'.format(k) for k, v in self._roles)))
 
+    def rowCount(self, parent=QtCore.QModelIndex()):
+        return len(self.items)
 
-class StationWrapper(QtCore.QObject):
-
-    def __init__(self, station, *args, **kwargs):
-        super(StationWrapper, self).__init__(*args, **kwargs)
-        self._station = station
-
-    def get_name(self):
-        return self._station.name
-
-    @QtCore.Signal
-    def changed(self):
-        pass
-
-    name = QtCore.Property(unicode, get_name, notify=changed)
+    def data(self, index, role):
+        if index.isValid():
+            item = self.items[index.row()]
+            role_name, func = self._roles[role]
+            return func(item)
 
 
 class StationListModel(BaseListModel):
@@ -200,6 +186,20 @@ class StationListModel(BaseListModel):
 
     fetching = QtCore.Property(bool, _get_fetching, _set_fetching,
                                notify=changed)
+
+
+class DepartureListModel(BaseListModel):
+
+    roles = {'title': lambda i: i.title,
+             'subtitle': lambda i: i.subtitle,
+             'destination': lambda i: i.get_destination(),
+             'status': lambda i: i.get_status(),
+             'time': lambda i: i.get_time()}
+
+    def __init__(self, departures=None, **kwargs):
+        super(DepartureListModel, self).__init__(**kwargs)
+        self.items = [] if departures is None else [
+            DepartureWrapper(departure) for departure in departures]
 
 
 class Controller(QtCore.QObject):
