@@ -200,6 +200,7 @@ class DepartureListModel(BaseListModel):
 
     def _empty_items(self):
         self.beginResetModel()
+        self._station._station.departures = None
         self.items = []
         self.endResetModel()
 
@@ -208,7 +209,6 @@ class DepartureListModel(BaseListModel):
 
     def _set_station(self, value):
         self._station = value
-        self._empty_items()
         self.fetch_departures()
 
     station = QtCore.Property(StationWrapper, _get_station, _set_station,
@@ -216,6 +216,7 @@ class DepartureListModel(BaseListModel):
 
     def _fetch_departures(self):
         self.fetching = True
+        self._empty_items()
         try:
             departures = self._station._station.get_departures()
             self.beginResetModel()
