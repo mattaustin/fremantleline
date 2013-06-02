@@ -39,6 +39,18 @@ Page {
             }
         }
 
+        ViewPlaceholder {
+            enabled: departure_list.fetching
+            text: 'Loading...'
+            Behavior on opacity {}
+        }
+
+        ViewPlaceholder {
+            enabled: (!departure_list.fetching && departureList.count < 1)
+            text: 'No departing services were found for this station.'
+            font.pixelSize: theme.fontSizeLarge
+        }
+
         delegate: Item {
 
             width: departureList.width
@@ -94,20 +106,4 @@ Page {
 
     }
 
-    Column {
-
-        visible: departureList.count < 1
-        anchors.fill: parent
-        anchors.topMargin: theme.itemSizeLarge
-        width: departurePage.width
-        spacing: theme.paddingLarge
-
-        Label {
-            text: departure_list.fetching ? 'Loading...' : 'No departing services were found for this station.'
-            width: parent.width - theme.paddingLarge - theme.paddingLarge
-            x: theme.paddingLarge
-            wrapMode: Text.WordWrap
-        }
-
-    }
 }

@@ -47,6 +47,12 @@ Page {
             }
         }
 
+        ViewPlaceholder {
+            enabled: station_list.fetching
+            text: 'Loading...'
+            Behavior on opacity {}
+        }
+
         delegate: BackgroundItem {
             width: stationList.width
             Label {
@@ -62,23 +68,6 @@ Page {
         }
 
         VerticalScrollDecorator {}
-
-    }
-
-    Column {
-
-        visible: station_list.fetching;
-        anchors.fill: parent
-        anchors.topMargin: theme.itemSizeLarge
-        width: stationPage.width
-        spacing: theme.paddingLarge
-
-        Label {
-            text: 'Loading...'
-            width: parent.width - theme.paddingLarge - theme.paddingLarge
-            x: theme.paddingLarge
-            wrapMode: Text.WordWrap
-        }
 
     }
 
