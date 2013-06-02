@@ -18,4 +18,4 @@
 
 
 PROJECT_URL = 'http://projects.developer.nokia.com/perthtrains'
-VERSION = '0.5.dev'
+VERSION = '0.5'
