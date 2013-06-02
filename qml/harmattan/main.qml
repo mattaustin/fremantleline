@@ -1,5 +1,5 @@
 // Fremantle Line: Transperth trains live departure information
-// Copyright (c) 2009-2012 Matt Austin
+// Copyright (c) 2009-2013 Matt Austin
 //
 // Fremantle Line is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -22,41 +22,36 @@ PageStackWindow {
     id: rootWindow
     showStatusBar: screen.currentOrientation == Screen.Portrait
     initialPage: stationPage
-    
+
     StationListPage {
       id: stationPage
     }
-    
+
     DepartureListPage {
       id: departurePage
     }
-    
+
     Menu {
         id: myMenu
         MenuLayout {
             MenuItem {
-                text: "About"
+                text: 'About'
                 onClicked: {aboutDialog.open()}
             }
             MenuItem {
-                text: "Project homepage"
+                text: 'Project homepage'
                 onClicked: {
-                    Qt.openUrlExternally("http://projects.developer.nokia.com/perthtrains")
+                    Qt.openUrlExternally(projectUrl)
                 }
             }
         }
     }
-    
+
     AboutDialog {
         id: aboutDialog
     }
-    
+
     Component.onCompleted: {
         //theme.inverted = true
     }
-    
-    function setDepartureModel(mod) {
-        departurePage.model = mod;
-    }
 }
-

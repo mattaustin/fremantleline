@@ -17,11 +17,21 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/
 
 from __future__ import absolute_import, unicode_literals
-from fremantleline.meta import PROJECT_URL, VERSION
-from urllib import FancyURLopener
+from fremantleline.ui.qml import View
+from PySide.QtGui import QApplication
+import sys
 
 
-class URLOpener(FancyURLopener):
+class SailfishView(View):
 
-    version = 'FremantleLine/{version} (Fremantle Line; +{url})'.format(
-        version=VERSION, url=PROJECT_URL)
+    platform = 'sailfish'
+
+
+def main():
+    app = QApplication(sys.argv)
+    view = SailfishView()
+    view.showFullScreen()
+    sys.exit(app.exec_())
+
+if __name__ == '__main__':
+    main()

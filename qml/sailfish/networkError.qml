@@ -15,28 +15,50 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/
 
 import QtQuick 1.1
-import com.nokia.meego 1.0
+import Sailfish.Silica 1.0
 
 
-PageStackWindow {
+ApplicationWindow {
+
+    allowedOrientations: Orientation.Portrait
+
     initialPage: networkErrorPage
+
+    cover: CoverBackground {
+        CoverPlaceholder {
+            text: 'Perth Trains'
+        }
+    }
 
     Page {
         id: networkErrorPage
 
-        Header {
-            id: header
-            title: 'Perth Trains'
+        SilicaFlickable {
+
+            anchors.fill: parent
+            contentHeight: childrenRect.height
+
+            Column {
+
+                width: parent.width
+                spacing: theme.paddingLarge
+
+                PageHeader {
+                    title: 'Perth Trains'
+                }
+
+                Label {
+                    text: 'You must be connected to the internet in order to obtain train departure times.'
+                    width: parent.width - theme.paddingLarge - theme.paddingLarge
+                    x: theme.paddingLarge
+                    wrapMode: Text.WordWrap
+                    font.pixelSize: theme.fontSizeMedium
+                }
+
+            }
+
         }
 
-        Text {
-            text: 'You must be connected to the internet in order to obtain train departure times.'
-            anchors.fill: parent
-            anchors.topMargin: header.height + 16
-            anchors.leftMargin: 16
-            anchors.rightMargin: 16
-            font.pixelSize: 24
-            wrapMode: Text.WordWrap
-        }
     }
+
 }

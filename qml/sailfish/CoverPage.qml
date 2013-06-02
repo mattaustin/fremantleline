@@ -15,35 +15,21 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/
 
 import QtQuick 1.1
-import com.nokia.meego 1.0
-import com.nokia.extras 1.0
+import Sailfish.Silica 1.0
 
+Item {
 
-ListView {
-
-    id: departureListView
     anchors.fill: parent
-    anchors.leftMargin: 16
-    anchors.rightMargin: 16
 
-    delegate: ListDelegate {
-
-        id: listItem
-
-        Label {
-            id: status
-            text: model.status
-            font.family: listItem.subtitleFont
-            font.pixelSize: listItem.subtitleSize
-            color: listItem.pressed ? listItem.titleColorPressed : listItem.titleColor
-            horizontalAlignment: Text.AlignRight
-            anchors {
-                right: parent.right
-                top: parent.top
-                topMargin: 12
-            }
-        }
-
+    Label {
+        text: departurePage.status == PageStatus.Active ? departure_list.station.name : 'Perth Trains'
+        anchors.centerIn: parent
+        width: parent.width - 2*theme.paddingLarge
+        color: theme.secondaryColor
+        horizontalAlignment: Text.AlignHCenter
+        wrapMode: Text.WordWrap
+        truncationMode: TruncationMode.Fade
+        font.pixelSize: theme.fontSizeSmall
     }
 
 }

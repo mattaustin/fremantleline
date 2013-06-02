@@ -1,5 +1,5 @@
 // Fremantle Line: Transperth trains live departure information
-// Copyright (c) 2009-2012 Matt Austin
+// Copyright (c) 2009-2013 Matt Austin
 //
 // Fremantle Line is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -19,46 +19,45 @@ import com.nokia.meego 1.0
 
 
 Page {
-    property alias model: departureList.model
+
     property alias title: header.title
-    property variant station
-    
+
     id: departurePage
     orientationLock: PageOrientation.LockPortrait
     tools: ToolBarLayout {
         ToolIcon {
-            iconId: "toolbar-back"
+            iconId: 'toolbar-back'
             onClicked: {rootWindow.pageStack.pop();}
         }
-        
+
         ToolIcon {
-            iconId: "toolbar-refresh"
-            onClicked: {controller.stationSelected(departurePage.station);}
+            iconId: 'toolbar-refresh'
+            onClicked: {departure_list.station = departure_list.station;}
         }
     }
-    
+
     Item {
         anchors.fill: parent
         anchors.topMargin: header.height
-        
+
         DepartureList {
             id: departureList
             model: departure_list
         }
-        
+
         ScrollDecorator {
             flickableItem: departureList
         }
     }
-    
+
     Header {
         id: header
-        title: parent.station.name || "Departures"
+        title: 'Departures'
     }
-    
+
     Text {
-        text: "There are no departing services for this station."
-        visible: if(departureList.count > 0) false;else true;
+        text: 'No departing services were found for this station.'
+        visible: (!departure_list.fetching && departureList.count < 1)
         anchors.fill: parent
         anchors.topMargin: header.height + 16
         anchors.leftMargin: 16
@@ -66,5 +65,12 @@ Page {
         font.pixelSize: 24
         wrapMode: Text.WordWrap
     }
-}
 
+    BusyIndicator {
+        platformStyle: BusyIndicatorStyle {size: 'large'}
+        anchors.centerIn: parent
+        running: departure_list.fetching
+        visible: departure_list.fetching
+    }
+
+}
