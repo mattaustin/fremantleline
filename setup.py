@@ -46,7 +46,7 @@ setup(
         ('/opt/fremantleline', ['fremantleline.png']),
         ('/opt/fremantleline', ['fremantleline.svg']),
         ('/opt/fremantleline/splash', ['splash/harmattan.png']),
-        ('/opt/fremantleline/qml/harmattan', glob.glob('qml/harmattan/*.qml'))
-        ('/opt/fremantleline/qml/sailfish', glob.glob('qml/sailfish/*.qml'))
+        ('/opt/fremantleline/qml/harmattan', glob.glob('qml/harmattan/*.qml')),
+        ('/opt/fremantleline/qml/sailfish', glob.glob('qml/sailfish/*.qml')),
     ],
 )
