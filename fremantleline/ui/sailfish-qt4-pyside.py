@@ -24,7 +24,7 @@ import sys
 
 class SailfishView(View):
 
-    platform = 'sailfish'
+    platform = 'sailfish-qt4-pyside'
 
 
 def main():
