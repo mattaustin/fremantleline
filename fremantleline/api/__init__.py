@@ -33,7 +33,7 @@ class Operator(object):
     url = 'http://www.transperth.wa.gov.au/TimetablesMaps/LiveTrainTimes.aspx'
 
     def __repr__(self):
-        return '<{0}: {1}>'.format(self.__class__.__name__, unicode(self))
+        return '<%s: %s>' %(self.__class__.__name__, unicode(self))
 
     def __str__(self):
         return self.__unicode__().encode('utf-8')
@@ -52,8 +52,8 @@ class Operator(object):
         stations = []
         for option in options:
             data = urlencode({'stationname': option.attrib['value']})
-            name = '{0}'.format(option.attrib['value']).rsplit(' Stn', 1)[0]
-            url = '{0}?{1}'.format(self.url, data)
+            name = '%s' %(option.attrib['value']).rsplit(' Stn', 1)[0]
+            url = '%s?%s' %(self.url, data)
             stations += [Station(name, url)]
         return stations
 
@@ -77,7 +77,7 @@ class Station(object):
         self.url = url
 
     def __repr__(self):
-        return '<{0}: {1}>'.format(self.__class__.__name__, unicode(self))
+        return '<%s: %s>' %(self.__class__.__name__, unicode(self))
 
     def __str__(self):
         return self.__unicode__().encode('utf-8')
@@ -114,9 +114,9 @@ class Departure(object):
         self._cols = row_data.xpath('td')
 
     def __repr__(self):
-        return '<{class_name}: {time} {destination} {status}>'.format(
-            class_name=self.__class__.__name__, time=self.time,
-            destination=self.destination, status=self.status)
+        return '<%(class_name)s: %(time)s %(destination)s %(status)s>' %({
+            'class_name': self.__class__.__name__, 'time': self.time,
+            'destination': self.destination, 'status': self.status})
 
     @property
     def description(self):

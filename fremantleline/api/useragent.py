@@ -23,5 +23,5 @@ from urllib import FancyURLopener
 
 class URLOpener(FancyURLopener):
 
-    version = 'FremantleLine/{version} (Fremantle Line; +{url})'.format(
-        version=VERSION, url=PROJECT_URL)
+    version = 'FremantleLine/%(version)s (Fremantle Line; +%(url)s)' %({
+        'version': VERSION, 'url': PROJECT_URL})
