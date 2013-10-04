@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import
 from datetime import datetime
 from fremantleline.api.useragent import URLOpener
 from urllib import urlencode

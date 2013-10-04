@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import
 from fremantleline.api import transperth
 from fremantleline.meta import PROJECT_URL, VERSION
 from PySide import QtCore
@@ -134,7 +134,7 @@ class BaseListModel(QtCore.QAbstractListModel):
         super(BaseListModel, self).__init__(*args, **kwargs)
         self._roles = sorted(self.roles.items())
         self.setRoleNames(
-            dict(enumerate(b'%s' %(k) for k, v in self._roles)))
+            dict(enumerate('%s' %(k) for k, v in self._roles)))
 
     def rowCount(self, parent=QtCore.QModelIndex()):
         return len(self.items)
