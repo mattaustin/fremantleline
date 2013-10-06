@@ -38,7 +38,7 @@ class Operator(UnicodeMixin, object):
     url = 'http://www.transperth.wa.gov.au/TimetablesMaps/LiveTrainTimes.aspx'
 
     def __repr__(self):
-        return '<{0}: {1}>'.format(self.__class__.__name__, unicode(self))
+        return '<{0}: {1}>'.format(self.__class__.__name__, self)
 
     def __unicode__(self):
         return self.name
@@ -79,7 +79,7 @@ class Station(UnicodeMixin, object):
         self.url = url
 
     def __repr__(self):
-        return '<{0}: {1}>'.format(self.__class__.__name__, unicode(self))
+        return '<{0}: {1}>'.format(self.__class__.__name__, self)
 
     def __unicode__(self):
         return self.name
