@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import
 from fremantleline.api import transperth
 from fremantleline.meta import PROJECT_URL, VERSION
 from PySide import QtCore
@@ -27,7 +27,7 @@ import threading
 
 class BaseView(QDeclarativeView):
 
-    context_properties = {'version': '{0}'.format(VERSION),
+    context_properties = {'version': '%s ' %(VERSION),
                           'projectUrl': PROJECT_URL}
     window_title = 'Fremantle Line'
 
@@ -78,9 +78,9 @@ class View(NetworkSessionMixin, BaseView):
 
     def get_qml_path(self):
         if self.get_network_session().waitForOpened():
-            return 'qml/{0}/main.qml'.format(self.platform)
+            return 'qml/%s/main.qml' %(self.platform)
         else:
-            return 'qml/{0}/networkError.qml'.format(self.platform)
+            return 'qml/%s/networkError.qml' %(self.platform)
 
 
 class StationWrapper(QtCore.QObject):
@@ -115,9 +115,9 @@ class DepartureWrapper(QtCore.QObject):
         return self._departure.time.strftime('%H:%M')
 
     def get_title(self):
-        return '{time} to {destination}'.format(
-            time=self.get_time(),
-            destination=self.get_destination())
+        return '%(time)s to %(destination)s' %({
+            'time': self.get_time(),
+            'destination': self.get_destination()})
 
     def get_subtitle(self):
         return self._departure.description
@@ -134,7 +134,7 @@ class BaseListModel(QtCore.QAbstractListModel):
         super(BaseListModel, self).__init__(*args, **kwargs)
         self._roles = sorted(self.roles.items())
         self.setRoleNames(
-            dict(enumerate(b'{0}'.format(k) for k, v in self._roles)))
+            dict(enumerate('%s' %(k) for k, v in self._roles)))
 
     def rowCount(self, parent=QtCore.QModelIndex()):
         return len(self.items)

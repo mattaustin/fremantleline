@@ -31,7 +31,7 @@ def read(fname):
 setup(
     name='fremantleline',
     url=meta.PROJECT_URL,
-    version='{0}'.format(meta.VERSION),
+    version='%s' %(meta.VERSION),
     description='Live departure information for Perth metropolitan trains.',
     long_description=read('fremantleline.longdesc'),
     author='Matt Austin',

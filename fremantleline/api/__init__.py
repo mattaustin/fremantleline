@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import
 from datetime import datetime
 from fremantleline.api.useragent import URLOpener
 from fremantleline.compatibility import UnicodeMixin
@@ -38,7 +38,7 @@ class Operator(UnicodeMixin, object):
     url = 'http://www.transperth.wa.gov.au/TimetablesMaps/LiveTrainTimes.aspx'
 
     def __repr__(self):
-        return '<{0}: {1}>'.format(self.__class__.__name__, self)
+        return '<%s: %s>' %(self.__class__.__name__, self)
 
     def __unicode__(self):
         return self.name
@@ -54,8 +54,8 @@ class Operator(UnicodeMixin, object):
         stations = []
         for option in options:
             data = urlencode({'stationname': option.attrib['value']})
-            name = '{0}'.format(option.attrib['value']).rsplit(' Stn', 1)[0]
-            url = '{0}?{1}'.format(self.url, data)
+            name = '%s' %(option.attrib['value']).rsplit(' Stn', 1)[0]
+            url = '%s?%s' %(self.url, data)
             stations += [Station(name, url)]
         return stations
 
@@ -79,7 +79,7 @@ class Station(UnicodeMixin, object):
         self.url = url
 
     def __repr__(self):
-        return '<{0}: {1}>'.format(self.__class__.__name__, self)
+        return '<%s: %s>' %(self.__class__.__name__, self)
 
     def __unicode__(self):
         return self.name
@@ -113,9 +113,9 @@ class Departure(object):
         self._cols = row_data.xpath('td')
 
     def __repr__(self):
-        return '<{class_name}: {time} {destination} {status}>'.format(
-            class_name=self.__class__.__name__, time=self.time,
-            destination=self.destination, status=self.status)
+        return '<%(class_name)s: %(time)s %(destination)s %(status)s>' %({
+            'class_name': self.__class__.__name__, 'time': self.time,
+            'destination': self.destination, 'status': self.status})
 
     @property
     def description(self):

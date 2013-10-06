@@ -16,22 +16,27 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/
 
-from __future__ import absolute_import
 from fremantleline.ui.qml import View
 from PySide.QtGui import QApplication
+from PySide.QtOpenGL import QGLWidget
 import sys
 
 
-class SailfishView(View):
+class FremantleView(View):
 
-    platform = 'sailfish-qt4-pyside'
+    platform = 'fremantle'
+
+    def __init__(self, *args, **kwargs):
+        super(FremantleView, self).__init__(*args, **kwargs)
+        self.setViewport(QGLWidget())
 
 
 def main():
     app = QApplication(sys.argv)
-    view = SailfishView()
+    view = FremantleView()
     view.showFullScreen()
     sys.exit(app.exec_())
+
 
 if __name__ == '__main__':
     main()

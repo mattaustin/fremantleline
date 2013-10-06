@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import
 from fremantleline.meta import PROJECT_URL, VERSION
 
 try:
@@ -27,5 +27,5 @@ except ImportError:
 
 class URLOpener(FancyURLopener):
 
-    version = 'FremantleLine/{version} (Fremantle Line; +{url})'.format(
-        version=VERSION, url=PROJECT_URL)
+    version = 'FremantleLine/%(version)s (Fremantle Line; +%(url)s)' %({
+        'version': VERSION, 'url': PROJECT_URL})
