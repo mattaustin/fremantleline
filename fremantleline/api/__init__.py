@@ -19,11 +19,12 @@
 from __future__ import absolute_import
 from datetime import datetime
 from fremantleline.api.useragent import URLOpener
+from fremantleline.compatibility import UnicodeMixin
 from urllib import urlencode
 import lxml.html
 
 
-class Operator(object):
+class Operator(UnicodeMixin, object):
     """Operating company.
 
     """
@@ -34,9 +35,6 @@ class Operator(object):
 
     def __repr__(self):
         return '<%s: %s>' %(self.__class__.__name__, unicode(self))
-
-    def __str__(self):
-        return self.__unicode__().encode('utf-8')
 
     def __unicode__(self):
         return self.name
@@ -65,7 +63,7 @@ class Operator(object):
         return self.stations
 
 
-class Station(object):
+class Station(UnicodeMixin, object):
     """Train station.
 
     """
@@ -78,9 +76,6 @@ class Station(object):
 
     def __repr__(self):
         return '<%s: %s>' %(self.__class__.__name__, unicode(self))
-
-    def __str__(self):
-        return self.__unicode__().encode('utf-8')
 
     def __unicode__(self):
         return self.name
