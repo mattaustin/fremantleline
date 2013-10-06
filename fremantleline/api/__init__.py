@@ -20,8 +20,12 @@ from __future__ import absolute_import, unicode_literals
 from datetime import datetime
 from fremantleline.api.useragent import URLOpener
 from fremantleline.compatibility import UnicodeMixin
-from urllib import urlencode
 import lxml.html
+
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
 
 
 class Operator(UnicodeMixin, object):
