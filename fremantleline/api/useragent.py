@@ -18,7 +18,11 @@
 
 from __future__ import absolute_import
 from fremantleline.meta import PROJECT_URL, VERSION
-from urllib import FancyURLopener
+
+try:
+    from urllib.request import FancyURLopener
+except ImportError:
+    from urllib import FancyURLopener
 
 
 class URLOpener(FancyURLopener):
