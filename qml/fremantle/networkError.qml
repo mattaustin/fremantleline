@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see http://www.gnu.org/licenses/
 
-import QtQuick 1.1
-import org.maemo.fremantle 1.0
+import QtQuick 1.0
+import org.hildon.components 1.0
 
 
 PageStackWindow {
@@ -24,19 +24,19 @@ PageStackWindow {
     Page {
         id: networkErrorPage
 
-        Header {
-            id: header
-            title: 'Perth Trains'
-        }
-
         Text {
             text: 'You must be connected to the internet in order to obtain train departure times.'
-            anchors.fill: parent
-            anchors.topMargin: header.height + 16
-            anchors.leftMargin: 16
-            anchors.rightMargin: 16
-            font.pixelSize: 24
+            horizontalAlignment: Text.AlignHCenter
+            anchors {
+                left: parent.left
+                right: parent.right
+                leftMargin: 30
+                rightMargin: 30
+                verticalCenter: parent.verticalCenter
+            }
+            font.pixelSize: 30
             wrapMode: Text.WordWrap
+            opacity: 0.5
         }
     }
 }

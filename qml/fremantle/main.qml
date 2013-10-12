@@ -14,44 +14,28 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see http://www.gnu.org/licenses/
 
-import QtQuick 1.1
-import org.maemo.fremantle 1.0
+import QtQuick 1.0
+import org.hildon.components 1.0
 
 
 PageStackWindow {
-    id: rootWindow
-    showStatusBar: screen.currentOrientation == Screen.Portrait
+
+    //windowTitle: departurePage.status == PageStatus.Active ? departure_list.station.name : 'Perth Trains'
+    windowTitle: 'Perth Trains'
+    busy: station_list.fetching || departure_list.fetching
+
     initialPage: stationPage
 
     StationListPage {
-      id: stationPage
+        id: stationPage
     }
 
     DepartureListPage {
-      id: departurePage
-    }
-
-    Menu {
-        id: myMenu
-        MenuLayout {
-            MenuItem {
-                text: 'About'
-                onClicked: {aboutDialog.open()}
-            }
-            MenuItem {
-                text: 'Project homepage'
-                onClicked: {
-                    Qt.openUrlExternally(projectUrl)
-                }
-            }
-        }
+        id: departurePage
     }
 
     AboutDialog {
         id: aboutDialog
     }
 
-    Component.onCompleted: {
-        //theme.inverted = true
-    }
 }
