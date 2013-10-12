@@ -24,7 +24,7 @@ import sys
 
 class FremantleView(View):
 
-    platform = 'fremantle'
+    platform = 'fremantle-qt4-pyside'
 
     def __init__(self, *args, **kwargs):
         super(FremantleView, self).__init__(*args, **kwargs)
