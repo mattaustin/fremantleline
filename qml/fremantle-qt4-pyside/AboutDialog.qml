@@ -14,29 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see http://www.gnu.org/licenses/
 
-import QtQuick 1.1
-import org.maemo.fremantle 1.0
-import org.maemo.extras 1.0
+import QtQuick 1.0
+import org.hildon.components 1.0
 
 
-ListView {
-    id: stationListView
-    anchors.fill: parent
-    anchors.leftMargin: 16
-    delegate: ListDelegate {
-        onClicked: {
-            departurePage.title = model.station.name;
-            departure_list.station = model.station;
-            rootWindow.pageStack.push(departurePage);
-        }
-
-        Image {
-            source: 'image://theme/icon-m-common-drilldown-arrow' + (theme.inverted ? '-inverse' : '')
-            anchors.right: parent.right
-            anchors.rightMargin: 16
-            anchors.verticalCenter: parent.verticalCenter
-        }
-    }
-    section.property: 'title'
-    section.criteria: ViewSection.FirstCharacter
+QueryDialog {
+    titleText: 'About Fremantle Line v' + version
+    message: 'Copyright (c) 2009-2013 Matt Austin.\n\nFremantle Line (\"Perth Trains\") is free sofware licenced under the GNU Public License version 3.\n\nData is provided on an \"as is\" and \"as available\" basis. No representations or warranties of any kind, express or implied are made. Data is available free of charge from www.transperth.wa.gov.au. This program accesses data using your internet connection. Your operator may charge you for data use.'
+    rejectButtonText: 'Close'
 }

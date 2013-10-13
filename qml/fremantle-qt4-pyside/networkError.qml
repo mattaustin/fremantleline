@@ -14,44 +14,29 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see http://www.gnu.org/licenses/
 
-import QtQuick 1.1
-import org.maemo.fremantle 1.0
+import QtQuick 1.0
+import org.hildon.components 1.0
 
 
 PageStackWindow {
-    id: rootWindow
-    showStatusBar: screen.currentOrientation == Screen.Portrait
-    initialPage: stationPage
+    initialPage: networkErrorPage
 
-    StationListPage {
-      id: stationPage
-    }
+    Page {
+        id: networkErrorPage
 
-    DepartureListPage {
-      id: departurePage
-    }
-
-    Menu {
-        id: myMenu
-        MenuLayout {
-            MenuItem {
-                text: 'About'
-                onClicked: {aboutDialog.open()}
+        Text {
+            text: 'You must be connected to the internet in order to obtain train departure times.'
+            horizontalAlignment: Text.AlignHCenter
+            anchors {
+                left: parent.left
+                right: parent.right
+                leftMargin: 30
+                rightMargin: 30
+                verticalCenter: parent.verticalCenter
             }
-            MenuItem {
-                text: 'Project homepage'
-                onClicked: {
-                    Qt.openUrlExternally(projectUrl)
-                }
-            }
+            font.pixelSize: 30
+            wrapMode: Text.WordWrap
+            opacity: 0.5
         }
-    }
-
-    AboutDialog {
-        id: aboutDialog
-    }
-
-    Component.onCompleted: {
-        //theme.inverted = true
     }
 }

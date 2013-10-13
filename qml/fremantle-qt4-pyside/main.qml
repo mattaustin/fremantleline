@@ -14,29 +14,28 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see http://www.gnu.org/licenses/
 
-import QtQuick 1.1
-import org.maemo.fremantle 1.0
+import QtQuick 1.0
+import org.hildon.components 1.0
 
 
 PageStackWindow {
-    initialPage: networkErrorPage
 
-    Page {
-        id: networkErrorPage
+    //windowTitle: departurePage.status == PageStatus.Active ? departure_list.station.name : 'Perth Trains'
+    windowTitle: 'Perth Trains'
+    busy: station_list.fetching || departure_list.fetching
 
-        Header {
-            id: header
-            title: 'Perth Trains'
-        }
+    initialPage: stationPage
 
-        Text {
-            text: 'You must be connected to the internet in order to obtain train departure times.'
-            anchors.fill: parent
-            anchors.topMargin: header.height + 16
-            anchors.leftMargin: 16
-            anchors.rightMargin: 16
-            font.pixelSize: 24
-            wrapMode: Text.WordWrap
-        }
+    StationListPage {
+        id: stationPage
     }
+
+    DepartureListPage {
+        id: departurePage
+    }
+
+    AboutDialog {
+        id: aboutDialog
+    }
+
 }
