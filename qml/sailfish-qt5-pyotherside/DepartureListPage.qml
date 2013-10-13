@@ -114,8 +114,8 @@ Page {
         property bool loading: true
 
         Component.onCompleted: {
-            addImportPath('/home/nemo/fremantleline');
-            addImportPath('/home/nemo/fremantleline/fremantleline/ui/sailfish');
+            addImportPath(Qt.resolvedUrl('../..').substr('file://'.length));
+            addImportPath(Qt.resolvedUrl('../../fremantleline/ui/sailfish').substr('file://'.length));
             importModule('qt5', function() {});
         }
 
