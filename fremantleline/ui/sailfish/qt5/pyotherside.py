@@ -11,4 +11,5 @@ def get_departures(station_name, station_url):
     return [{'time': d.time.strftime('%H:%M'),
              'destination': d.destination,
              'status': d.status,
+             'line': d.line,
              'subtitle': d.description} for d in station.get_departures()]
