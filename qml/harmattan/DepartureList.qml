@@ -29,12 +29,31 @@ ListView {
     delegate: ListDelegate {
 
         id: listItem
+        opacity: model.status == 'CANCELLED' && 0.5 || 1
+
+        Rectangle {
+            height: parent.height - 4
+            width: 8
+            color: (model.line == 'Armadale/Thornlie Line' && '#fab20a' ||
+                    model.line == 'Fremantle Line' && '#155196' ||
+                    model.line == 'Joondalup Line' && '#97a509' ||
+                    model.line == 'Mandurah Line' && '#e55e16' ||
+                    model.line == 'Midland Line' && '#b00257' ||
+                    '#16ac48')
+            anchors {
+                left: parent.left
+                leftMargin: -14
+                top: parent.top
+                topMargin: 2
+            }
+        }
 
         Label {
             id: status
             text: model.status
             font.family: listItem.subtitleFont
             font.pixelSize: listItem.subtitleSize
+            font.bold: model.status == 'CANCELLED'
             color: listItem.pressed ? listItem.titleColorPressed : listItem.titleColor
             horizontalAlignment: Text.AlignRight
             anchors {
