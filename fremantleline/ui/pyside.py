@@ -108,6 +108,9 @@ class DepartureWrapper(QtCore.QObject):
     def get_destination(self):
         return self._departure.destination
 
+    def get_line(self):
+        return self._departure.line
+
     def get_status(self):
         return self._departure.status
 
@@ -196,6 +199,7 @@ class DepartureListModel(BaseListModel):
              'subtitle': lambda i: i.subtitle,
              'destination': lambda i: i.get_destination(),
              'status': lambda i: i.get_status(),
+             'line': lambda i: i.get_line(),
              'time': lambda i: i.get_time()}
 
     def _empty_items(self):

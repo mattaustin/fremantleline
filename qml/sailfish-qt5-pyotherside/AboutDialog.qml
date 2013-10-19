@@ -65,12 +65,9 @@ Page {
     }
 
     Python {
-
-	id: python
-
         Component.onCompleted: {
-            addImportPath('/home/nemo/fremantleline');
-            addImportPath('/home/nemo/fremantleline/fremantleline');
+            addImportPath(Qt.resolvedUrl('../..').substr('file://'.length));
+            addImportPath(Qt.resolvedUrl('../../fremantleline').substr('file://'.length));
             importModule('meta', function() {
                 dialog.version = evaluate('meta.VERSION');
             });

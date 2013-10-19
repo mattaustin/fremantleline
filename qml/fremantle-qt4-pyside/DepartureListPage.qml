@@ -56,20 +56,39 @@ Page {
                 height: title.height + subtitle.height
                 anchors.verticalCenter: parent.verticalCenter
 
+                Rectangle {
+                    height: parent.height
+                    width: 6
+                    color: (model.line == 'Armadale/Thornlie Line' && '#fab20a' ||
+                            model.line == 'Fremantle Line' && '#155196' ||
+                            model.line == 'Joondalup Line' && '#97a509' ||
+                            model.line == 'Mandurah Line' && '#e55e16' ||
+                            model.line == 'Midland Line' && '#b00257' ||
+                            '#16ac48')
+                    anchors {
+                        left: parent.left
+                        leftMargin: -14
+                        top: parent.top
+                    }
+                }
+
                 Label {
                     id: title
                     text: model.time + ' to ' + model.destination
                     font.pixelSize: 30
+                    font.strikeout: model.status == 'CANCELLED'
                     anchors {
                         left: parent.left
                         right: status.right
                     }
+                    opacity: model.status == 'CANCELLED' && 0.5 || 1
                 }
 
                 Label {
                     id: status
                     text: model.status
                     font.pixelSize: 26
+                    font.bold: model.status == 'CANCELLED'
                     horizontalAlignment: Text.AlignRight
                     anchors {
                         right: parent.right
@@ -82,12 +101,13 @@ Page {
                     id: subtitle
                     text: model.subtitle
                     font.pixelSize: 22
+                    font.strikeout: model.status == 'CANCELLED'
                     anchors {
                         top: title.bottom
                         left: parent.left
                         right: parent.right
                     }
-                    opacity: 0.5
+                    opacity: model.status == 'CANCELLED' && 0.375 || 0.5
                 }
 
             }

@@ -63,21 +63,41 @@ Page {
                 width: parent.width - 2*Theme.paddingLarge
                 height: childrenRect.height
 
+                GlassItem {
+                    height: parent.height
+                    width: Theme.paddingMedium
+                    color: (modelData.line == 'Armadale/Thornlie Line' && '#fab20a' ||
+                            modelData.line == 'Fremantle Line' && '#155196' ||
+                            modelData.line == 'Joondalup Line' && '#97a509' ||
+                            modelData.line == 'Mandurah Line' && '#e55e16' ||
+                            modelData.line == 'Midland Line' && '#b00257' ||
+                            '#16ac48')
+                    ratio: 0.0
+                    cache: false
+                    anchors {
+                        left: parent.left
+                        leftMargin: (-Theme.paddingLarge/2) + (-Theme.paddingMedium/2)
+                    }
+                }
+
                 Label {
                     id: title
                     text: modelData.time + ' to ' + modelData.destination
                     font.pixelSize: Theme.fontSizeMedium
+                    font.strikeout: (modelData.status == 'CANCELLED')
                     truncationMode: TruncationMode.Fade
                     anchors {
                         left: parent.left
                         right: status.right
                     }
+                    opacity: modelData.status == 'CANCELLED' && 0.75 || 1
                 }
 
                 Label {
                     id: status
                     text: modelData.status
                     font.pixelSize: Theme.fontSizeExtraSmall
+                    font.bold: (modelData.status == 'CANCELLED')
                     horizontalAlignment: Text.AlignRight
                     anchors {
                         right: parent.right
@@ -89,6 +109,7 @@ Page {
                     id: subtitle
                     text: modelData.subtitle
                     font.pixelSize: Theme.fontSizeExtraSmall * 3/4
+                    font.strikeout: (modelData.status == 'CANCELLED')
                     font.italic: true
                     truncationMode: TruncationMode.Fade
                     anchors {
@@ -97,6 +118,7 @@ Page {
                         left: parent.left
                         right: parent.right
                     }
+                    opacity: modelData.status == 'CANCELLED' && 0.75 || 1
                 }
 
             }
@@ -114,8 +136,8 @@ Page {
         property bool loading: true
 
         Component.onCompleted: {
-            addImportPath('/home/nemo/fremantleline');
-            addImportPath('/home/nemo/fremantleline/fremantleline/ui/sailfish');
+            addImportPath(Qt.resolvedUrl('../..').substr('file://'.length));
+            addImportPath(Qt.resolvedUrl('../../fremantleline/ui/sailfish').substr('file://'.length));
             importModule('qt5', function() {});
         }
 

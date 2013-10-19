@@ -38,7 +38,9 @@ setup(
     author_email='mail@mattaustin.me.uk',
     maintainer='Matt Austin',
     maintainer_email='mail@mattaustin.me.uk',
-    packages=['fremantleline', 'fremantleline.api', 'fremantleline.ui'],
+    packages=['fremantleline', 'fremantleline.api', 'fremantleline.ui',
+              'fremantleline.ui.fremantle', 'fremantleline.ui.fremantle.qt4',
+              'fremantleline.ui.harmattan', 'fremantleline.ui.harmattan.qt4'],
     scripts=['scripts/fremantleline'],
     requires=['lxml', 'PySide'],
     data_files=[
@@ -46,7 +48,9 @@ setup(
         ('/opt/fremantleline', ['fremantleline.png']),
         ('/opt/fremantleline', ['fremantleline.svg']),
         ('/opt/fremantleline/splash', ['splash/harmattan.png']),
-        ('/opt/fremantleline/qml/harmattan', glob.glob('qml/harmattan/*.qml')),
-        ('/opt/fremantleline/qml/sailfish', glob.glob('qml/sailfish/*.qml')),
+        ('/opt/fremantleline/qml/fremantle-qt4-pyside',
+         glob.glob('qml/fremantle-qt4-pyside/*.qml')),
+        ('/opt/fremantleline/qml/harmattan-qt4-pyside',
+         glob.glob('qml/harmattan-qt4-pyside/*.qml')),
     ],
 )

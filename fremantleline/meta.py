@@ -18,4 +18,4 @@
 
 
 PROJECT_URL = 'https://github.com/mattaustin/fremantleline'
-VERSION = '0.6-dev'
+VERSION = '0.6'
