@@ -46,7 +46,9 @@ setup(
         ('/opt/fremantleline', ['fremantleline.png']),
         ('/opt/fremantleline', ['fremantleline.svg']),
         ('/opt/fremantleline/splash', ['splash/harmattan.png']),
-        ('/opt/fremantleline/qml/harmattan', glob.glob('qml/harmattan/*.qml')),
-        ('/opt/fremantleline/qml/sailfish', glob.glob('qml/sailfish/*.qml')),
+        ('/opt/fremantleline/qml/fremantle-qt4-pyside',
+         glob.glob('qml/fremantle-qt4-pyside/*.qml')),
+        ('/opt/fremantleline/qml/harmattan-qt4-pyside',
+         glob.glob('qml/harmattan-qt4-pyside/*.qml')),
     ],
 )

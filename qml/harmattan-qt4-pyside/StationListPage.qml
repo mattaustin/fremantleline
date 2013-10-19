@@ -16,61 +16,63 @@
 
 import QtQuick 1.1
 import com.nokia.meego 1.0
+import com.nokia.extras 1.0
 
 
 Page {
 
-    property alias title: header.title
-
-    id: departurePage
+    id: stationPage
     orientationLock: PageOrientation.LockPortrait
+
     tools: ToolBarLayout {
         ToolIcon {
-            iconId: 'toolbar-back'
-            onClicked: {rootWindow.pageStack.pop();}
-        }
-
-        ToolIcon {
-            iconId: 'toolbar-refresh'
-            onClicked: {departure_list.station = departure_list.station;}
+            iconId: 'toolbar-view-menu'
+            onClicked: (myMenu.status == DialogStatus.Closed) ? myMenu.open() : myMenu.close()
+            anchors.right: parent==undefined ? undefined : parent.right
         }
     }
 
-    Item {
+    ListView {
+
+        id: stationList
+        model: station_list
         anchors.fill: parent
         anchors.topMargin: header.height
+        anchors.leftMargin: 16
 
-        DepartureList {
-            id: departureList
-            model: departure_list
+        delegate: ListDelegate {
+
+            onClicked: {
+                departurePage.title = model.station.name;
+                departure_list.station = model.station;
+                rootWindow.pageStack.push(departurePage);
+            }
+
+            Image {
+                source: 'image://theme/icon-m-common-drilldown-arrow' + (theme.inverted ? '-inverse' : '')
+                anchors.right: parent.right
+                anchors.rightMargin: 16
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
         }
 
-        ScrollDecorator {
-            flickableItem: departureList
-        }
+    }
+
+    ScrollDecorator {
+        flickableItem: stationList
     }
 
     Header {
         id: header
-        title: 'Departures'
-    }
-
-    Text {
-        text: 'No departing services were found for this station.'
-        visible: (!departure_list.fetching && departureList.count < 1)
-        anchors.fill: parent
-        anchors.topMargin: header.height + 16
-        anchors.leftMargin: 16
-        anchors.rightMargin: 16
-        font.pixelSize: 24
-        wrapMode: Text.WordWrap
+        title: 'Perth Trains'
     }
 
     BusyIndicator {
         platformStyle: BusyIndicatorStyle {size: 'large'}
         anchors.centerIn: parent
-        running: departure_list.fetching
-        visible: departure_list.fetching
+        running: station_list.fetching
+        visible: station_list.fetching
     }
 
 }

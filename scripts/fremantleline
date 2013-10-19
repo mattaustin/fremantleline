@@ -8,7 +8,7 @@ sys.path.insert(0, '/opt/fremantleline/lib/python2.6/dist-packages')
 def main():
     from fremantleline.ui import harmattan
     os.chdir('/opt/fremantleline')
-    harmattan.main()
+    harmattan.qt4.pyside.main()
 
 if __name__ == "__main__":
     main()
