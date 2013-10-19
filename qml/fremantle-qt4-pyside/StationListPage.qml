@@ -14,48 +14,51 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see http://www.gnu.org/licenses/
 
-import QtQuick 1.1
-import com.nokia.meego 1.0
+import QtQuick 1.0
+import org.hildon.components 1.0
 
 
 Page {
+
     id: stationPage
-    orientationLock: PageOrientation.LockPortrait
-    tools: ToolBarLayout {
-        ToolIcon {
-            iconId: 'toolbar-view-menu'
-            onClicked: (myMenu.status == DialogStatus.Closed) ? myMenu.open() : myMenu.close()
-            anchors.right: parent==undefined ? undefined : parent.right
+
+    tools: MenuLayout {
+        MenuItem {
+            text: 'About'
+            onClicked: {
+                aboutDialog.open();
+            }
+        }
+        MenuItem {
+            text: 'Project homepage'
+            onClicked: {Qt.openUrlExternally(projectUrl)}
         }
     }
 
-    Item {
+    ListView {
+
+        id: stationList
         anchors.fill: parent
-        anchors.topMargin: header.height
+        model: station_list
 
-        StationList {
-            id: stationList
-            model: station_list
+        delegate: ListItem {
+            width: stationList.width
+            Label {
+                text: model.title
+                font.pixelSize: 30
+                anchors.verticalCenter: parent.verticalCenter
+                x: platformStyle.paddingLarge
+            }
+            onClicked: {
+                departure_list.station = model.station;
+                pageStack.push(departurePage);
+            }
         }
-
-        //SectionScroller {
-        //    listView: stationList
-        //}
 
         ScrollDecorator {
             flickableItem: stationList
         }
+
     }
 
-    Header {
-        id: header
-        title: 'Perth Trains'
-    }
-
-    BusyIndicator {
-        platformStyle: BusyIndicatorStyle {size: 'large'}
-        anchors.centerIn: parent
-        running: station_list.fetching
-        visible: station_list.fetching
-    }
 }

@@ -14,29 +14,22 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see http://www.gnu.org/licenses/
 
-import QtQuick 1.1
-import com.nokia.meego 1.0
-import com.nokia.extras 1.0
+import QtQuick 2.0
+import Sailfish.Silica 1.0
 
+Item {
 
-ListView {
-    id: stationListView
     anchors.fill: parent
-    anchors.leftMargin: 16
-    delegate: ListDelegate {
-        onClicked: {
-            departurePage.title = model.station.name;
-            departure_list.station = model.station;
-            rootWindow.pageStack.push(departurePage);
-        }
 
-        Image {
-            source: 'image://theme/icon-m-common-drilldown-arrow' + (theme.inverted ? '-inverse' : '')
-            anchors.right: parent.right
-            anchors.rightMargin: 16
-            anchors.verticalCenter: parent.verticalCenter
-        }
+    Label {
+        text: departurePage.status == PageStatus.Active ? departurePage.station.name : 'Perth Trains'
+        anchors.centerIn: parent
+        width: parent.width - 2*Theme.paddingLarge
+        color: Theme.secondaryColor
+        horizontalAlignment: Text.AlignHCenter
+        wrapMode: Text.WordWrap
+        truncationMode: TruncationMode.Fade
+        font.pixelSize: Theme.fontSizeSmall
     }
-    section.property: 'title'
-    section.criteria: ViewSection.FirstCharacter
+
 }

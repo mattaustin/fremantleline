@@ -16,6 +16,28 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/
 
+from __future__ import absolute_import
+from fremantleline.ui.pyside import View
+from PySide.QtGui import QApplication
+from PySide.QtOpenGL import QGLWidget
+import sys
 
-PROJECT_URL = 'https://github.com/mattaustin/fremantleline'
-VERSION = '0.6'
+
+class HarmattanView(View):
+
+    platform = 'harmattan-qt4-pyside'
+
+    def __init__(self, *args, **kwargs):
+        super(HarmattanView, self).__init__(*args, **kwargs)
+        self.setViewport(QGLWidget())
+
+
+def main():
+    app = QApplication(sys.argv)
+    view = HarmattanView()
+    view.showFullScreen()
+    sys.exit(app.exec_())
+
+
+if __name__ == '__main__':
+    main()

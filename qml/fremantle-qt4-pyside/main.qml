@@ -14,36 +14,28 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see http://www.gnu.org/licenses/
 
-import QtQuick 1.1
-import com.nokia.meego 1.0
-import com.nokia.extras 1.0
+import QtQuick 1.0
+import org.hildon.components 1.0
 
 
-ListView {
+PageStackWindow {
 
-    id: departureListView
-    anchors.fill: parent
-    anchors.leftMargin: 16
-    anchors.rightMargin: 16
+    //windowTitle: departurePage.status == PageStatus.Active ? departure_list.station.name : 'Perth Trains'
+    windowTitle: 'Perth Trains'
+    busy: station_list.fetching || departure_list.fetching
 
-    delegate: ListDelegate {
+    initialPage: stationPage
 
-        id: listItem
+    StationListPage {
+        id: stationPage
+    }
 
-        Label {
-            id: status
-            text: model.status
-            font.family: listItem.subtitleFont
-            font.pixelSize: listItem.subtitleSize
-            color: listItem.pressed ? listItem.titleColorPressed : listItem.titleColor
-            horizontalAlignment: Text.AlignRight
-            anchors {
-                right: parent.right
-                top: parent.top
-                topMargin: 12
-            }
-        }
+    DepartureListPage {
+        id: departurePage
+    }
 
+    AboutDialog {
+        id: aboutDialog
     }
 
 }
