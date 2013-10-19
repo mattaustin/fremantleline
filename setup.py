@@ -38,7 +38,9 @@ setup(
     author_email='mail@mattaustin.me.uk',
     maintainer='Matt Austin',
     maintainer_email='mail@mattaustin.me.uk',
-    packages=['fremantleline', 'fremantleline.api', 'fremantleline.ui'],
+    packages=['fremantleline', 'fremantleline.api', 'fremantleline.ui',
+              'fremantleline.ui.fremantle', 'fremantleline.ui.fremantle.qt4',
+              'fremantleline.ui.harmattan', 'fremantleline.ui.harmattan.qt4'],
     scripts=['scripts/fremantleline'],
     requires=['lxml', 'PySide'],
     data_files=[

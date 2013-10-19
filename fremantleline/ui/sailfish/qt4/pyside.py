@@ -17,7 +17,7 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/
 
 from __future__ import absolute_import
-from fremantleline.ui.qml import View
+from fremantleline.ui.pyside import View
 from PySide.QtGui import QApplication
 import sys
 

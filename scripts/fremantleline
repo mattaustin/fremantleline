@@ -6,9 +6,9 @@ import sys
 sys.path.insert(0, '/opt/fremantleline/lib/python2.6/dist-packages')
 
 def main():
-    from fremantleline.ui import harmattan
+    from fremantleline.ui.harmattan.qt4 import pyside as ui
     os.chdir('/opt/fremantleline')
-    harmattan.qt4.pyside.main()
+    ui.main()
 
 if __name__ == "__main__":
     main()
