@@ -35,6 +35,10 @@ MainView {
             id: departurePage
         }
 
+        AboutDialog {
+            id: aboutDialog
+        }
+
     }
 
 }

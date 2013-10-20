@@ -23,13 +23,13 @@ import io.thp.pyotherside 1.0
 Page {
 
     id: departurePage
-    title: 'Departures'
+    property variant station
+    title: station ? station.name : 'Departures'
+    visible: false
 
     ActivityIndicator {
         anchors.centerIn: parent
         //running: python.loading
-        //size: BusyIndicatorSize.Large
-        //Behavior on opacity {}
     }
 
     ListView {
@@ -37,12 +37,15 @@ Page {
         id: departureList
         anchors.fill: parent
 
-        delegate: ListItem.Standard {
+        delegate: ListItem.Subtitled {
             width: departureList.width
-            //text: modelData.name
-            onClicked: {
-                //departurePage.station = modelData;
-                //pageStack.push(departurePage);
+            text: modelData.destination
+            subText: modelData.subtitle
+            icon: UbuntuShape {
+                color: '#16ac48'
+                radius: 'small'
+                implicitHeight: parent.height
+                implicitWidth: units.gu(1)
             }
         }
 
@@ -57,13 +60,48 @@ Page {
         ToolbarButton {
             action: Action {
                 text: 'Refresh'
-                //iconSource: Qt.resolvedUrl("icon.png")
-                onTriggered: print("success!")
+                //iconSource: Qt.resolvedUrl('icon.png')
+                onTriggered: {}
             }
         }
         locked: true
         opened: true
     }
+
+
+    Python {
+
+        id: python
+        property bool loading: true
+
+        Component.onCompleted: {
+            addImportPath(Qt.resolvedUrl('../..').substr('file://'.length));
+            addImportPath(Qt.resolvedUrl('../../fremantleline/ui/sailfish').substr('file://'.length));
+            //importModule('qt5', function() {});
+            getDepartures()
+        }
+
+        onError: {
+            console.log('python error: ' + traceback);
+        }
+
+        function getDepartures() {
+            departureList.model = null;
+            loading = true;
+            //call('qt5.pyotherside.get_departures', [departurePage.station.name, departurePage.station.url], function(result) {
+                var result = evaluate('[{"destination": "Destination {0}".format(x), "subtitle": "All stops"} for x in range(6)]');
+                departureList.model = result;
+                loading = false;
+            //});
+        }
+
+    }
+
+//    onStatusChanged: {
+//        if (status == PageStatus.Activating) {
+//            python.getDepartures();
+//        }
+//    }
 
 
 }

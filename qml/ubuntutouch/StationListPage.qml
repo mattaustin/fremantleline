@@ -25,12 +25,11 @@ Page {
     id: stationPage
     property string projectUrl: ''
     title: 'Perth Trains'
+    visible: false
 
     ActivityIndicator {
         anchors.centerIn: parent
         running: python.loading
-        //size: BusyIndicatorSize.Large
-        //Behavior on opacity {}
     }
 
     ListView {
@@ -41,9 +40,10 @@ Page {
         delegate: ListItem.Standard {
             width: stationList.width
             text: modelData.name
+            progression: true
             onClicked: {
-                //departurePage.station = modelData;
-                //pageStack.push(departurePage);
+                departurePage.station = modelData;
+                pageStack.push(departurePage);
             }
         }
 
@@ -58,14 +58,14 @@ Page {
         ToolbarButton {
             action: Action {
                 text: 'About'
-                //iconSource: Qt.resolvedUrl("icon.png")
-                onTriggered: {pageStack.push(departurePage);}
+                //iconSource: Qt.resolvedUrl('icon.png')
+                onTriggered: {pageStack.push(aboutDialog)}
             }
         }
         ToolbarButton {
             action: Action {
                 text: 'Project homepage'
-                //iconSource: Qt.resolvedUrl("icon.png")
+                //iconSource: Qt.resolvedUrl('icon.png')
                 onTriggered: {Qt.openUrlExternally(stationPage.projectUrl)}
             }
         }
@@ -74,19 +74,18 @@ Page {
     }
 
 
-
     Python {
 
         id: python
         property bool loading: true
 
         Component.onCompleted: {
-            addImportPath('/home/matt/fremantleline');
-            addImportPath('/home/matt/fremantleline/fremantleline');
-            addImportPath('/home/matt/fremantleline/fremantleline/ui/sailfish');
-            importModule('qt5', function() {
+            addImportPath(Qt.resolvedUrl('../..').substr('file://'.length));
+            addImportPath(Qt.resolvedUrl('../../fremantleline').substr('file://'.length));
+            addImportPath(Qt.resolvedUrl('../../fremantleline/ui/sailfish').substr('file://'.length));
+//            importModule('qt5', function() {
                 get_stations();
-            });
+//            });
             importModule('meta', function() {
                 stationPage.projectUrl = evaluate('meta.PROJECT_URL');
             });
@@ -97,11 +96,11 @@ Page {
         }
 
         function get_stations() {
-            call('qt5.pyotherside.get_stations', [], function(result) {
-                console.log(result);
+//            call('qt5.pyotherside.get_stations', [], function(result) {
+                var result = evaluate('[{"name": "Station {0}".format(x)} for x in range(10)]');
                 stationList.model = result;
                 loading = false;
-            });
+//            });
         }
 
     }
