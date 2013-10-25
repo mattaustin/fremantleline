@@ -58,14 +58,14 @@ Page {
         ToolbarButton {
             action: Action {
                 text: 'About'
-                //iconSource: Qt.resolvedUrl('icon.png')
+                iconSource: Qt.resolvedUrl('image://theme/info')
                 onTriggered: {pageStack.push(aboutDialog)}
             }
         }
         ToolbarButton {
             action: Action {
                 text: 'Project homepage'
-                //iconSource: Qt.resolvedUrl('icon.png')
+                iconSource: Qt.resolvedUrl('image://theme/external-link')
                 onTriggered: {Qt.openUrlExternally(stationPage.projectUrl)}
             }
         }
@@ -83,9 +83,9 @@ Page {
             addImportPath(Qt.resolvedUrl('../..').substr('file://'.length));
             addImportPath(Qt.resolvedUrl('../../fremantleline').substr('file://'.length));
             addImportPath(Qt.resolvedUrl('../../fremantleline/ui/sailfish').substr('file://'.length));
-//            importModule('qt5', function() {
+            importModule('qt5', function() {
                 get_stations();
-//            });
+            });
             importModule('meta', function() {
                 stationPage.projectUrl = evaluate('meta.PROJECT_URL');
             });
@@ -96,11 +96,10 @@ Page {
         }
 
         function get_stations() {
-//            call('qt5.pyotherside.get_stations', [], function(result) {
-                var result = evaluate('[{"name": "Station {0}".format(x)} for x in range(10)]');
+            call('qt5.pyotherside.get_stations', [], function(result) {
                 stationList.model = result;
                 loading = false;
-//            });
+            });
         }
 
     }

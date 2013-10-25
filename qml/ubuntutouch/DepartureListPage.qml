@@ -29,7 +29,7 @@ Page {
 
     ActivityIndicator {
         anchors.centerIn: parent
-        //running: python.loading
+        running: python.loading
     }
 
     ListView {
@@ -39,10 +39,15 @@ Page {
 
         delegate: ListItem.Subtitled {
             width: departureList.width
-            text: modelData.destination
+            text: modelData.time + ' to ' + modelData.destination
             subText: modelData.subtitle
             icon: UbuntuShape {
-                color: '#16ac48'
+                color: (modelData.line == 'Armadale/Thornlie Line' && '#fab20a' ||
+                        modelData.line == 'Fremantle Line' && '#155196' ||
+                        modelData.line == 'Joondalup Line' && '#97a509' ||
+                        modelData.line == 'Mandurah Line' && '#e55e16' ||
+                        modelData.line == 'Midland Line' && '#b00257' ||
+                        '#16ac48')
                 radius: 'small'
                 implicitHeight: parent.height
                 implicitWidth: units.gu(1)
@@ -56,17 +61,17 @@ Page {
     }
 
 
-    tools: ToolbarItems {
-        ToolbarButton {
-            action: Action {
-                text: 'Refresh'
-                //iconSource: Qt.resolvedUrl('icon.png')
-                onTriggered: {}
-            }
-        }
-        locked: true
-        opened: true
-    }
+//    tools: ToolbarItems {
+//        ToolbarButton {
+//            action: Action {
+//                text: 'Refresh'
+//                iconSource: Qt.resolvedUrl('image://theme/reload')
+//                onTriggered: {}
+//            }
+//        }
+//        locked: true
+//        opened: true
+//    }
 
 
     Python {
@@ -77,8 +82,7 @@ Page {
         Component.onCompleted: {
             addImportPath(Qt.resolvedUrl('../..').substr('file://'.length));
             addImportPath(Qt.resolvedUrl('../../fremantleline/ui/sailfish').substr('file://'.length));
-            //importModule('qt5', function() {});
-            getDepartures()
+            importModule('qt5', function() {});
         }
 
         onError: {
@@ -88,20 +92,16 @@ Page {
         function getDepartures() {
             departureList.model = null;
             loading = true;
-            //call('qt5.pyotherside.get_departures', [departurePage.station.name, departurePage.station.url], function(result) {
-                var result = evaluate('[{"destination": "Destination {0}".format(x), "subtitle": "All stops"} for x in range(6)]');
+            call('qt5.pyotherside.get_departures', [departurePage.station.name, departurePage.station.url], function(result) {
                 departureList.model = result;
                 loading = false;
-            //});
+            });
         }
 
     }
 
-//    onStatusChanged: {
-//        if (status == PageStatus.Activating) {
-//            python.getDepartures();
-//        }
-//    }
-
+    onStationChanged: {
+        python.getDepartures();
+    }
 
 }
