@@ -131,17 +131,15 @@ Page {
         wrapMode: Text.WordWrap
     }
 
-//    tools: ToolbarItems {
-//        ToolbarButton {
-//            action: Action {
-//                text: 'Refresh'
-//                iconSource: Qt.resolvedUrl('image://theme/reload')
-//                onTriggered: {}
-//            }
-//        }
-//        locked: true
-//        opened: true
-//    }
+    tools: ToolbarItems {
+        ToolbarButton {
+            action: Action {
+                text: 'Refresh'
+                iconSource: Qt.resolvedUrl('image://theme/reload')
+                onTriggered: {python.getDepartures();}
+            }
+        }
+    }
 
 
     Python {

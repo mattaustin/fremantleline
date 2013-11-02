@@ -62,7 +62,7 @@ Page {
             actions: ActionList {
                 Action {
                     text: 'About'
-                    onTriggered: {pageStack.push(aboutDialog)}
+                    onTriggered: {PopupUtils.open(aboutDialog, null)}
                 }
                 Action {
                     text: 'Project homepage'
@@ -75,13 +75,13 @@ Page {
 
 
     tools: ToolbarItems {
+        id: thingFoo
         ToolbarButton {
             id: actionsButton
+            iconSource: Qt.resolvedUrl('image://theme/navigation-menu')
             text: 'Menu'
             onTriggered: PopupUtils.open(actionSelectionPopover, actionsButton)
         }
-        locked: true
-        opened: true
     }
 
 
