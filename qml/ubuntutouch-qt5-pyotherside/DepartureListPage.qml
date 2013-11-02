@@ -37,10 +37,10 @@ Page {
         id: departureList
         anchors.fill: parent
 
-        delegate: ListItem.Subtitled {
-            width: departureList.width
-            text: modelData.time + ' to ' + modelData.destination
-            subText: modelData.subtitle
+        delegate: ListItem.Base {
+
+            height: Math.max(middleVisuals.height, units.gu(6))
+
             icon: UbuntuShape {
                 color: (modelData.line == 'Armadale/Thornlie Line' && '#fab20a' ||
                         modelData.line == 'Fremantle Line' && '#155196' ||
@@ -48,10 +48,65 @@ Page {
                         modelData.line == 'Mandurah Line' && '#e55e16' ||
                         modelData.line == 'Midland Line' && '#b00257' ||
                         '#16ac48')
-                radius: 'small'
                 implicitHeight: parent.height
                 implicitWidth: units.gu(1)
+                radius: 'large'
             }
+
+            Item  {
+
+                id: middleVisuals
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                    verticalCenter: parent.verticalCenter
+                }
+                height: childrenRect.height + title.anchors.topMargin + subtitle.anchors.bottomMargin
+
+                Label {
+                    id: title
+                    anchors {
+                        top: parent.top
+                        left: parent.left
+                        right: parent.right
+                    }
+                    enabled: modelData.status != 'CANCELLED'
+                    font.strikeout: !enabled
+                    text: modelData.time + ' to ' + modelData.destination
+                    opacity: enabled ? 1.0 : 0.5
+                }
+
+                Label {
+                    id: subtitle
+                    anchors {
+                        left: parent.left
+                        right: parent.right
+                        top: title.bottom
+                    }
+                    color: Theme.palette.normal.backgroundText
+                    enabled: modelData.status != 'CANCELLED'
+                    font.strikeout: !enabled
+                    fontSize: 'small'
+                    maximumLineCount: 5
+                    opacity: enabled ? 1.0 : 0.5
+                    text: modelData.subtitle
+                    wrapMode: Text.Wrap
+                }
+
+                Label {
+                    id: status
+                    anchors {
+                        right: parent.right
+                        bottom: title.bottom
+                    }
+                    color: Theme.palette.normal.overlayText
+                    font.bold: modelData.status == 'CANCELLED'
+                    fontSize: 'small'
+                    text: modelData.status
+                }
+
+            }
+
         }
 
         Scrollbar {
@@ -60,6 +115,21 @@ Page {
 
     }
 
+    Label {
+        anchors {
+            left: parent.left
+            right: parent.right
+            leftMargin: units.gu(4)
+            rightMargin: units.gu(4)
+            verticalCenter: parent.verticalCenter
+        }
+        color: Theme.palette.normal.backgroundText
+        fontSize: 'large'
+        horizontalAlignment: Text.AlignHCenter
+        text: 'No departing services were found for this station.'
+        visible: (!python.loading && departureList.count < 1)
+        wrapMode: Text.WordWrap
+    }
 
 //    tools: ToolbarItems {
 //        ToolbarButton {

@@ -17,6 +17,7 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
+import Ubuntu.Components.Popups 0.1
 import io.thp.pyotherside 1.0
 
 
@@ -54,20 +55,30 @@ Page {
     }
 
 
-    tools: ToolbarItems {
-        ToolbarButton {
-            action: Action {
-                text: 'About'
-                iconSource: Qt.resolvedUrl('image://theme/info')
-                onTriggered: {pageStack.push(aboutDialog)}
+    Component {
+        id: actionSelectionPopover
+
+        ActionSelectionPopover {
+            actions: ActionList {
+                Action {
+                    text: 'About'
+                    onTriggered: {pageStack.push(aboutDialog)}
+                }
+                Action {
+                    text: 'Project homepage'
+                    onTriggered: {Qt.openUrlExternally(stationPage.projectUrl)}
+                }
             }
         }
+
+    }
+
+
+    tools: ToolbarItems {
         ToolbarButton {
-            action: Action {
-                text: 'Project homepage'
-                iconSource: Qt.resolvedUrl('image://theme/external-link')
-                onTriggered: {Qt.openUrlExternally(stationPage.projectUrl)}
-            }
+            id: actionsButton
+            text: 'Menu'
+            onTriggered: PopupUtils.open(actionSelectionPopover, actionsButton)
         }
         locked: true
         opened: true

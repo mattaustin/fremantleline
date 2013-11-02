@@ -25,7 +25,10 @@ MainView {
 
     PageStack {
 
-        Component.onCompleted: push(stationPage)
+        Component.onCompleted: {
+            Theme.name = "Ubuntu.Components.Themes.SuruGradient"
+            push(stationPage)
+        }
 
         StationListPage {
             id: stationPage

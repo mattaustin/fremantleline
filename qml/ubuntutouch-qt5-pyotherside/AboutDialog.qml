@@ -24,7 +24,6 @@ Dialog {
 
     id: dialog
     property string version: ''
-//    forwardNavigation: false
 
     title: 'Fremantle Line v' + dialog.version
     text: 'Copyright (c) 2009-2013 Matt Austin.\n\nFremantle Line (\"Perth Trains\") is free sofware licenced under the GNU Public License version 3.\n\nData is provided on an \"as is\" and \"as available\" basis. No representations or warranties of any kind, express or implied are made. Data is available free of charge from www.transperth.wa.gov.au. This program accesses data using your internet connection. Your operator may charge you for data use.'
