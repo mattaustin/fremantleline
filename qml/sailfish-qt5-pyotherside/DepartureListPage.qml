@@ -55,7 +55,7 @@ Page {
         delegate: Item {
 
             width: departureList.width
-            implicitHeight: Theme.itemSizeSmall
+            implicitHeight: Theme.itemSizeMedium
 
             Item {
 
@@ -64,8 +64,8 @@ Page {
                 height: childrenRect.height
 
                 GlassItem {
-                    height: parent.height
-                    width: Theme.paddingMedium
+                    height: parent.height + Theme.paddingSmall
+                    width: Theme.paddingLarge
                     color: (modelData.line == 'Armadale/Thornlie Line' && '#fab20a' ||
                             modelData.line == 'Fremantle Line' && '#155196' ||
                             modelData.line == 'Joondalup Line' && '#97a509' ||
@@ -75,20 +75,22 @@ Page {
                     ratio: 0.0
                     cache: false
                     anchors {
+                        top: parent.top
                         left: parent.left
-                        leftMargin: (-Theme.paddingLarge/2) + (-Theme.paddingMedium/2)
+                        leftMargin: (-Theme.paddingLarge/2) + (-Theme.paddingLarge/2)
                     }
                 }
 
                 Label {
                     id: title
                     text: modelData.time + ' to ' + modelData.destination
-                    font.pixelSize: Theme.fontSizeMedium
+                    font.pixelSize: Theme.fontSizeLarge
                     font.strikeout: (modelData.status == 'CANCELLED')
                     truncationMode: TruncationMode.Fade
                     anchors {
                         left: parent.left
-                        right: status.right
+                        right: status.left
+                        rightMargin: Theme.paddingLarge
                     }
                     opacity: modelData.status == 'CANCELLED' && 0.75 || 1
                 }
@@ -96,7 +98,8 @@ Page {
                 Label {
                     id: status
                     text: modelData.status
-                    font.pixelSize: Theme.fontSizeExtraSmall
+                    color: Theme.secondaryColor
+                    font.pixelSize: Theme.fontSizeSmall
                     font.bold: (modelData.status == 'CANCELLED')
                     horizontalAlignment: Text.AlignRight
                     anchors {
@@ -108,15 +111,15 @@ Page {
                 Label {
                     id: subtitle
                     text: modelData.subtitle
-                    font.pixelSize: Theme.fontSizeExtraSmall * 3/4
+                    color: Theme.secondaryColor
+                    font.pixelSize: Theme.fontSizeExtraSmall
                     font.strikeout: (modelData.status == 'CANCELLED')
-                    font.italic: true
                     truncationMode: TruncationMode.Fade
                     anchors {
                         top: title.bottom
-                        topMargin: 4
                         left: parent.left
                         right: parent.right
+                        baseline: parent.baseline
                     }
                     opacity: modelData.status == 'CANCELLED' && 0.75 || 1
                 }
