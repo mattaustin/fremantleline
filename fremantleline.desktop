@@ -4,5 +4,5 @@ Version=1.0
 Type=Application
 Name=Perth Trains
 Exec=invoker --type=e --single-instance --splash=/opt/fremantleline/splash/harmattan.png /opt/fremantleline/bin/fremantleline
-Icon=/opt/fremantleline/fremantleline.png
+Icon=/opt/fremantleline/icons/harmattan.png
 Categories=Network;
