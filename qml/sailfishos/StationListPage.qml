@@ -82,8 +82,8 @@ Page {
         Component.onCompleted: {
             addImportPath(Qt.resolvedUrl('../..').substr('file://'.length));
             addImportPath(Qt.resolvedUrl('../../fremantleline').substr('file://'.length));
-            addImportPath(Qt.resolvedUrl('../../fremantleline/ui/sailfish').substr('file://'.length));
-            importModule('qt5', function() {
+            addImportPath(Qt.resolvedUrl('../../fremantleline/ui').substr('file://'.length));
+            importModule('ui', function() {
                 get_stations();
             });
             importModule('meta', function() {
@@ -96,7 +96,7 @@ Page {
         }
 
         function get_stations() {
-            call('qt5.pyotherside.get_stations', [], function(result) {
+            call('ui.pyotherside.get_stations', [], function(result) {
                 stationList.model = result;
                 loading = false;
             });
