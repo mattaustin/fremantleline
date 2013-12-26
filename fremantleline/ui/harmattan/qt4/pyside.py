@@ -25,7 +25,7 @@ import sys
 
 class HarmattanView(View):
 
-    platform = 'harmattan-qt4-pyside'
+    platform = 'harmattan'
 
     def __init__(self, *args, **kwargs):
         super(HarmattanView, self).__init__(*args, **kwargs)
