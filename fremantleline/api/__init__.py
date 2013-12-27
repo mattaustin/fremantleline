@@ -24,6 +24,7 @@ from fremantleline.compatibility import UnicodeMixin
 try:
     import lxml.html
 except ImportError:
+    import fremantleline.lib
     import html5lib
     lxml = None
 
