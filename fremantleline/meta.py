@@ -17,5 +17,5 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/
 
 
-PROJECT_URL = 'https://github.com/mattaustin/fremantleline'
-VERSION = '0.6'
+PROJECT_URL = 'http://www.perthtrains.net/'
+VERSION = '0.7'

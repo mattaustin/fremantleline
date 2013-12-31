@@ -17,4 +17,8 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/
 
 from __future__ import absolute_import
-from . import pyotherside
+import sys
+import os
+
+# Hack for using bundled libraries, if not available on the system
+sys.path.append(os.path.dirname(__file__))

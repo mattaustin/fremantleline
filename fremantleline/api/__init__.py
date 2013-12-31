@@ -20,7 +20,13 @@ from __future__ import absolute_import
 from datetime import datetime
 from fremantleline.api.useragent import URLOpener
 from fremantleline.compatibility import UnicodeMixin
-import lxml.html
+
+try:
+    import lxml.html
+except ImportError:
+    import fremantleline.lib
+    import html5lib
+    lxml = None
 
 try:
     from urllib.parse import urlencode
@@ -29,9 +35,7 @@ except ImportError:
 
 
 class Operator(UnicodeMixin, object):
-    """Operating company.
-
-    """
+    """Operating company."""
 
     name = 'Transperth Trains'
     stations = None
@@ -46,15 +50,20 @@ class Operator(UnicodeMixin, object):
     def _get_html(self):
         url_opener = URLOpener()
         response = url_opener.open(self.url)
-        html = lxml.html.parse(response).getroot()
+        if lxml:
+            html = lxml.html.parse(response).getroot()
+        else:
+            html = html5lib.parse(response)
         return html
 
     def _parse_stations(self, html):
-        options = html.xpath('.//*[@id="EntryForm"]//select/option')
+        ns = html.get('xmlns', '')
+        options = html.findall(
+            './/*[@id="EntryForm"]//{%(ns)s}select/{%(ns)s}option' %({'ns':ns}))
         stations = []
         for option in options:
-            data = urlencode({'stationname': option.attrib['value']})
-            name = '%s' %(option.attrib['value']).rsplit(' Stn', 1)[0]
+            data = urlencode({'stationname': option.get('value')})
+            name = '%s' %(option.get('value')).rsplit(' Stn', 1)[0]
             url = '%s?%s' %(self.url, data)
             stations += [Station(name, url)]
         return stations
@@ -68,9 +77,7 @@ class Operator(UnicodeMixin, object):
 
 
 class Station(UnicodeMixin, object):
-    """Train station.
-
-    """
+    """Train station."""
 
     departures = None
 
@@ -87,12 +94,17 @@ class Station(UnicodeMixin, object):
     def _get_html(self):
         url_opener = URLOpener()
         response = url_opener.open(self.url)
-        html = lxml.html.parse(response).getroot()
+        if lxml:
+            html = lxml.html.parse(response).getroot()
+        else:
+            html = html5lib.parse(response)
         return html
 
     def _parse_departures(self, html):
-        rows = html.xpath(
-            '//*[@id="dnn_ctr1608_ModuleContent"]//table//table/tr')[1:-1]
+        ns = html.get('xmlns', '')
+        rows = html.findall(
+            './/*[@id="dnn_ctr1608_ModuleContent"]//{%(ns)s}table'
+            '//{%(ns)s}table//{%(ns)s}tr' %({'ns':ns}))[1:-1]
         return [Departure(self, row) for row in rows]
 
     def get_departures(self):
@@ -104,38 +116,40 @@ class Station(UnicodeMixin, object):
 
 
 class Departure(object):
-    """Departure information.
-
-    """
+    """Departure information.]"""
 
     def __init__(self, station, row_data):
         self.station = station
-        self._cols = row_data.xpath('td')
+        self._cols = row_data
 
     def __repr__(self):
         return '<%(class_name)s: %(time)s %(destination)s %(status)s>' %({
             'class_name': self.__class__.__name__, 'time': self.time,
             'destination': self.destination, 'status': self.status})
 
+    def _get_text_content(self, element):
+        return ''.join(element.itertext()).strip()
+
     @property
     def description(self):
-        return self._cols[3].text_content().strip()
+        return self._get_text_content(self._cols[3])
 
     @property
     def destination(self):
-        return self._cols[2].text_content().strip().split('To ', 1)[-1]
+        content = self._get_text_content(self._cols[2])
+        return content.split('To ', 1)[-1]
 
     @property
     def line(self):
-        return self._cols[0].xpath('img')[0].attrib['title']
+        return self._cols[0][0].get('title')
 
     @property
     def status(self):
-        return self._cols[5].text_content().strip()
+        return self._get_text_content(self._cols[5])
 
     @property
     def time(self):
-        return datetime.strptime(self._cols[1].text_content().strip(),
-                                 '%H:%M').time()
+        content = self._get_text_content(self._cols[1])
+        return datetime.strptime(content, '%H:%M').time()
 
 transperth = Operator()
