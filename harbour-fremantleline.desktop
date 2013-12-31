@@ -1,0 +1,8 @@
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Type=Application
+Name=Perth Trains
+Icon=harbour-fremantleline
+Exec=sailfish-qml harbour-fremantleline
+X-Nemo-Application-Type=silica-qt5
