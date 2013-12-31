@@ -91,9 +91,9 @@ Page {
         property bool loading: true
 
         Component.onCompleted: {
-            addImportPath(Qt.resolvedUrl('../..').substr('file://'.length));
-            addImportPath(Qt.resolvedUrl('../../fremantleline').substr('file://'.length));
-            addImportPath(Qt.resolvedUrl('../../fremantleline/ui').substr('file://'.length));
+            addImportPath(Qt.resolvedUrl('..').substr('file://'.length));
+            addImportPath(Qt.resolvedUrl('../fremantleline').substr('file://'.length));
+            addImportPath(Qt.resolvedUrl('../fremantleline/ui').substr('file://'.length));
             importModule('ui', function() {
                 get_stations();
             });

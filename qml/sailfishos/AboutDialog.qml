@@ -66,8 +66,8 @@ Page {
 
     Python {
         Component.onCompleted: {
-            addImportPath(Qt.resolvedUrl('../..').substr('file://'.length));
-            addImportPath(Qt.resolvedUrl('../../fremantleline').substr('file://'.length));
+            addImportPath(Qt.resolvedUrl('..').substr('file://'.length));
+            addImportPath(Qt.resolvedUrl('../fremantleline').substr('file://'.length));
             importModule('meta', function() {
                 dialog.version = evaluate('meta.VERSION');
             });
