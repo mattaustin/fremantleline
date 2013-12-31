@@ -1,10 +1,10 @@
 Name: harbour-fremantleline
 Version: 0.7
-Release: 0.1
+Release: 1
 Summary: Perth trains live departure information
 URL: http://www.perthtrains.net/
 License: GPLv3
-Source: https://github.com/mattaustin/fremantleline/archive/development.tar.gz
+Source: https://github.com/mattaustin/fremantleline/archive/0.7.tar.gz
 BuildArch: noarch
 Requires: libsailfishapp-launcher
 Requires: python3-base
@@ -19,7 +19,7 @@ number of cars.
 
 
 %prep
-%setup -q -n fremantleline-development
+%setup -q -n fremantleline-%{version}
 
 
 %install
