@@ -1,5 +1,5 @@
 // Fremantle Line: Transperth trains live departure information
-// Copyright (c) 2009-2013 Matt Austin
+// Copyright (c) 2009-2014 Matt Austin
 //
 // Fremantle Line is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@ Page {
 
     id: departurePage
     property variant station
+    property alias model: departureList.model
 
     BusyIndicator {
         anchors.centerIn: parent
@@ -42,8 +43,17 @@ Page {
 
         PullDownMenu {
             MenuItem {
+                text: (station ? station.isStarred : false) ? 'Unstar' : 'Star'
+                onClicked: {
+                    stations.model.setProperty(station.index, 'isStarred', !station.isStarred);
+                    stations.saveStation(station.url, station.name, station.isStarred);
+                    pageStack.pop();
+                    stations.loadStations();
+                }
+            }
+            MenuItem {
                 text: 'Refresh'
-                onClicked: {python.getDepartures();}
+                onClicked: {refresh();}
             }
         }
 
@@ -63,21 +73,22 @@ Page {
                 width: parent.width - 2*Theme.paddingLarge
                 height: childrenRect.height
 
-                GlassItem {
-                    height: parent.height + Theme.paddingSmall
-                    width: Theme.paddingLarge
+                Rectangle {
+                    width: Theme.paddingSmall
+                    radius: Math.round(height/3)
                     color: (modelData.line == 'Armadale/Thornlie Line' && '#fab20a' ||
                             modelData.line == 'Fremantle Line' && '#155196' ||
                             modelData.line == 'Joondalup Line' && '#97a509' ||
                             modelData.line == 'Mandurah Line' && '#e55e16' ||
                             modelData.line == 'Midland Line' && '#b00257' ||
                             '#16ac48')
-                    ratio: 0.0
-                    cache: false
                     anchors {
                         top: parent.top
+                        bottom: parent.bottom
                         left: parent.left
-                        leftMargin: (-Theme.paddingLarge/2) + (-Theme.paddingLarge/2)
+                        topMargin: Theme.paddingSmall/2
+                        bottomMargin: Theme.paddingSmall/2
+                        leftMargin: -width/2
                     }
                 }
 
@@ -90,6 +101,7 @@ Page {
                     anchors {
                         left: parent.left
                         right: status.left
+                        leftMargin: Theme.paddingLarge
                         rightMargin: Theme.paddingLarge
                     }
                     opacity: modelData.status == 'CANCELLED' && 0.75 || 1
@@ -119,7 +131,7 @@ Page {
                         top: title.bottom
                         left: parent.left
                         right: parent.right
-                        baseline: parent.baseline
+                        leftMargin: Theme.paddingLarge
                     }
                     opacity: modelData.status == 'CANCELLED' && 0.75 || 1
                 }
@@ -130,6 +142,11 @@ Page {
 
         VerticalScrollDecorator {}
 
+    }
+
+
+    function refresh() {
+        python.getDepartures();
     }
 
 
@@ -152,10 +169,12 @@ Page {
         function getDepartures() {
             departureList.model = null;
             loading = true;
-            call('ui.pyotherside.get_departures', [departurePage.station.name, departurePage.station.url], function(result) {
-                departureList.model = result;
-                loading = false;
-            });
+            if (departurePage.station) {
+                call('ui.pyotherside.get_departures', [departurePage.station.name, departurePage.station.url], function(result) {
+                    departureList.model = result;
+                    loading = false;
+                });
+            }
         }
 
     }

@@ -1,5 +1,5 @@
 // Fremantle Line: Transperth trains live departure information
-// Copyright (c) 2009-2013 Matt Austin
+// Copyright (c) 2009-2014 Matt Austin
 //
 // Fremantle Line is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -134,13 +134,24 @@ Page {
     tools: ToolbarItems {
         ToolbarButton {
             action: Action {
+                text: (station ? station.isStarred : false) ? 'Unstar' : 'Star'
+                iconSource: (station ? station.isStarred : false) ? Qt.resolvedUrl('image://theme/favorite-selected') : Qt.resolvedUrl('image://theme/favorite-unselected')
+                onTriggered: {
+                    stations.model.setProperty(station.index, 'isStarred', !station.isStarred);
+                    stations.saveStation(station.url, station.name, station.isStarred);
+                    pageStack.pop();
+                    stations.loadStations();
+                }
+            }
+        }
+        ToolbarButton {
+            action: Action {
                 text: 'Refresh'
                 iconSource: Qt.resolvedUrl('image://theme/reload')
                 onTriggered: {python.getDepartures();}
             }
         }
     }
-
 
     Python {
 
@@ -161,10 +172,12 @@ Page {
         function getDepartures() {
             departureList.model = null;
             loading = true;
-            call('ui.pyotherside.get_departures', [departurePage.station.name, departurePage.station.url], function(result) {
-                departureList.model = result;
-                loading = false;
-            });
+            if (departurePage.station) {
+                call('ui.pyotherside.get_departures', [departurePage.station.name, departurePage.station.url], function(result) {
+                    departureList.model = result;
+                    loading = false;
+                });
+            }
         }
 
     }
