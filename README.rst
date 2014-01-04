@@ -1,18 +1,10 @@
 Fremantle Line
 ==============
 
-A MeeGo 1.2 Harmattan application to show live departure information for Perth
-metropolitan train services.
+A Sailfish OS and MeeGo 1.2 Harmattan application to show live departure
+information for Perth metropolitan train services.
 
-Currently being ported to Sailfish OS, Fremantle, and Ubuntu Touch.
-
-
-Harmattan
----------
-
-.. image:: docs/images/harmattan-perth.png
-
-.. image:: docs/images/harmattan-claisebrook.png
+Currently being ported to Fremantle, and Ubuntu Touch.
 
 
 Sailfish OS
@@ -21,6 +13,14 @@ Sailfish OS
 .. image:: docs/images/sailfish-perth.png
 
 .. image:: docs/images/sailfish-claisebrook.png
+
+
+Harmattan
+---------
+
+.. image:: docs/images/harmattan-perth.png
+
+.. image:: docs/images/harmattan-claisebrook.png
 
 
 Fremantle
