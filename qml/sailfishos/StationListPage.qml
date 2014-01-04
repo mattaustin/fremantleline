@@ -31,10 +31,6 @@ Page {
         Behavior on opacity {}
     }
 
-    Stations {
-        id: stations
-    }
-
     SilicaListView {
 
         id: stationList
@@ -59,7 +55,7 @@ Page {
                 onClicked: {Qt.openUrlExternally(stationPage.projectUrl)}
             }
             MenuItem {
-                text: 'Refresh stations'
+                text: 'Reload station data'
                 onClicked: {
                     stations.clearDatabase();
                     stations.loadStations();
@@ -71,6 +67,7 @@ Page {
             width: stationList.width
             Label {
                 text: model.name
+                font.bold: model.isStarred
                 color: parent.down ? Theme.highlightColor : Theme.primaryColor
                 anchors.verticalCenter: parent.verticalCenter
                 x: Theme.paddingLarge

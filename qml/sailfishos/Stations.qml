@@ -53,26 +53,26 @@ Item {
         model.clear();
         var db = getDatabase();
         db.transaction(function(tx) {
-            var rs = tx.executeSql('SELECT * FROM stations ORDER BY name;');
+            var rs = tx.executeSql('SELECT * FROM stations ORDER BY is_starred DESC, name ASC;');
             if (rs.rows.length == 0) {
                 python.saveStations();
             } else {
-                for(var i=0; i < rs.rows.length; ++i) {
+                for (var i=0; i < rs.rows.length; ++i) {
                     var row = rs.rows.item(i);
-                    model.append({'url': row.url, 'name': row.name})
+                    model.append({'url': row.url, 'name': row.name, 'isStarred': row.is_starred ? true : false})
                 }
                 loading = false;
             }
         });
     }
 
-    function saveStation(url, name, is_starred) {
-        is_starred = typeof is_starred !== 'undefined' ? is_starred : 0;
+    function saveStation(url, name, isStarred) {
+        isStarred = typeof isStarred !== 'undefined' ? isStarred : false;
+        var is_starred = isStarred ? 1 : 0 // Database uses integer values
         var db = getDatabase();
         db.transaction(function(tx) {
             tx.executeSql('INSERT OR REPLACE INTO stations VALUES(?, ?, ?)', [url, name, is_starred]);
         });
-        model.append({'url': url, 'name': name});
     }
 
     Python {
@@ -95,6 +95,7 @@ Item {
                     result.forEach(function(item) {
                         saveStation(item['url'], item['name']);
                     });
+                    model.append({'url': item['url'], 'name': ['name'], 'isStarred': false});
                     loading = false;
                 });
             });

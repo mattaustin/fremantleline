@@ -44,4 +44,8 @@ MainView {
 
     }
 
+    Stations {
+        id: stations
+    }
+
 }

@@ -42,6 +42,15 @@ Page {
 
         PullDownMenu {
             MenuItem {
+                text: (station ? station.isStarred : false) ? 'Unstar' : 'Star'
+                onClicked: {
+                    stations.model.setProperty(station.index, 'isStarred', !station.isStarred);
+                    stations.saveStation(station.url, station.name, station.isStarred);
+                    pageStack.pop();
+                    stations.loadStations();
+                }
+            }
+            MenuItem {
                 text: 'Refresh'
                 onClicked: {python.getDepartures();}
             }
@@ -154,10 +163,12 @@ Page {
         function getDepartures() {
             departureList.model = null;
             loading = true;
-            call('ui.pyotherside.get_departures', [departurePage.station.name, departurePage.station.url], function(result) {
-                departureList.model = result;
-                loading = false;
-            });
+            if (departurePage.station) {
+                call('ui.pyotherside.get_departures', [departurePage.station.name, departurePage.station.url], function(result) {
+                    departureList.model = result;
+                    loading = false;
+                });
+            }
         }
 
     }

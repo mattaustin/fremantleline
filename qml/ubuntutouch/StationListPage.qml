@@ -33,10 +33,6 @@ Page {
         running: stations.loading
     }
 
-    Stations {
-        id: stations
-    }
-
     ListView {
 
         id: stationList
@@ -74,7 +70,7 @@ Page {
                     onTriggered: {Qt.openUrlExternally(stationPage.projectUrl)}
                 }
                 Action {
-                    text: 'Refresh stations'
+                    text: 'Reload station data'
                     onTriggered: {
                         stations.clearDatabase();
                         stations.loadStations();

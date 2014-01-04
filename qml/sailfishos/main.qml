@@ -40,4 +40,8 @@ ApplicationWindow {
         CoverPage {}
     }
 
+    Stations {
+        id: stations
+    }
+
 }
