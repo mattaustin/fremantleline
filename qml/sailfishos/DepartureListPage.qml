@@ -23,6 +23,7 @@ Page {
 
     id: departurePage
     property variant station
+    property alias model: departureList.model
 
     BusyIndicator {
         anchors.centerIn: parent
@@ -52,7 +53,7 @@ Page {
             }
             MenuItem {
                 text: 'Refresh'
-                onClicked: {python.getDepartures();}
+                onClicked: {refresh();}
             }
         }
 
@@ -141,6 +142,11 @@ Page {
 
         VerticalScrollDecorator {}
 
+    }
+
+
+    function refresh() {
+        python.getDepartures();
     }
 
 
