@@ -26,15 +26,20 @@ Page {
 
     BusyIndicator {
         anchors.centerIn: parent
-        running: python.loading
+        running: stations.loading
         size: BusyIndicatorSize.Large
         Behavior on opacity {}
+    }
+
+    Stations {
+        id: stations
     }
 
     SilicaListView {
 
         id: stationList
         anchors.fill: parent
+        model: stations.model
 
         header: PageHeader {
             title: 'Perth Trains'
@@ -53,18 +58,25 @@ Page {
                 text: 'Project homepage'
                 onClicked: {Qt.openUrlExternally(stationPage.projectUrl)}
             }
+            MenuItem {
+                text: 'Refresh stations'
+                onClicked: {
+                    stations.clearDatabase();
+                    stations.loadStations();
+                }
+            }
         }
 
         delegate: BackgroundItem {
             width: stationList.width
             Label {
-                text: modelData.name
+                text: model.name
                 color: parent.down ? Theme.highlightColor : Theme.primaryColor
                 anchors.verticalCenter: parent.verticalCenter
                 x: Theme.paddingLarge
             }
             onClicked: {
-                departurePage.station = modelData;
+                departurePage.station = model;
                 pageStack.push(departurePage);
             }
         }
@@ -77,15 +89,10 @@ Page {
     Python {
 
         id: python
-        property bool loading: true
 
         Component.onCompleted: {
             addImportPath(Qt.resolvedUrl('..').substr('file://'.length));
             addImportPath(Qt.resolvedUrl('../fremantleline').substr('file://'.length));
-            addImportPath(Qt.resolvedUrl('../fremantleline/ui').substr('file://'.length));
-            importModule('ui', function() {
-                get_stations();
-            });
             importModule('meta', function() {
                 stationPage.projectUrl = evaluate('meta.PROJECT_URL');
             });
@@ -93,13 +100,6 @@ Page {
 
         onError: {
             console.log('python error: ' + traceback);
-        }
-
-        function get_stations() {
-            call('ui.pyotherside.get_stations', [], function(result) {
-                stationList.model = result;
-                loading = false;
-            });
         }
 
     }

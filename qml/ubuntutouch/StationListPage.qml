@@ -30,20 +30,25 @@ Page {
 
     ActivityIndicator {
         anchors.centerIn: parent
-        running: python.loading
+        running: stations.loading
+    }
+
+    Stations {
+        id: stations
     }
 
     ListView {
 
         id: stationList
         anchors.fill: parent
+        model: stations.model
 
         delegate: ListItem.Standard {
             width: stationList.width
-            text: modelData.name
+            text: model.name
             progression: true
             onClicked: {
-                departurePage.station = modelData;
+                departurePage.station = model;
                 pageStack.push(departurePage);
             }
         }
@@ -68,6 +73,13 @@ Page {
                     text: 'Project homepage'
                     onTriggered: {Qt.openUrlExternally(stationPage.projectUrl)}
                 }
+                Action {
+                    text: 'Refresh stations'
+                    onTriggered: {
+                        stations.clearDatabase();
+                        stations.loadStations();
+                    }
+                }
             }
         }
 
@@ -75,7 +87,6 @@ Page {
 
 
     tools: ToolbarItems {
-        id: thingFoo
         ToolbarButton {
             id: actionsButton
             iconSource: Qt.resolvedUrl('image://theme/navigation-menu')
@@ -88,15 +99,10 @@ Page {
     Python {
 
         id: python
-        property bool loading: true
 
         Component.onCompleted: {
             addImportPath(Qt.resolvedUrl('..').substr('file://'.length));
             addImportPath(Qt.resolvedUrl('../fremantleline').substr('file://'.length));
-            addImportPath(Qt.resolvedUrl('../fremantleline/ui').substr('file://'.length));
-            importModule('ui', function() {
-                get_stations();
-            });
             importModule('meta', function() {
                 stationPage.projectUrl = evaluate('meta.PROJECT_URL');
             });
@@ -104,13 +110,6 @@ Page {
 
         onError: {
             console.log('python error: ' + traceback);
-        }
-
-        function get_stations() {
-            call('ui.pyotherside.get_stations', [], function(result) {
-                stationList.model = result;
-                loading = false;
-            });
         }
 
     }
