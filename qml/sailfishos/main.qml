@@ -37,8 +37,4 @@ ApplicationWindow {
         id: aboutDialog
     }
 
-    Stations {
-        id: stations
-    }
-
 }
