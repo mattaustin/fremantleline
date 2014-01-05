@@ -17,15 +17,18 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/
 
 from __future__ import absolute_import
-from datetime import datetime
+from datetime import time
 from fremantleline.api.useragent import URLOpener
 from fremantleline.compatibility import UnicodeMixin
+import re
 
 try:
+    import lxml.etree as ElementTree
     import lxml.html
 except ImportError:
     import fremantleline.lib
     import html5lib
+    from xml.etree import ElementTree
     lxml = None
 
 try:
@@ -74,5 +77,134 @@ class Operator(UnicodeMixin, object):
             html = self._get_html()
             self.stations = self._parse_stations(html)
         return self.stations
+
+
+class Station(UnicodeMixin, object):
+    """Train station."""
+
+    _departures = None
+
+    def __init__(self, name, url):
+        self.name = name
+        self.url = url  # Legacy url from website scraping, no longer used
+
+    def __repr__(self):
+        return '<%s: %s>' %(self.__class__.__name__, self)
+
+    def __unicode__(self):
+        return self.name
+
+    def _get_departure_data(self):
+        base_url = 'http://livetimes.transperth.wa.gov.au/LiveTimes.asmx/GetSercoTimesForStation'
+        params = {'stationname': '%s Stn' %(self.name)}
+        url = '%s?%s' %(base_url, urlencode(params))
+        url_opener = URLOpener()
+        response = url_opener.open(url)
+        tree = ElementTree.parse(response)
+        return tree.getroot()
+
+    def _parse_departures(self, data):
+        trips = data.findall('.//{http://services.pta.wa.gov.au/}SercoTrip')
+        return [Departure(station=self, data=data) for data in trips]
+
+    def get_departures(self):
+        """Returns Departure instances for this station."""
+        if self._departures is None:
+            data = self._get_departure_data()
+            self._departures = self._parse_departures(data)
+        return self._departures
+
+
+class Departure(object):
+    """Departure information."""
+
+    def __init__(self, station, data=None):
+        self.station = station
+        self._parse_data(data)
+
+    def __repr__(self):
+        return '<%(class_name)s: %(time)s %(destination)s %(message)s>' %({
+            'class_name': self.__class__.__name__, 'time': self.actual_time,
+            'destination': self.destination_name,
+            'message': self.delay_message})
+
+    def _parse_data(self, data):
+        self._data = data
+        namespace = 'http://services.pta.wa.gov.au/'
+        self.id = data.find('{%s}Uid' %(namespace)).text
+        self.run = data.find('{%s}Run' %(namespace)).text
+        self.scheduled_time = self._parse_time(
+            data.find('{%s}Schedule' %(namespace)).text)
+        self.actual_time = self._parse_time(
+            data.find('{%s}actualDisplayTime24' %(namespace)).text)
+        self.delay_seconds = self._parse_integer(
+            data.find('{%s}Delay' %(namespace)).text)
+        self.delay_minutes = self._parse_integer(
+            data.find('{%s}MinutesDelayTime' %(namespace)).text)
+        self.delay_message = data.find('{%s}DisplayDelayTime' %(namespace)).text
+        self.destination_name = data.find('{%s}Destination' %(namespace)).text
+        self.line_code = data.find('{%s}Line' %(namespace)).text
+        self.line_name = data.find('{%s}LineFull' %(namespace)).text
+        self.state = data.find('{%s}State' %(namespace)).text
+        self.is_cancelled = self._parse_boolean(
+            data.find('{%s}Cancelled' %(namespace)).text)
+        self.pattern_code = data.find('{%s}Patterncode' %(namespace)).text
+        self.pattern_description = data.find(
+            '{%s}PatternFullDisplay' %(namespace)).text
+        self.pattern_platforms = self._parse_list(
+            data.find('{%s}Pattern' %(namespace)).text)
+        self.number_of_cars = data.find('{%s}Ncar' %(namespace)).text
+        self.platform_code = data.find('{%s}Platform' %(namespace)).text
+        self.link = data.find('{%s}Link' %(namespace)).text
+
+    def _parse_boolean(self, text):
+        return True if text and text == 'True' else False
+
+    def _parse_integer(self, text):
+        return int(text) if text and text.isdigit() else 0
+
+    def _parse_list(self, text):
+        return text.split(',') if text else []
+
+    def _parse_time(self, text):
+        hour, minute = map(int, text.split(':')[:2])
+        hour = hour - 12 if hour >= 24 else hour  # Scheduled time goes over 24!
+        return time(hour, minute)
+
+    @property
+    def description(self):
+        # Backwards compatibility
+        pattern = '%s pattern' % (self.pattern_code) if self.pattern_code \
+            else 'All stops'
+        platform = int(re.findall('\d+', self.platform_code)[0])
+        return '%s from platform %s (%s cars)' %(pattern, platform,
+                                                 self.number_of_cars)
+
+    @property
+    def destination(self):
+        # Backwards compatibility
+        return self.destination_name
+
+    @property
+    def line(self):
+        # Backwards compatibility
+        return self.line_name
+
+    @property
+    def status(self):
+        # Backwards compatibility
+        message = self.delay_message.strip('()')
+        if self.delay_minutes and not self.is_cancelled:
+            return '%s min delay' %(self.delay_minutes)
+        elif self.is_cancelled:
+            return 'CANCELLED'
+        else:
+            return message
+
+    @property
+    def time(self):
+        # Backwards compatibility
+        return self.actual_time
+
 
 transperth = Operator()

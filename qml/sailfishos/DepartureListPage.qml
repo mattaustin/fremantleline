@@ -68,6 +68,8 @@ Page {
                     width: Theme.paddingSmall
                     radius: Math.round(height/3)
                     color: (modelData.line == 'Armadale/Thornlie Line' && '#fab20a' ||
+                            modelData.line == 'Armadale Line' && '#fab20a' ||
+                            modelData.line == 'Thornlie Line' && '#fab20a' ||
                             modelData.line == 'Fremantle Line' && '#155196' ||
                             modelData.line == 'Joondalup Line' && '#97a509' ||
                             modelData.line == 'Mandurah Line' && '#e55e16' ||
