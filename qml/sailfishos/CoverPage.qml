@@ -26,6 +26,13 @@ CoverBackground {
     }
 
 
+    CoverPlaceholder {
+        text: departurePage.station ? departurePage.station.name : 'Perth Trains'
+        visible: departurePage.status == PageStatus.Active && departureList.count < 1
+
+    }
+
+
     ListView {
 
         id: departureList
@@ -50,24 +57,23 @@ CoverBackground {
                 {departureList.itemHeight = height;
             }
 
-            Item {
-                width: parent.width
-                height: Theme.paddingSmall
-            }
-
             Label {
                 width: parent.width
                 text: modelData.time
+                font.strikeout: (modelData.status == 'CANCELLED')
                 truncationMode: TruncationMode.Fade
                 maximumLineCount: 1
+                opacity: modelData.status == 'CANCELLED' && 0.75 || 1
             }
 
             Label {
-                opacity: 0.6
                 width: parent.width
                 text: modelData.destination
-                truncationMode: TruncationMode.Fade
+                color: Theme.secondaryColor
                 font.pixelSize: Theme.fontSizeExtraSmall
+                font.strikeout: (modelData.status == 'CANCELLED')
+                truncationMode: TruncationMode.Fade
+                opacity: modelData.status == 'CANCELLED' && 0.75 || 1
             }
 
         }

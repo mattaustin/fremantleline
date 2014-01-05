@@ -70,7 +70,7 @@ Page {
                     onTriggered: {Qt.openUrlExternally(stationPage.projectUrl)}
                 }
                 Action {
-                    text: 'Reload station data'
+                    text: 'Clear & reload station data'
                     onTriggered: {
                         stations.clearDatabase();
                         stations.loadStations();

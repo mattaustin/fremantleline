@@ -44,6 +44,13 @@ Page {
         PullDownMenu {
             id: pullDownMenu
             MenuItem {
+                text: 'Clear & reload station data'
+                onClicked: {
+                    stations.clearDatabase();
+                    stations.loadStations();
+                }
+            }
+            MenuItem {
                 text: 'About'
                 onClicked: {
                     pullDownMenu.close();
@@ -54,32 +61,58 @@ Page {
                 text: 'Project homepage'
                 onClicked: {Qt.openUrlExternally(stationPage.projectUrl)}
             }
-            MenuItem {
-                text: 'Reload station data'
-                onClicked: {
-                    stations.clearDatabase();
-                    stations.loadStations();
-                }
-            }
         }
 
-        delegate: BackgroundItem {
-            width: stationList.width
-            Label {
-                text: model.name
-                font.bold: model.isStarred
-                color: parent.down ? Theme.highlightColor : Theme.primaryColor
-                anchors.verticalCenter: parent.verticalCenter
-                x: Theme.paddingLarge
+        delegate: Item {
+
+            id: stationItem
+            height: contentItem.height + contextMenu.height
+
+            BackgroundItem {
+
+                id: contentItem
+                width: stationList.width
+
+                Label {
+                    text: model.name
+                    font.bold: model.isStarred
+                    color: parent.down ? Theme.highlightColor : Theme.primaryColor
+                    anchors.verticalCenter: parent.verticalCenter
+                    x: Theme.paddingLarge
+                }
+
+                onClicked: {
+                    departurePage.station = model;
+                    pageStack.push(departurePage);
+                }
+
+                onPressAndHold: {
+                    contextMenu.show(stationItem);
+                }
+
             }
-            onClicked: {
-                departurePage.station = model;
-                pageStack.push(departurePage);
+
+            ContextMenu {
+                id: contextMenu
+                MenuItem {
+                    text: model.isStarred ? 'Unpin' : 'Pin to top'
+                    onClicked: {
+                        contextMenu.hide();
+                        stations.saveStation(model.url, model.name, !model.isStarred);
+                        stations.loadStations();
+                    }
+                }
             }
+
         }
 
         VerticalScrollDecorator {}
 
+    }
+
+
+    Stations {
+        id: stations
     }
 
 

@@ -94,8 +94,8 @@ Item {
                 call('ui.pyotherside.get_stations', [], function(result) {
                     result.forEach(function(item) {
                         saveStation(item['url'], item['name']);
+                        model.append({'url': item['url'], 'name': item['name'], 'isStarred': false});
                     });
-                    model.append({'url': item['url'], 'name': ['name'], 'isStarred': false});
                     loading = false;
                 });
             });

@@ -43,15 +43,6 @@ Page {
 
         PullDownMenu {
             MenuItem {
-                text: (station ? station.isStarred : false) ? 'Unstar' : 'Star'
-                onClicked: {
-                    stations.model.setProperty(station.index, 'isStarred', !station.isStarred);
-                    stations.saveStation(station.url, station.name, station.isStarred);
-                    pageStack.pop();
-                    stations.loadStations();
-                }
-            }
-            MenuItem {
                 text: 'Refresh'
                 onClicked: {refresh();}
             }
