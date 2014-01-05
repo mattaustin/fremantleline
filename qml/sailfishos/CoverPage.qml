@@ -26,6 +26,13 @@ CoverBackground {
     }
 
 
+    CoverPlaceholder {
+        text: departurePage.station ? departurePage.station.name : 'Perth Trains'
+        visible: departurePage.status == PageStatus.Active && departureList.count < 1
+
+    }
+
+
     ListView {
 
         id: departureList
