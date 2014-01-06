@@ -95,7 +95,8 @@ class Station(UnicodeMixin, object):
         return self.name
 
     def _get_departure_data(self):
-        base_url = 'http://livetimes.transperth.wa.gov.au/LiveTimes.asmx/GetSercoTimesForStation'
+        base_url = ('http://livetimes.transperth.wa.gov.au/LiveTimes.asmx'
+                    '/GetSercoTimesForStation')
         params = {'stationname': '%s Stn' %(self.name)}
         url = '%s?%s' %(base_url, urlencode(params))
         url_opener = URLOpener()
@@ -153,8 +154,10 @@ class Departure(object):
             '{%s}PatternFullDisplay' %(namespace)).text
         self.pattern_platforms = self._parse_list(
             data.find('{%s}Pattern' %(namespace)).text)
-        self.number_of_cars = data.find('{%s}Ncar' %(namespace)).text
+        self.number_of_cars = self._parse_integer(
+            data.find('{%s}Ncar' %(namespace)).text)
         self.platform_code = data.find('{%s}Platform' %(namespace)).text
+        self.platform_number = int(re.findall('\d+', self.platform_code)[0])
         self.link = data.find('{%s}Link' %(namespace)).text
 
     def _parse_boolean(self, text):
@@ -171,13 +174,38 @@ class Departure(object):
         hour = hour - 12 if hour >= 24 else hour  # Scheduled time goes over 24!
         return time(hour, minute)
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'run': self.run,
+            'scheduled_time': self.scheduled_time.strftime('%H:%M'),
+            'actual_time': self.actual_time.strftime('%H:%M'),
+            'delay_seconds': self.delay_seconds,
+            'delay_minutes': self.delay_minutes,
+            'delay_message': self.delay_message,
+            'destination_name': self.destination_name,
+            'line_code': self.line_code,
+            'line_name': self.line_name,
+            'state': self.state,
+            'is_cancelled': self.is_cancelled,
+            'pattern_code': self.pattern_code,
+            'pattern_description': self.pattern_description,
+            'pattern_platforms': self.pattern_platforms,
+            'number_of_cars': self.number_of_cars,
+            'platform_code': self.platform_code,
+            'platform_number': self.platform_number,
+            'link': self.link,
+
+            'description': self.description,
+            'status': self.status,
+        }
+
     @property
     def description(self):
         # Backwards compatibility
         pattern = '%s pattern' % (self.pattern_code) if self.pattern_code \
             else 'All stops'
-        platform = int(re.findall('\d+', self.platform_code)[0])
-        return '%s from platform %s (%s cars)' %(pattern, platform,
+        return '%s from platform %s (%s cars)' %(pattern, self.platform_number,
                                                  self.number_of_cars)
 
     @property
