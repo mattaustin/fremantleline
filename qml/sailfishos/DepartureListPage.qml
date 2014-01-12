@@ -21,9 +21,11 @@ import io.thp.pyotherside 1.0
 
 Page {
 
+
     id: departurePage
-    property variant station
+    property var station
     property alias model: departureList.model
+
 
     BusyIndicator {
         anchors.centerIn: parent
@@ -31,6 +33,7 @@ Page {
         size: BusyIndicatorSize.Large
         Behavior on opacity {}
     }
+
 
     SilicaListView {
 
@@ -53,27 +56,30 @@ Page {
             text: 'No departing services were found for this station.'
         }
 
-        delegate: Item {
+        delegate: BackgroundItem {
 
             width: departureList.width
             implicitHeight: Theme.itemSizeMedium
 
-            Item {
+            onClicked: {
+                departureDialog.departure = modelData;
+                departureDialog.open();
+            }
 
+            Item {
                 x: Theme.paddingLarge
+                anchors.verticalCenter: parent.verticalCenter
                 width: parent.width - 2*Theme.paddingLarge
                 height: childrenRect.height
 
                 Rectangle {
                     width: Theme.paddingSmall
                     radius: Math.round(height/3)
-                    color: (modelData.line == 'Armadale/Thornlie Line' && '#fab20a' ||
-                            modelData.line == 'Armadale Line' && '#fab20a' ||
-                            modelData.line == 'Thornlie Line' && '#fab20a' ||
-                            modelData.line == 'Fremantle Line' && '#155196' ||
-                            modelData.line == 'Joondalup Line' && '#97a509' ||
-                            modelData.line == 'Mandurah Line' && '#e55e16' ||
-                            modelData.line == 'Midland Line' && '#b00257' ||
+                    color: (modelData.line_code == 'ARM' && '#fab20a' ||
+                            modelData.line_code == 'FRE' && '#155196' ||
+                            modelData.line_code == 'JDP' && '#97a509' ||
+                            modelData.line_code == 'MAN' && '#e55e16' ||
+                            modelData.line_code == 'MID' && '#b00257' ||
                             '#16ac48')
                     anchors {
                         top: parent.top
@@ -87,9 +93,10 @@ Page {
 
                 Label {
                     id: title
-                    text: modelData.time + ' to ' + modelData.destination
+                    enabled: !modelData.is_cancelled
+                    text: modelData.actual_time + ' to ' + modelData.destination_name
                     font.pixelSize: Theme.fontSizeLarge
-                    font.strikeout: (modelData.status == 'CANCELLED')
+                    font.strikeout: !enabled
                     truncationMode: TruncationMode.Fade
                     anchors {
                         left: parent.left
@@ -97,15 +104,16 @@ Page {
                         leftMargin: Theme.paddingLarge
                         rightMargin: Theme.paddingLarge
                     }
-                    opacity: modelData.status == 'CANCELLED' && 0.75 || 1
+                    opacity: enabled ? 1 : 0.75
                 }
 
                 Label {
                     id: status
+                    enabled: !modelData.is_cancelled
                     text: modelData.status
                     color: Theme.secondaryColor
                     font.pixelSize: Theme.fontSizeSmall
-                    font.bold: (modelData.status == 'CANCELLED')
+                    font.bold: !enabled
                     horizontalAlignment: Text.AlignRight
                     anchors {
                         right: parent.right
@@ -115,10 +123,11 @@ Page {
 
                 Label {
                     id: subtitle
-                    text: modelData.subtitle
+                    enabled: !modelData.is_cancelled
+                    text: modelData.description
                     color: Theme.secondaryColor
                     font.pixelSize: Theme.fontSizeExtraSmall
-                    font.strikeout: (modelData.status == 'CANCELLED')
+                    font.strikeout: !enabled
                     truncationMode: TruncationMode.Fade
                     anchors {
                         top: title.bottom
@@ -126,7 +135,7 @@ Page {
                         right: parent.right
                         leftMargin: Theme.paddingLarge
                     }
-                    opacity: modelData.status == 'CANCELLED' && 0.75 || 1
+                    opacity: enabled ? 1 : 0.75
                 }
 
             }
@@ -135,6 +144,11 @@ Page {
 
         VerticalScrollDecorator {}
 
+    }
+
+
+    DepartureDialog {
+        id: departureDialog
     }
 
 
@@ -172,10 +186,10 @@ Page {
 
     }
 
-    onStatusChanged: {
-        if (status == PageStatus.Activating) {
-            python.getDepartures();
-        }
+
+    onStationChanged: {
+        python.getDepartures();
     }
+
 
 }
