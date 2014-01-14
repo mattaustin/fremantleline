@@ -27,7 +27,7 @@ Component {
         property var departure
 
         title: departure.actual_time + ' to ' + departure.destination_name
-        text: 'Stopping at: ' + departure.pattern_description + '.'
+        text: (departure.pattern_code ? departure.pattern_code + ' pattern' : 'All stops') + '\n\n' + departure.pattern_description
 
         Button {
             gradient: UbuntuColors.greyGradient
