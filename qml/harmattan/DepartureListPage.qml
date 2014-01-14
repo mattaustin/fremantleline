@@ -55,8 +55,8 @@ Page {
                 height: parent.height - 4
                 width: 8
                 color: (model.line == 'Armadale/Thornlie Line' && '#fab20a' ||
-                color: (model.line == 'Armadale Line' && '#fab20a' ||
-                color: (model.line == 'Thornlie Line' && '#fab20a' ||
+                        model.line == 'Armadale Line' && '#fab20a' ||
+                        model.line == 'Thornlie Line' && '#fab20a' ||
                         model.line == 'Fremantle Line' && '#155196' ||
                         model.line == 'Joondalup Line' && '#97a509' ||
                         model.line == 'Mandurah Line' && '#e55e16' ||
