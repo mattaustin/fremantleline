@@ -17,13 +17,14 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
+import Ubuntu.Components.Popups 0.1
 import io.thp.pyotherside 1.0
 
 
 Page {
 
     id: departurePage
-    property variant station
+    property var station
     title: station ? station.name : 'Departures'
     visible: false
 
@@ -42,11 +43,11 @@ Page {
             height: Math.max(middleVisuals.height, units.gu(6))
 
             icon: UbuntuShape {
-                color: (modelData.line == 'Armadale/Thornlie Line' && '#fab20a' ||
-                        modelData.line == 'Fremantle Line' && '#155196' ||
-                        modelData.line == 'Joondalup Line' && '#97a509' ||
-                        modelData.line == 'Mandurah Line' && '#e55e16' ||
-                        modelData.line == 'Midland Line' && '#b00257' ||
+                color: (modelData.line_code == 'ARM' && '#fab20a' ||
+                        modelData.line_code == 'FRE' && '#155196' ||
+                        modelData.line_code == 'JDP' && '#97a509' ||
+                        modelData.line_code == 'MAN' && '#e55e16' ||
+                        modelData.line_code == 'MID' && '#b00257' ||
                         '#16ac48')
                 implicitHeight: parent.height
                 implicitWidth: units.gu(1)
@@ -70,9 +71,9 @@ Page {
                         left: parent.left
                         right: parent.right
                     }
-                    enabled: modelData.status != 'CANCELLED'
+                    enabled: !modelData.is_cancelled
                     font.strikeout: !enabled
-                    text: modelData.time + ' to ' + modelData.destination
+                    text: modelData.actual_time + ' to ' + modelData.destination_name
                     opacity: enabled ? 1.0 : 0.5
                 }
 
@@ -84,12 +85,12 @@ Page {
                         top: title.bottom
                     }
                     color: Theme.palette.normal.backgroundText
-                    enabled: modelData.status != 'CANCELLED'
+                    enabled: !modelData.is_cancelled
                     font.strikeout: !enabled
                     fontSize: 'small'
                     maximumLineCount: 5
                     opacity: enabled ? 1.0 : 0.5
-                    text: modelData.subtitle
+                    text: modelData.description
                     wrapMode: Text.Wrap
                 }
 
@@ -100,11 +101,16 @@ Page {
                         bottom: title.bottom
                     }
                     color: Theme.palette.normal.overlayText
-                    font.bold: modelData.status == 'CANCELLED'
+                    enabled: !modelData.is_cancelled
+                    font.bold: !enabled
                     fontSize: 'small'
                     text: modelData.status
                 }
 
+            }
+
+            onClicked: {
+                PopupUtils.open(departureDialog, null, {'departure': modelData});
             }
 
         }
@@ -129,6 +135,10 @@ Page {
         text: 'No departing services were found for this station.'
         visible: (!python.loading && departureList.count < 1)
         wrapMode: Text.WordWrap
+    }
+
+    DepartureDialog {
+        id: departureDialog
     }
 
     tools: ToolbarItems {

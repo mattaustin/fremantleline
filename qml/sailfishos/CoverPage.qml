@@ -58,22 +58,24 @@ CoverBackground {
             }
 
             Label {
+                enabled: !modelData.is_cancelled
                 width: parent.width
-                text: modelData.time
-                font.strikeout: (modelData.status == 'CANCELLED')
+                text: modelData.actual_time
+                font.strikeout: !enabled
                 truncationMode: TruncationMode.Fade
                 maximumLineCount: 1
-                opacity: modelData.status == 'CANCELLED' && 0.75 || 1
+                opacity: enabled && 1 || 0.75
             }
 
             Label {
+                enabled: !modelData.is_cancelled
                 width: parent.width
-                text: modelData.destination
+                text: modelData.pattern_code ? modelData.destination_name + ' ' + modelData.pattern_code : modelData.destination_name
                 color: Theme.secondaryColor
                 font.pixelSize: Theme.fontSizeExtraSmall
-                font.strikeout: (modelData.status == 'CANCELLED')
+                font.strikeout: !enabled
                 truncationMode: TruncationMode.Fade
-                opacity: modelData.status == 'CANCELLED' && 0.75 || 1
+                opacity: enabled && 1 || 0.75
             }
 
         }
