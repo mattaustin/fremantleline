@@ -41,6 +41,7 @@ Page {
 
             Label {
                 text: departure ? departure.pattern_code && departure.pattern_code + ' pattern' || 'All stops' : ''
+                color: Theme.highlightColor
                 width: parent.width - Theme.paddingLarge - Theme.paddingLarge
                 x: Theme.paddingLarge
                 wrapMode: Text.WordWrap
@@ -50,6 +51,7 @@ Page {
 
             Label {
                 text: departure ? departure.pattern_description : ''
+                color: Theme.highlightColor
                 width: parent.width - Theme.paddingLarge - Theme.paddingLarge
                 x: Theme.paddingLarge
                 wrapMode: Text.WordWrap
@@ -62,7 +64,6 @@ Page {
 
 
     function open() {
-        //departure = modelData;
         pageStack.push(dialog);
     }
 
