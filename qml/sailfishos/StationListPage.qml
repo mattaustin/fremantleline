@@ -76,7 +76,7 @@ Page {
                 Label {
                     text: model.name
                     font.bold: model.isStarred
-                    color: parent.down ? Theme.highlightColor : Theme.primaryColor
+                    color: contentItem.down ? Theme.highlightColor : Theme.primaryColor
                     anchors.verticalCenter: parent.verticalCenter
                     x: Theme.paddingLarge
                 }

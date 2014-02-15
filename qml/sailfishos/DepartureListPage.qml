@@ -58,6 +58,7 @@ Page {
 
         delegate: BackgroundItem {
 
+            id: departureItem
             width: departureList.width
             implicitHeight: Theme.itemSizeMedium
 
@@ -95,6 +96,7 @@ Page {
                     id: title
                     enabled: !modelData.is_cancelled
                     text: modelData.actual_time + ' to ' + modelData.destination_name
+                    color: departureItem.down ? Theme.highlightColor : Theme.primaryColor
                     font.pixelSize: Theme.fontSizeLarge
                     font.strikeout: !enabled
                     truncationMode: TruncationMode.Fade
