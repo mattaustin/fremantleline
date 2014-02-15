@@ -37,4 +37,8 @@ ApplicationWindow {
         id: aboutDialog
     }
 
+    DepartureDialog {
+        id: departureDialog
+    }
+
 }

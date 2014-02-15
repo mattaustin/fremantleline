@@ -22,7 +22,7 @@ CoverBackground {
 
     CoverPlaceholder {
         text: 'Perth Trains'
-        visible: departurePage.status != PageStatus.Active
+        visible: departurePage.status != PageStatus.Active && departureDialog.status != PageStatus.Active
     }
 
 
@@ -53,8 +53,8 @@ CoverBackground {
 
             width: parent.width
 
-            Component.onCompleted:
-                {departureList.itemHeight = height;
+            Component.onCompleted: {
+                departureList.itemHeight = height;
             }
 
             Label {
@@ -96,5 +96,86 @@ CoverBackground {
 
     }
 
+
+    Item {
+
+        id: departureInfo
+
+        property real itemHeight: Theme.itemSizeExtraSmall
+
+        clip: true
+        height: 3*itemHeight + 2*Theme.paddingSmall
+        width: parent.width - 2*x
+        x: Theme.paddingLarge
+        y: Theme.paddingMedium + Theme.paddingSmall
+        visible: departureDialog.status == PageStatus.Active
+
+        Column {
+
+            width: parent.width
+
+            Component.onCompleted: {
+                departureInfo.itemHeight = height;
+            }
+
+            Label {
+                width: parent.width
+                text: departurePage.station ? departurePage.station.name : 'Perth Trains'
+                //wrapMode: Text.WordWrap
+                font.pixelSize: Theme.fontSizeExtraSmall
+                truncationMode: TruncationMode.Fade
+            }
+
+            Label {
+                width: parent.width
+                text: ''
+                font.pixelSize: Theme.fontSizeLarge
+            }
+
+            Label {
+                enabled: departureDialog.departure ? !departureDialog.departure.is_cancelled : true
+                width: parent.width
+                text: departureDialog.departure ? departureDialog.departure.actual_time : ''
+                font.pixelSize: Theme.fontSizeExtraLarge
+                font.strikeout: !enabled
+                truncationMode: TruncationMode.Fade
+                maximumLineCount: 1
+                opacity: enabled && 1 || 0.75
+            }
+
+            Label {
+                enabled: departureDialog.departure ? !departureDialog.departure.is_cancelled : true
+                width: parent.width
+                text: departureDialog.departure ? (departureDialog.departure.pattern_code ? departureDialog.departure.destination_name + ' ' + departureDialog.departure.pattern_code : departureDialog.departure.destination_name) : ''
+                color: Theme.secondaryColor
+                font.pixelSize: Theme.fontSizeExtraSmall
+                font.strikeout: !enabled
+                truncationMode: TruncationMode.Fade
+                opacity: enabled && 1 || 0.75
+            }
+
+            Label {
+                enabled: departureDialog.departure ? !departureDialog.departure.is_cancelled : true
+                width: parent.width
+                text: departureDialog.departure ? (departureDialog.departure.platform_number ? 'Platform ' + departureDialog.departure.platform_number : '') : ''
+                color: Theme.secondaryColor
+                font.pixelSize: Theme.fontSizeExtraSmall
+                font.strikeout: !enabled
+                truncationMode: TruncationMode.Fade
+                opacity: enabled && 1 || 0.75
+            }
+
+        }
+
+    }
+
+
+    Image {
+        source: Qt.resolvedUrl('CoverBackground.png')
+        opacity: 0.1
+        anchors.horizontalCenter: parent.horizontalCenter
+        width: parent.width
+        height: sourceSize.height * width / sourceSize.width
+    }
 
 }

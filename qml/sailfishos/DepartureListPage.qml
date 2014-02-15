@@ -149,11 +149,6 @@ Page {
     }
 
 
-    DepartureDialog {
-        id: departureDialog
-    }
-
-
     function refresh() {
         python.getDepartures();
     }
