@@ -42,7 +42,7 @@ class Operator(UnicodeMixin, object):
 
     name = 'Transperth Trains'
     stations = None
-    url = 'http://www.transperth.wa.gov.au/TimetablesMaps/LiveTrainTimes.aspx'
+    url = 'http://www.transperth.wa.gov.au/Timetables/Live-Train-Times'
 
     def __repr__(self):
         return '<%s: %s>' %(self.__class__.__name__, self)
@@ -62,9 +62,9 @@ class Operator(UnicodeMixin, object):
     def _parse_stations(self, html):
         ns = html.get('xmlns', '')
         options = html.findall(
-            './/*[@id="EntryForm"]//{%(ns)s}select/{%(ns)s}option' %({'ns':ns}))
+            './/*{%(ns)s}select[@datevaluefield="StationName"]/{%(ns)s}option' %({'ns':ns}))
         stations = []
-        for option in options:
+        for option in options[1:]:
             data = urlencode({'stationname': option.get('value')})
             name = '%s' %(option.get('value')).rsplit(' Stn', 1)[0]
             url = '%s?%s' %(self.url, data)
