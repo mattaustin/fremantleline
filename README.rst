@@ -10,9 +10,9 @@ Currently being ported to Fremantle, and Ubuntu Touch.
 Sailfish OS
 -----------
 
-.. image:: docs/images/sailfish-perth.png
+.. image:: docs/images/sailfishos-perth.jpg
 
-.. image:: docs/images/sailfish-claisebrook.png
+.. image:: docs/images/sailfishos-claisebrook.jpg
 
 
 Harmattan
