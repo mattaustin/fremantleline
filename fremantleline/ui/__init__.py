@@ -18,3 +18,6 @@
 
 from __future__ import absolute_import
 from . import pyotherside
+
+
+__all__ = ['pyotherside']
