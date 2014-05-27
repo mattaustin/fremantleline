@@ -56,13 +56,12 @@ class Operator(UnicodeMixin, object):
         if lxml:
             html = lxml.html.parse(response).getroot()
         else:
-            html = html5lib.parse(response)
+            html = html5lib.parse(response, namespaceHTMLElements=False)
         return html
 
     def _parse_stations(self, html):
-        ns = html.get('xmlns', '')
         options = html.findall(
-            './/*{%(ns)s}select[@datevaluefield="StationName"]/{%(ns)s}option' %({'ns':ns}))
+            './/*select[@datevaluefield="StationName"]/option')
         stations = []
         for option in options[1:]:
             data = urlencode({'stationname': option.get('value')})
