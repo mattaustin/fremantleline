@@ -27,5 +27,5 @@ except ImportError:
 
 class URLOpener(FancyURLopener):
 
-    version = 'FremantleLine/%(version)s (Fremantle Line; +%(url)s)' %({
+    version = 'FremantleLine/%(version)s (Fremantle Line; +%(url)s)' % ({
         'version': VERSION, 'url': PROJECT_URL})

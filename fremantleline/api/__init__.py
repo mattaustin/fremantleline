@@ -45,7 +45,7 @@ class Operator(UnicodeMixin, object):
     url = 'http://www.transperth.wa.gov.au/Timetables/Live-Train-Times'
 
     def __repr__(self):
-        return '<%s: %s>' %(self.__class__.__name__, self)
+        return '<%s: %s>' % (self.__class__.__name__, self)
 
     def __unicode__(self):
         return self.name
@@ -65,8 +65,8 @@ class Operator(UnicodeMixin, object):
         stations = []
         for option in options[1:]:
             data = urlencode({'stationname': option.get('value')})
-            name = '%s' %(option.get('value')).rsplit(' Stn', 1)[0]
-            url = '%s?%s' %(self.url, data)
+            name = '%s' % (option.get('value')).rsplit(' Stn', 1)[0]
+            url = '%s?%s' % (self.url, data)
             stations += [Station(name, url)]
         return stations
 
@@ -88,7 +88,7 @@ class Station(UnicodeMixin, object):
         self.url = url  # Legacy url from website scraping, no longer used
 
     def __repr__(self):
-        return '<%s: %s>' %(self.__class__.__name__, self)
+        return '<%s: %s>' % (self.__class__.__name__, self)
 
     def __unicode__(self):
         return self.name
@@ -96,8 +96,8 @@ class Station(UnicodeMixin, object):
     def _get_departure_data(self):
         base_url = ('http://livetimes.transperth.wa.gov.au/LiveTimes.asmx'
                     '/GetSercoTimesForStation')
-        params = {'stationname': '%s Stn' %(self.name)}
-        url = '%s?%s' %(base_url, urlencode(params))
+        params = {'stationname': '%s Stn' % (self.name)}
+        url = '%s?%s' % (base_url, urlencode(params))
         url_opener = URLOpener()
         response = url_opener.open(url)
         tree = ElementTree.parse(response)
@@ -105,7 +105,7 @@ class Station(UnicodeMixin, object):
 
     def _parse_departures(self, data):
         trips = data.findall('.//{http://services.pta.wa.gov.au/}SercoTrip')
-        return [Departure(station=self, data=data) for data in trips]
+        return [Departure(station=self, data=trip) for trip in trips]
 
     def get_departures(self):
         """Returns Departure instances for this station."""
@@ -123,7 +123,7 @@ class Departure(object):
         self._parse_data(data)
 
     def __repr__(self):
-        return '<%(class_name)s: %(time)s %(destination)s %(message)s>' %({
+        return '<%(class_name)s: %(time)s %(destination)s %(message)s>' % ({
             'class_name': self.__class__.__name__, 'time': self.actual_time,
             'destination': self.destination_name,
             'message': self.delay_message})
@@ -131,33 +131,35 @@ class Departure(object):
     def _parse_data(self, data):
         self._data = data
         namespace = 'http://services.pta.wa.gov.au/'
-        self.id = data.find('{%s}Uid' %(namespace)).text
-        self.run = data.find('{%s}Run' %(namespace)).text
+        self.id = data.find('{%s}Uid' % (namespace)).text
+        self.run = data.find('{%s}Run' % (namespace)).text
         self.scheduled_time = self._parse_time(
-            data.find('{%s}Schedule' %(namespace)).text)
+            data.find('{%s}Schedule' % (namespace)).text)
         self.actual_time = self._parse_time(
-            data.find('{%s}actualDisplayTime24' %(namespace)).text)
+            data.find('{%s}actualDisplayTime24' % (namespace)).text)
         self.delay_seconds = self._parse_integer(
-            data.find('{%s}Delay' %(namespace)).text)
+            data.find('{%s}Delay' % (namespace)).text)
         self.delay_minutes = self._parse_integer(
-            data.find('{%s}MinutesDelayTime' %(namespace)).text)
-        self.delay_message = data.find('{%s}DisplayDelayTime' %(namespace)).text
-        self.destination_name = data.find('{%s}Destination' %(namespace)).text
-        self.line_code = data.find('{%s}Line' %(namespace)).text
-        self.line_name = data.find('{%s}LineFull' %(namespace)).text
-        self.state = data.find('{%s}State' %(namespace)).text
+            data.find('{%s}MinutesDelayTime' % (namespace)).text)
+        self.delay_message = data.find('{%s}DisplayDelayTime' % (
+                                       namespace)).text
+        self.destination_name = data.find('{%s}Destination' % (
+                                          namespace)).text
+        self.line_code = data.find('{%s}Line' % (namespace)).text
+        self.line_name = data.find('{%s}LineFull' % (namespace)).text
+        self.state = data.find('{%s}State' % (namespace)).text
         self.is_cancelled = self._parse_boolean(
-            data.find('{%s}Cancelled' %(namespace)).text)
-        self.pattern_code = data.find('{%s}Patterncode' %(namespace)).text
+            data.find('{%s}Cancelled' % (namespace)).text)
+        self.pattern_code = data.find('{%s}Patterncode' % (namespace)).text
         self.pattern_description = data.find(
-            '{%s}PatternFullDisplay' %(namespace)).text
+            '{%s}PatternFullDisplay' % (namespace)).text
         self.pattern_platforms = self._parse_list(
-            data.find('{%s}Pattern' %(namespace)).text)
+            data.find('{%s}Pattern' % (namespace)).text)
         self.number_of_cars = self._parse_integer(
-            data.find('{%s}Ncar' %(namespace)).text)
-        self.platform_code = data.find('{%s}Platform' %(namespace)).text
+            data.find('{%s}Ncar' % (namespace)).text)
+        self.platform_code = data.find('{%s}Platform' % (namespace)).text
         self.platform_number = int(re.findall('\d+', self.platform_code)[0])
-        self.link = data.find('{%s}Link' %(namespace)).text
+        self.link = data.find('{%s}Link' % (namespace)).text
 
     def _parse_boolean(self, text):
         return True if text and text == 'True' else False
@@ -170,7 +172,7 @@ class Departure(object):
 
     def _parse_time(self, text):
         hour, minute = map(int, text.split(':')[:2])
-        hour = hour - 12 if hour >= 24 else hour  # Scheduled time goes over 24!
+        hour = hour - 12 if hour >= 24 else hour  # Value goes over 24!
         return time(hour, minute)
 
     def to_dict(self):
@@ -204,8 +206,8 @@ class Departure(object):
         # Backwards compatibility
         pattern = '%s pattern' % (self.pattern_code) if self.pattern_code \
             else 'All stops'
-        return '%s from platform %s (%s cars)' %(pattern, self.platform_number,
-                                                 self.number_of_cars)
+        return '%s from platform %s (%s cars)' % (
+            pattern, self.platform_number, self.number_of_cars)
 
     @property
     def destination(self):
@@ -222,7 +224,7 @@ class Departure(object):
         # Backwards compatibility
         message = self.delay_message.strip('()')
         if self.delay_minutes and not self.is_cancelled:
-            return '%s min delay' %(self.delay_minutes)
+            return '%s min delay' % (self.delay_minutes)
         elif self.is_cancelled:
             return 'CANCELLED'
         else:

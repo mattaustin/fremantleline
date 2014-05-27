@@ -27,7 +27,7 @@ import threading
 
 class BaseView(QDeclarativeView):
 
-    context_properties = {'version': '%s ' %(VERSION),
+    context_properties = {'version': '%s ' % (VERSION),
                           'projectUrl': PROJECT_URL}
     window_title = 'Fremantle Line'
 
@@ -78,9 +78,9 @@ class View(NetworkSessionMixin, BaseView):
 
     def get_qml_path(self):
         if self.get_network_session().waitForOpened():
-            return 'qml/%s/main.qml' %(self.platform)
+            return 'qml/%s/main.qml' % (self.platform)
         else:
-            return 'qml/%s/networkError.qml' %(self.platform)
+            return 'qml/%s/networkError.qml' % (self.platform)
 
 
 class StationWrapper(QtCore.QObject):
@@ -118,7 +118,7 @@ class DepartureWrapper(QtCore.QObject):
         return self._departure.time.strftime('%H:%M')
 
     def get_title(self):
-        return '%(time)s to %(destination)s' %({
+        return '%(time)s to %(destination)s' % ({
             'time': self.get_time(),
             'destination': self.get_destination()})
 
@@ -137,7 +137,7 @@ class BaseListModel(QtCore.QAbstractListModel):
         super(BaseListModel, self).__init__(*args, **kwargs)
         self._roles = sorted(self.roles.items())
         self.setRoleNames(
-            dict(enumerate('%s' %(k) for k, v in self._roles)))
+            dict(enumerate('%s' % (k) for k, v in self._roles)))
 
     def rowCount(self, parent=QtCore.QModelIndex()):
         return len(self.items)
