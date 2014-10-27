@@ -7,7 +7,6 @@ License: GPLv3
 Source: https://github.com/mattaustin/fremantleline/archive/0.9.4.tar.gz
 BuildArch: noarch
 Requires: libsailfishapp-launcher
-Requires: python3-base
 Requires: pyotherside-qml-plugin-python3-qt5
 Requires: sailfishsilica-qt5
 
@@ -32,6 +31,14 @@ cp -rpv fremantleline $TARGET/
 cp -rpv qml/sailfishos $TARGET/qml
 ln -s main.qml $TARGET/qml/%{name}.qml
 
+# Documentation files
+# Normally this is automatic using %doc in the %files section below, but it is
+# not permitted by harbour, so we're placing with the application files.
+TARGET=%{buildroot}/%{_datadir}/%{name}/doc
+mkdir -p $TARGET
+cp README.rst $TARGET/
+cp COPYING $TARGET/
+
 # Desktop Entry
 TARGET=%{buildroot}/%{_datadir}/applications
 mkdir -p $TARGET
@@ -44,7 +51,7 @@ cp -rpv icons/sailfishos.png $TARGET/%{name}.png
 
 
 %files
-%doc README.rst COPYING
+#%doc README.rst COPYING
 %{_datadir}/%{name}
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/icons/hicolor/*/apps/%{name}.png
