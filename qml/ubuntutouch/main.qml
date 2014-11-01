@@ -26,7 +26,7 @@ MainView {
     PageStack {
 
         Component.onCompleted: {
-            Theme.name = "Ubuntu.Components.Themes.SuruGradient"
+            Theme.name = 'Ubuntu.Components.Themes.SuruGradient'
             push(stationPage)
         }
 
@@ -42,6 +42,10 @@ MainView {
             id: aboutDialog
         }
 
+    }
+
+    Client {
+        id: client
     }
 
     Stations {

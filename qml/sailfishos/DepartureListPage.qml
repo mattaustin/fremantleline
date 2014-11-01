@@ -16,7 +16,6 @@
 
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import io.thp.pyotherside 1.0
 
 
 Page {
@@ -29,7 +28,7 @@ Page {
 
     BusyIndicator {
         anchors.centerIn: parent
-        running: python.loading
+        running: client.loading
         size: BusyIndicatorSize.Large
         Behavior on opacity {}
     }
@@ -52,7 +51,7 @@ Page {
         }
 
         ViewPlaceholder {
-            enabled: (!python.loading && departureList.count < 1)
+            enabled: (!client.loading && departureList.count < 1)
             text: 'No departing services were found for this station.'
         }
 
@@ -150,42 +149,12 @@ Page {
 
 
     function refresh() {
-        python.getDepartures();
-    }
-
-
-    Python {
-
-        id: python
-        property bool loading: true
-
-        Component.onCompleted: {
-            addImportPath(Qt.resolvedUrl('..').substr('file://'.length));
-            addImportPath(Qt.resolvedUrl('../fremantleline').substr('file://'.length));
-            addImportPath(Qt.resolvedUrl('../fremantleline/ui').substr('file://'.length));
-            importModule('ui', function() {});
-        }
-
-        onError: {
-            console.log('python error: ' + traceback);
-        }
-
-        function getDepartures() {
-            departureList.model = null;
-            loading = true;
-            if (departurePage.station) {
-                call('ui.pyotherside.get_departures', [departurePage.station.name, departurePage.station.url], function(result) {
-                    departureList.model = result;
-                    loading = false;
-                });
-            }
-        }
-
+        client.getDepartures(station);
     }
 
 
     onStationChanged: {
-        python.getDepartures();
+        client.getDepartures(station);
     }
 
 

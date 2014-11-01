@@ -22,7 +22,7 @@ ApplicationWindow {
 
     allowedOrientations: Orientation.Portrait
 
-    cover: Qt.resolvedUrl("CoverPage.qml") //CoverPage {}
+    cover: Qt.resolvedUrl('CoverPage.qml')
     initialPage: stationPage
 
     StationListPage {
@@ -39,6 +39,14 @@ ApplicationWindow {
 
     DepartureDialog {
         id: departureDialog
+    }
+
+    Client {
+        id: client
+    }
+
+    Stations {
+        id: stations
     }
 
 }

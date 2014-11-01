@@ -16,13 +16,11 @@
 
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import io.thp.pyotherside 1.0
 
 
 Page {
 
     id: dialog
-    property string version: ''
     forwardNavigation: false
 
     SilicaFlickable {
@@ -40,7 +38,7 @@ Page {
             }
 
             Label {
-                text: 'Fremantle Line v' + dialog.version
+                text: 'Fremantle Line v' + client.version
                 color: Theme.highlightColor
                 width: parent.width - Theme.paddingLarge - Theme.paddingLarge
                 x: Theme.paddingLarge
@@ -64,16 +62,6 @@ Page {
 
     function open() {
         pageStack.push(dialog)
-    }
-
-    Python {
-        Component.onCompleted: {
-            addImportPath(Qt.resolvedUrl('..').substr('file://'.length));
-            addImportPath(Qt.resolvedUrl('../fremantleline').substr('file://'.length));
-            importModule('meta', function() {
-                dialog.version = evaluate('meta.VERSION');
-            });
-        }
     }
 
 }

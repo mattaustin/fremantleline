@@ -18,19 +18,19 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
 import Ubuntu.Components.Popups 0.1
-import io.thp.pyotherside 1.0
 
 
 Page {
 
     id: departurePage
     property var station
+    property alias model: departureList.model
     title: station ? station.name : 'Departures'
     visible: false
 
     ActivityIndicator {
         anchors.centerIn: parent
-        running: python.loading
+        running: client.busy
     }
 
     ListView {
@@ -42,17 +42,17 @@ Page {
 
             height: Math.max(middleVisuals.height, units.gu(6))
 
-            icon: UbuntuShape {
-                color: (modelData.line_code == 'ARM' && '#fab20a' ||
-                        modelData.line_code == 'FRE' && '#155196' ||
-                        modelData.line_code == 'JDP' && '#97a509' ||
-                        modelData.line_code == 'MAN' && '#e55e16' ||
-                        modelData.line_code == 'MID' && '#b00257' ||
-                        '#16ac48')
-                implicitHeight: parent.height
-                implicitWidth: units.gu(1)
-                radius: 'large'
-            }
+//            icon: UbuntuShape {
+//                color: (modelData.line_code == 'ARM' && '#fab20a' ||
+//                        modelData.line_code == 'FRE' && '#155196' ||
+//                        modelData.line_code == 'JDP' && '#97a509' ||
+//                        modelData.line_code == 'MAN' && '#e55e16' ||
+//                        modelData.line_code == 'MID' && '#b00257' ||
+//                        '#16ac48')
+//                implicitHeight: parent.height
+//                implicitWidth: units.gu(1)
+//                radius: 'large'
+//            }
 
             Item  {
 
@@ -133,7 +133,7 @@ Page {
         fontSize: 'large'
         horizontalAlignment: Text.AlignHCenter
         text: 'No departing services were found for this station.'
-        visible: (!python.loading && departureList.count < 1)
+        visible: !client.busy && station ? (departureList.count < 1) : false
         wrapMode: Text.WordWrap
     }
 
@@ -158,42 +158,13 @@ Page {
             action: Action {
                 text: 'Refresh'
                 iconSource: Qt.resolvedUrl('image://theme/reload')
-                onTriggered: {python.getDepartures();}
+                onTriggered: {client.getDepartures(station);}
             }
         }
-    }
-
-    Python {
-
-        id: python
-        property bool loading: true
-
-        Component.onCompleted: {
-            addImportPath(Qt.resolvedUrl('..').substr('file://'.length));
-            addImportPath(Qt.resolvedUrl('../fremantleline').substr('file://'.length));
-            addImportPath(Qt.resolvedUrl('../fremantleline/ui').substr('file://'.length));
-            importModule('ui', function() {});
-        }
-
-        onError: {
-            console.log('python error: ' + traceback);
-        }
-
-        function getDepartures() {
-            departureList.model = null;
-            loading = true;
-            if (departurePage.station) {
-                call('ui.pyotherside.get_departures', [departurePage.station.name, departurePage.station.url], function(result) {
-                    departureList.model = result;
-                    loading = false;
-                });
-            }
-        }
-
     }
 
     onStationChanged: {
-        python.getDepartures();
+        client.getDepartures(station);
     }
 
 }

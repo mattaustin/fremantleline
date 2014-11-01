@@ -18,19 +18,17 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
 import Ubuntu.Components.Popups 0.1
-import io.thp.pyotherside 1.0
 
 
 Page {
 
     id: stationPage
-    property string projectUrl: ''
     title: 'Perth Trains'
     visible: false
 
     ActivityIndicator {
         anchors.centerIn: parent
-        running: stations.loading
+        running: stations.busy || client.busy
     }
 
     ListView {
@@ -67,7 +65,7 @@ Page {
                 }
                 Action {
                     text: 'Project homepage'
-                    onTriggered: {Qt.openUrlExternally(stationPage.projectUrl)}
+                    onTriggered: {Qt.openUrlExternally(client.projectUrl)}
                 }
                 Action {
                     text: 'Clear & reload station data'
@@ -91,23 +89,5 @@ Page {
         }
     }
 
-
-    Python {
-
-        id: python
-
-        Component.onCompleted: {
-            addImportPath(Qt.resolvedUrl('..').substr('file://'.length));
-            addImportPath(Qt.resolvedUrl('../fremantleline').substr('file://'.length));
-            importModule('meta', function() {
-                stationPage.projectUrl = evaluate('meta.PROJECT_URL');
-            });
-        }
-
-        onError: {
-            console.log('python error: ' + traceback);
-        }
-
-    }
 
 }

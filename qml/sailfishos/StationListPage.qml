@@ -16,17 +16,15 @@
 
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import io.thp.pyotherside 1.0
 
 
 Page {
 
     id: stationPage
-    property string projectUrl: ''
 
     BusyIndicator {
         anchors.centerIn: parent
-        running: stations.loading
+        running: stations.busy || client.busy
         size: BusyIndicatorSize.Large
         Behavior on opacity {}
     }
@@ -59,7 +57,7 @@ Page {
             }
             MenuItem {
                 text: 'Project homepage'
-                onClicked: {Qt.openUrlExternally(stationPage.projectUrl)}
+                onClicked: {Qt.openUrlExternally(client.projectUrl)}
             }
         }
 
@@ -107,30 +105,6 @@ Page {
         }
 
         VerticalScrollDecorator {}
-
-    }
-
-
-    Stations {
-        id: stations
-    }
-
-
-    Python {
-
-        id: python
-
-        Component.onCompleted: {
-            addImportPath(Qt.resolvedUrl('..').substr('file://'.length));
-            addImportPath(Qt.resolvedUrl('../fremantleline').substr('file://'.length));
-            importModule('meta', function() {
-                stationPage.projectUrl = evaluate('meta.PROJECT_URL');
-            });
-        }
-
-        onError: {
-            console.log('python error: ' + traceback);
-        }
 
     }
 
