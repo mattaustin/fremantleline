@@ -25,7 +25,7 @@ Python {
     property string version: ''
 
     Component.onCompleted: {
-        addImportPath(Qt.resolvedUrl('../..').substr('file://'.length));
+        addImportPath(Qt.resolvedUrl('../..'));
         setMeta();
     }
 
@@ -54,7 +54,7 @@ Python {
     }
 
     function saveStations() {
-        addImportPath(Qt.resolvedUrl('../..').substr('file://'.length));
+        addImportPath(Qt.resolvedUrl('../..'));
         importModule('fremantleline.ui', function () {
             busy += +1;
             call('fremantleline.ui.pyotherside.get_stations', [], function (result) {
