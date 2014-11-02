@@ -35,7 +35,7 @@ Item {
     function clearDatabase() {
         busy += +1;
         var db = getDatabase();
-        db.transaction(function(tx) {
+        db.transaction(function (tx) {
             tx.executeSql('DROP TABLE IF EXISTS stations');
         });
         busy += -1;
@@ -43,7 +43,7 @@ Item {
 
     function getDatabase() {
         var db = LocalStorage.openDatabaseSync(databaseName, databaseVersion, databaseDescription);
-        db.transaction(function(tx) {
+        db.transaction(function (tx) {
             tx.executeSql('CREATE TABLE IF NOT EXISTS stations(url TEXT UNIQUE PRIMARY KEY, name TEXT UNIQUE, is_starred INTEGER NOT NULL DEFAULT 0)');
         });
         return db;
@@ -53,12 +53,12 @@ Item {
         busy += +1;
         model.clear();
         var db = getDatabase();
-        db.transaction(function(tx) {
+        db.transaction(function (tx) {
             var rs = tx.executeSql('SELECT * FROM stations ORDER BY is_starred DESC, name ASC;');
-            if (rs.rows.length == 0) {
+            if (rs.rows.length === 0) {
                 client.saveStations();
             } else {
-                for (var i=0; i < rs.rows.length; ++i) {
+                for (var i=0; i < rs.rows.length; i++) {
                     var row = rs.rows.item(i);
                     model.append({'url': row.url, 'name': row.name, 'isStarred': row.is_starred ? true : false})
                 }
@@ -69,10 +69,10 @@ Item {
 
     function saveStation(url, name, isStarred) {
         busy += +1;
-        isStarred = typeof isStarred !== 'undefined' ? isStarred : false;
+        isStarred = typeof isStarred != 'undefined' ? isStarred : false;
         var is_starred = isStarred ? 1 : 0 // Database uses integer values
         var db = getDatabase();
-        db.transaction(function(tx) {
+        db.transaction(function (tx) {
             tx.executeSql('INSERT OR REPLACE INTO stations VALUES(?, ?, ?)', [url, name, is_starred]);
         });
         busy += -1;

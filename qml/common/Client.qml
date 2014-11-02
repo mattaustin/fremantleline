@@ -30,7 +30,7 @@ Python {
     }
 
     onError: {
-        console.log('python error: ' + traceback);
+        console.log('Python error: ' + traceback);
     }
 
     function setMeta() {
@@ -58,9 +58,9 @@ Python {
         importModule('fremantleline.ui', function () {
             busy += +1;
             call('fremantleline.ui.pyotherside.get_stations', [], function (result) {
-                result.forEach(function (item) {
-                    stations.saveStation(item['url'], item['name']);
-                    stations.model.append({'url': item['url'], 'name': item['name'], 'isStarred': false});
+                result.forEach(function (station) {
+                    stations.saveStation(station.url, station.name);
+                    stations.model.append({'url': station.url, 'name': station.name, 'isStarred': false});
                 });
                 busy += -1;
             });

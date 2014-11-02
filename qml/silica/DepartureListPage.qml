@@ -154,7 +154,7 @@ Page {
 
 
     onStationChanged: {
-        client.getDepartures(station);
+        refresh();
     }
 
 

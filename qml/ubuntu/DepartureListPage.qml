@@ -158,13 +158,18 @@ Page {
             action: Action {
                 text: 'Refresh'
                 iconSource: Qt.resolvedUrl('image://theme/reload')
-                onTriggered: {client.getDepartures(station);}
+                onTriggered: {refresh();}
             }
         }
     }
 
-    onStationChanged: {
+
+    function refresh() {
         client.getDepartures(station);
+    }
+
+    onStationChanged: {
+        refresh();
     }
 
 }
