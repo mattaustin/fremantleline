@@ -25,7 +25,7 @@ import sys
 
 class FremantleView(View):
 
-    platform = 'fremantle'
+    components = 'hildon'
 
     def __init__(self, *args, **kwargs):
         super(FremantleView, self).__init__(*args, **kwargs)
