@@ -39,18 +39,6 @@ Page {
 
             height: Math.max(middleVisuals.height, units.gu(6))
 
-//            icon: UbuntuShape {
-//                color: (modelData.line_code == 'ARM' && '#fab20a' ||
-//                        modelData.line_code == 'FRE' && '#155196' ||
-//                        modelData.line_code == 'JDP' && '#97a509' ||
-//                        modelData.line_code == 'MAN' && '#e55e16' ||
-//                        modelData.line_code == 'MID' && '#b00257' ||
-//                        '#16ac48')
-//                implicitHeight: parent.height
-//                implicitWidth: units.gu(1)
-//                radius: 'large'
-//            }
-
             Item  {
 
                 id: middleVisuals
@@ -61,12 +49,30 @@ Page {
                 }
                 height: childrenRect.height + title.anchors.topMargin + subtitle.anchors.bottomMargin
 
+                UbuntuShape {
+                    id: indicator
+                    anchors {
+                        top: parent.top
+                        left: parent.left
+                    }
+                    color: (modelData.line_code == 'ARM' && '#fab20a' ||
+                            modelData.line_code == 'FRE' && '#155196' ||
+                            modelData.line_code == 'JDP' && '#97a509' ||
+                            modelData.line_code == 'MAN' && '#e55e16' ||
+                            modelData.line_code == 'MID' && '#b00257' ||
+                            '#16ac48')
+                    implicitHeight: parent.height
+                    implicitWidth: units.gu(1)
+                    radius: 'large'
+                }
+
                 Label {
                     id: title
                     anchors {
                         top: parent.top
-                        left: parent.left
                         right: parent.right
+                        left: parent.left
+                        leftMargin: units.gu(2)
                     }
                     enabled: !modelData.is_cancelled
                     font.strikeout: !enabled
@@ -77,9 +83,10 @@ Page {
                 Label {
                     id: subtitle
                     anchors {
-                        left: parent.left
                         right: parent.right
                         top: title.bottom
+                        left: parent.left
+                        leftMargin: units.gu(2)
                     }
                     color: Theme.palette.normal.backgroundText
                     enabled: !modelData.is_cancelled
