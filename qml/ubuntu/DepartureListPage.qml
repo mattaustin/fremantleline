@@ -17,30 +17,12 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
-import Ubuntu.Components.Popups 0.1
 
 
 Page {
 
-    id: page
-
-    property var station
-
-    function getDepartures() {
-        departureList.model = null;
-        if (station) {
-            client.fetchDepartures(station, function (result) {
-                departureList.model = result;
-            });
-        }
-    }
-
-    title: station ? station.name : 'Departures'
+    title: application.station ? application.station.name : 'Departures'
     visible: false
-
-    onStationChanged: {
-        getDepartures();
-    }
 
     ActivityIndicator {
         anchors.centerIn: parent
@@ -51,6 +33,7 @@ Page {
 
         id: departureList
         anchors.fill: parent
+        model: application.departureList
 
         delegate: ListItem.Base {
 
@@ -124,7 +107,7 @@ Page {
             }
 
             onClicked: {
-                PopupUtils.open(departureDialog, null, {'departure': modelData});
+                application.departure = modelData;
             }
 
         }
@@ -151,19 +134,13 @@ Page {
         wrapMode: Text.WordWrap
     }
 
-    Component {
-        id: departureDialog
-        DepartureDialog {}
-    }
-
     tools: ToolbarItems {
         ToolbarButton {
             action: Action {
                 text: (station ? station.isStarred : false) ? 'Unstar' : 'Star'
                 iconSource: (station ? station.isStarred : false) ? Qt.resolvedUrl('image://theme/favorite-selected') : Qt.resolvedUrl('image://theme/favorite-unselected')
                 onTriggered: {
-                    stations.model.setProperty(station.index, 'isStarred', !station.isStarred);
-                    stations.saveStation(station.url, station.name, station.isStarred);
+                    stations.saveStation(station.url, station.name, !station.isStarred);
                     pageStack.pop();
                     stations.loadStations();
                 }
@@ -173,7 +150,7 @@ Page {
             action: Action {
                 text: 'Refresh'
                 iconSource: Qt.resolvedUrl('image://theme/reload')
-                onTriggered: {getDepartures();}
+                onTriggered: {application.getDepartures();}
             }
         }
     }

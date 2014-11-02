@@ -42,7 +42,7 @@ Python {
             call('fremantleline.ui.pyotherside.get_stations', [], function (result) {
                 result.forEach(function (station) {
                     stations.saveStation(station.url, station.name);
-                    stations.model.append({'url': station.url, 'name': station.name, 'isStarred': false});
+                    application.stationList.append({'url': station.url, 'name': station.name, 'isStarred': false});
                 });
                 busy += -1;
             });

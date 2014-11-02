@@ -42,15 +42,13 @@ Page {
 
         id: stationList
         anchors.fill: parent
-        model: stations.model
+        model: application.stationList
 
         delegate: ListItem.Standard {
             width: stationList.width
             text: model.name
             progression: true
-            onClicked: {
-                pageStack.push(Qt.resolvedUrl('DepartureListPage.qml'), {station: model});
-            }
+            onClicked: {application.station = model}
         }
 
         Scrollbar {

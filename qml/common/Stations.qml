@@ -23,7 +23,6 @@ Item {
     property string databaseName: 'fremantleline-stations'
     property string databaseVersion: '0.1'
     property string databaseDescription: ''
-    property ListModel model: ListModel {}
     property int busy: 0
 
     function clearDatabase() {
@@ -45,7 +44,7 @@ Item {
 
     function loadStations() {
         busy += +1;
-        model.clear();
+        application.stationList.clear();
         var db = getDatabase();
         db.transaction(function (tx) {
             var rs = tx.executeSql('SELECT * FROM stations ORDER BY is_starred DESC, name ASC;');
@@ -54,7 +53,7 @@ Item {
             } else {
                 for (var i=0; i < rs.rows.length; i++) {
                     var row = rs.rows.item(i);
-                    model.append({'url': row.url, 'name': row.name, 'isStarred': row.is_starred ? true : false})
+                    application.stationList.append({'url': row.url, 'name': row.name, 'isStarred': row.is_starred ? true : false})
                 }
             }
         });

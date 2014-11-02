@@ -20,16 +20,10 @@ import Sailfish.Silica 1.0
 
 CoverBackground {
 
-    CoverPlaceholder {
-        text: 'Perth Trains'
-        visible: departureListPage.status != PageStatus.Active && departureDialog.status != PageStatus.Active
-    }
-
 
     CoverPlaceholder {
-        text: departureListPage.station ? departureListPage.station.name : 'Perth Trains'
-        visible: departureListPage.status == PageStatus.Active && departureList.count < 1
-
+        text: application.station ? application.station.name : 'Perth Trains'
+        visible: application.departureList ? application.departureList.length < 1 : !application.departure
     }
 
 
@@ -37,17 +31,29 @@ CoverBackground {
 
         id: departureList
 
+        property real headerHeight: Theme.itemSizeExtraSmall
         property real itemHeight: Theme.itemSizeExtraSmall
 
         clip: true
         interactive: false
-        model: departureListPage.model
-        height: 3*itemHeight + 2*Theme.paddingSmall
+        model: application.departureList
+        height: 3*itemHeight + 3*Theme.paddingSmall + headerHeight
         width: parent.width - 2*x
         spacing: Theme.paddingSmall
         x: Theme.paddingLarge
         y: Theme.paddingMedium + Theme.paddingSmall
-        visible: departureListPage.status == PageStatus.Active
+        visible: (!application.departure && application.departureList) ? application.departureList.length > 0 : false
+
+        header: Label {
+            width: parent.width
+            text: application.station ? application.station.name + '\n' : 'Perth Trains\n'
+            font.pixelSize: Theme.fontSizeExtraSmall
+            lineHeight: 1.25/2
+            truncationMode: TruncationMode.Fade
+            Component.onCompleted: {
+                departureList.headerHeight = height;
+            }
+        }
 
         delegate: Column {
 
@@ -85,12 +91,12 @@ CoverBackground {
 
     CoverActionList {
 
-        enabled: departureListPage.status == PageStatus.Active
+        enabled: application.station && !application.departure && !client.busy
 
         CoverAction {
             iconSource: 'image://theme/icon-cover-refresh'
             onTriggered: {
-                departureListPage.refresh();
+                application.getDepartures();
             }
         }
 
@@ -108,7 +114,7 @@ CoverBackground {
         width: parent.width - 2*x
         x: Theme.paddingLarge
         y: Theme.paddingMedium + Theme.paddingSmall
-        visible: departureDialog.status == PageStatus.Active
+        visible: application.departure
 
         Column {
 
@@ -120,7 +126,7 @@ CoverBackground {
 
             Label {
                 width: parent.width
-                text: departureListPage.station ? departureListPage.station.name : 'Perth Trains'
+                text: application.station ? application.station.name : 'Perth Trains'
                 //wrapMode: Text.WordWrap
                 font.pixelSize: Theme.fontSizeExtraSmall
                 truncationMode: TruncationMode.Fade
@@ -133,9 +139,9 @@ CoverBackground {
             }
 
             Label {
-                enabled: departureDialog.departure ? !departureDialog.departure.is_cancelled : true
+                enabled: application.departure ? !application.departure.is_cancelled : true
                 width: parent.width
-                text: departureDialog.departure ? departureDialog.departure.actual_time : ''
+                text: application.departure ? application.departure.actual_time : ''
                 font.pixelSize: Theme.fontSizeExtraLarge
                 font.strikeout: !enabled
                 truncationMode: TruncationMode.Fade
@@ -144,9 +150,9 @@ CoverBackground {
             }
 
             Label {
-                enabled: departureDialog.departure ? !departureDialog.departure.is_cancelled : true
+                enabled: application.departure ? !application.departure.is_cancelled : true
                 width: parent.width
-                text: departureDialog.departure ? (departureDialog.departure.pattern_code ? departureDialog.departure.destination_name + ' ' + departureDialog.departure.pattern_code : departureDialog.departure.destination_name) : ''
+                text: application.departure ? (application.departure.pattern_code ? application.departure.destination_name + ' ' + application.departure.pattern_code : application.departure.destination_name) : ''
                 color: Theme.secondaryColor
                 font.pixelSize: Theme.fontSizeExtraSmall
                 font.strikeout: !enabled
@@ -155,9 +161,9 @@ CoverBackground {
             }
 
             Label {
-                enabled: departureDialog.departure ? !departureDialog.departure.is_cancelled : true
+                enabled: application.departure ? !application.departure.is_cancelled : true
                 width: parent.width
-                text: departureDialog.departure ? (departureDialog.departure.platform_number ? 'Platform ' + departureDialog.departure.platform_number : '') : ''
+                text: application.departure ? (application.departure.platform_number ? 'Platform ' + application.departure.platform_number : '') : ''
                 color: Theme.secondaryColor
                 font.pixelSize: Theme.fontSizeExtraSmall
                 font.strikeout: !enabled
@@ -177,5 +183,6 @@ CoverBackground {
         width: parent.width
         height: sourceSize.height * width / sourceSize.width
     }
+
 
 }

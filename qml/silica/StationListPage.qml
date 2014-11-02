@@ -20,6 +20,13 @@ import Sailfish.Silica 1.0
 
 Page {
 
+    onStatusChanged: {
+        // Clear any selected station when this page is activated
+        if (status == PageStatus.Active) {
+            application.station = null;
+        }
+    }
+
     BusyIndicator {
         anchors.centerIn: parent
         running: (stations.busy || client.busy) && stationList.count < 1
@@ -31,7 +38,7 @@ Page {
 
         id: stationList
         anchors.fill: parent
-        model: stations.model
+        model: application.stationList
 
         header: PageHeader {
             title: 'Perth Trains'
@@ -69,20 +76,20 @@ Page {
                 id: contentItem
                 width: stationList.width
 
+                onClicked: {
+                    application.station = model;
+                }
+
+                onPressAndHold: {
+                    contextMenu.show(stationItem);
+                }
+
                 Label {
                     text: model.name
                     font.bold: model.isStarred
                     color: contentItem.down ? Theme.highlightColor : Theme.primaryColor
                     anchors.verticalCenter: parent.verticalCenter
                     x: Theme.paddingLarge
-                }
-
-                onClicked: {
-                    pageStack.push(Qt.resolvedUrl('DepartureListPage.qml'), {station: model});
-                }
-
-                onPressAndHold: {
-                    contextMenu.show(stationItem);
                 }
 
             }

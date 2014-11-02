@@ -16,20 +16,56 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 0.1
+import Ubuntu.Components.Popups 0.1
 
 
 MainView {
 
+    id: application
+
+    property var station: null
+    property ListModel stationList: ListModel {}
+    property var departure: null
+    property var departureList: null
+
+    function getDepartures() {
+        departureList = null;
+        client.fetchDepartures(station, function (result) {
+            departureList = result;
+        });
+    }
+
     width: units.gu(48)
     height: units.gu(60)
 
+    onDepartureChanged: {
+        if (departure) {
+            PopupUtils.open(departureDialog, null, {'departure': departure});
+        }
+    }
+
+    onStationChanged: {
+        departureList = null;
+        if (station) {
+            getDepartures();
+            pageStack.push(Qt.resolvedUrl('DepartureListPage.qml'), {station: station})
+        }
+    }
+
     PageStack {
+
+        id: pageStack
 
         Component.onCompleted: {
             Theme.name = 'Ubuntu.Components.Themes.SuruGradient'
             push(Qt.resolvedUrl('StationListPage.qml'))
         }
 
+    }
+
+    Component {
+        id: departureDialog
+        DepartureDialog {}
     }
 
     Client {

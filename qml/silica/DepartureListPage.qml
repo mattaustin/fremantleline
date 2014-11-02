@@ -20,24 +20,16 @@ import Sailfish.Silica 1.0
 
 Page {
 
-    property var station
-
-    function getDepartures() {
-        departureList.model = null;
-        if (station) {
-            client.fetchDepartures(station, function (result) {
-                departureList.model = result;
-            });
+    onStatusChanged: {
+        // Clear any selected departure when this page is activated
+        if (status == PageStatus.Active) {
+            application.departure = null;
         }
-    }
-
-    onStationChanged: {
-        getDepartures();
     }
 
     BusyIndicator {
         anchors.centerIn: parent
-        running: client.loading
+        running: client.busy
         size: BusyIndicatorSize.Large
         Behavior on opacity {}
     }
@@ -47,20 +39,21 @@ Page {
         id: departureList
 
         anchors.fill: parent
+        model: application.departureList
 
         header: PageHeader {
-            title: station ? station.name : 'Departures'
+            title: application.station ? application.station.name : 'Departures'
         }
 
         PullDownMenu {
             MenuItem {
                 text: 'Refresh'
-                onClicked: {getDepartures();}
+                onClicked: {application.getDepartures();}
             }
         }
 
         ViewPlaceholder {
-            enabled: (!client.loading && departureList.count < 1)
+            enabled: (!client.busy && departureList.count < 1)
             text: 'No departing services were found for this station.'
         }
 
@@ -72,7 +65,7 @@ Page {
             implicitHeight: Theme.itemSizeMedium
 
             onClicked: {
-                pageStack.push(Qt.resolvedUrl('DepartureDialog.qml'), {departure: modelData})
+                application.departure = modelData;
             }
 
             Item {

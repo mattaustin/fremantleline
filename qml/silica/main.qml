@@ -20,9 +20,37 @@ import Sailfish.Silica 1.0
 
 ApplicationWindow {
 
+    id: application
+
+    property var station: null
+    property ListModel stationList: ListModel {}
+    property var departure: null
+    property var departureList: null
+
+    function getDepartures() {
+        departureList = null;
+        client.fetchDepartures(station, function (result) {
+            departureList = result;
+        });
+    }
+
     allowedOrientations: Orientation.Portrait
     cover: Qt.resolvedUrl('CoverPage.qml')
     initialPage: Qt.resolvedUrl('StationListPage.qml')
+
+    onDepartureChanged: {
+        if (departure) {
+            pageStack.push(Qt.resolvedUrl('DepartureDialog.qml'), {departure: departure})
+        }
+    }
+
+    onStationChanged: {
+        departureList = null;
+        if (station) {
+            getDepartures();
+            pageStack.push(Qt.resolvedUrl('DepartureListPage.qml'), {station: station})
+        }
+    }
 
     Client {
         id: client
