@@ -27,19 +27,7 @@ MainView {
 
         Component.onCompleted: {
             Theme.name = 'Ubuntu.Components.Themes.SuruGradient'
-            push(stationListPage)
-        }
-
-        StationListPage {
-            id: stationListPage
-        }
-
-        DepartureListPage {
-            id: departureListPage
-        }
-
-        AboutDialog {
-            id: aboutDialog
+            push(Qt.resolvedUrl('StationListPage.qml'))
         }
 
     }

@@ -21,14 +21,18 @@ import Sailfish.Silica 1.0
 Page {
 
     property var station
-    property alias model: departureList.model
 
-    function refresh() {
-        client.getDepartures(station);
+    function getDepartures() {
+        departureList.model = null;
+        if (station) {
+            client.fetchDepartures(station, function (result) {
+                departureList.model = result;
+            });
+        }
     }
 
     onStationChanged: {
-        refresh();
+        getDepartures();
     }
 
     BusyIndicator {
@@ -51,7 +55,7 @@ Page {
         PullDownMenu {
             MenuItem {
                 text: 'Refresh'
-                onClicked: {refresh();}
+                onClicked: {getDepartures();}
             }
         }
 
@@ -68,8 +72,7 @@ Page {
             implicitHeight: Theme.itemSizeMedium
 
             onClicked: {
-                departureDialog.departure = modelData;
-                departureDialog.open();
+                pageStack.push(Qt.resolvedUrl('DepartureDialog.qml'), {departure: modelData})
             }
 
             Item {

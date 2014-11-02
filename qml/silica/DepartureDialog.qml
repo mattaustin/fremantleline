@@ -24,12 +24,7 @@ Page {
 
     property var departure
 
-    function open() {
-        pageStack.push(dialog);
-    }
-
     forwardNavigation: false
-
 
     SilicaFlickable {
 

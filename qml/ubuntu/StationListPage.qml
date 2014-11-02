@@ -35,7 +35,7 @@ Page {
 
     ActivityIndicator {
         anchors.centerIn: parent
-        running: stations.busy || client.busy
+        running: (stations.busy || client.busy) && stationList.count < 1
     }
 
     ListView {
@@ -49,8 +49,7 @@ Page {
             text: model.name
             progression: true
             onClicked: {
-                departureListPage.station = model;
-                pageStack.push(departureListPage);
+                pageStack.push(Qt.resolvedUrl('DepartureListPage.qml'), {station: model});
             }
         }
 
@@ -60,6 +59,10 @@ Page {
 
     }
 
+    Component {
+        id: aboutDialog
+        AboutDialog {}
+    }
 
     Component {
         id: actionSelectionPopover

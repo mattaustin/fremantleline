@@ -24,16 +24,13 @@ Python {
     property string projectUrl: ''
     property string version: ''
 
-    function getDepartures(station) {
+    function fetchDepartures(station, callback) {
+        busy += +1;
         importModule('fremantleline.ui', function () {
-            departureListPage.model = null;
-            if (station) {
-                busy += +1;
-                call('fremantleline.ui.pyotherside.get_departures', [station.name, station.url], function (result) {
-                    departureListPage.model = result;
-                    busy += -1;
-                });
-            }
+            call('fremantleline.ui.pyotherside.get_departures', [station.name, station.url], function (result) {
+                typeof callback === 'function' && callback(result);
+                busy += -1;
+            });
         });
     }
 

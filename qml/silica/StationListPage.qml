@@ -22,7 +22,7 @@ Page {
 
     BusyIndicator {
         anchors.centerIn: parent
-        running: stations.busy || client.busy
+        running: (stations.busy || client.busy) && stationList.count < 1
         size: BusyIndicatorSize.Large
         Behavior on opacity {}
     }
@@ -50,7 +50,7 @@ Page {
                 text: 'About'
                 onClicked: {
                     pullDownMenu.close();
-                    aboutDialog.open();
+                    pageStack.push(Qt.resolvedUrl('AboutDialog.qml'))
                 }
             }
             MenuItem {
@@ -78,8 +78,7 @@ Page {
                 }
 
                 onClicked: {
-                    departureListPage.station = model;
-                    pageStack.push(departureListPage);
+                    pageStack.push(Qt.resolvedUrl('DepartureListPage.qml'), {station: model});
                 }
 
                 onPressAndHold: {

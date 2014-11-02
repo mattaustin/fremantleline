@@ -19,23 +19,19 @@ import Ubuntu.Components 0.1
 import Ubuntu.Components.Popups 0.1
 
 
-Component {
+Dialog {
 
-    Dialog {
+    id: dialog
 
-        id: dialog
+    property var departure
 
-        property var departure
+    title: departure.actual_time + ' to ' + departure.destination_name
+    text: (departure.pattern_code ? departure.pattern_code + ' pattern' : 'All stops') + '\n\n' + departure.pattern_description
 
-        title: departure.actual_time + ' to ' + departure.destination_name
-        text: (departure.pattern_code ? departure.pattern_code + ' pattern' : 'All stops') + '\n\n' + departure.pattern_description
-
-        Button {
-            gradient: UbuntuColors.greyGradient
-            onClicked: PopupUtils.close(dialog)
-            text: 'Close'
-        }
-
+    Button {
+        gradient: UbuntuColors.greyGradient
+        onClicked: PopupUtils.close(dialog)
+        text: 'Close'
     }
 
 }

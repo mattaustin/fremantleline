@@ -21,25 +21,8 @@ import Sailfish.Silica 1.0
 ApplicationWindow {
 
     allowedOrientations: Orientation.Portrait
-
     cover: Qt.resolvedUrl('CoverPage.qml')
-    initialPage: stationListPage
-
-    StationListPage {
-      id: stationListPage
-    }
-
-    DepartureListPage {
-      id: departureListPage
-    }
-
-    AboutDialog {
-        id: aboutDialog
-    }
-
-    DepartureDialog {
-        id: departureDialog
-    }
+    initialPage: Qt.resolvedUrl('StationListPage.qml')
 
     Client {
         id: client

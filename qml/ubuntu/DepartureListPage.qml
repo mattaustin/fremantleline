@@ -22,18 +22,24 @@ import Ubuntu.Components.Popups 0.1
 
 Page {
 
-    property var station
-    property alias model: departureList.model
+    id: page
 
-    function refresh() {
-        client.getDepartures(station);
+    property var station
+
+    function getDepartures() {
+        departureList.model = null;
+        if (station) {
+            client.fetchDepartures(station, function (result) {
+                departureList.model = result;
+            });
+        }
     }
 
     title: station ? station.name : 'Departures'
     visible: false
 
     onStationChanged: {
-        refresh();
+        getDepartures();
     }
 
     ActivityIndicator {
@@ -145,8 +151,9 @@ Page {
         wrapMode: Text.WordWrap
     }
 
-    DepartureDialog {
+    Component {
         id: departureDialog
+        DepartureDialog {}
     }
 
     tools: ToolbarItems {
@@ -166,7 +173,7 @@ Page {
             action: Action {
                 text: 'Refresh'
                 iconSource: Qt.resolvedUrl('image://theme/reload')
-                onTriggered: {refresh();}
+                onTriggered: {getDepartures();}
             }
         }
     }

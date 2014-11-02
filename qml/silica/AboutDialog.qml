@@ -22,10 +22,6 @@ Page {
 
     id: dialog
 
-    function open() {
-        pageStack.push(dialog)
-    }
-
     forwardNavigation: false
 
     SilicaFlickable {
