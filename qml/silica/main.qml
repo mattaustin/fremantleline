@@ -23,14 +23,14 @@ ApplicationWindow {
     allowedOrientations: Orientation.Portrait
 
     cover: Qt.resolvedUrl('CoverPage.qml')
-    initialPage: stationPage
+    initialPage: stationListPage
 
     StationListPage {
-      id: stationPage
+      id: stationListPage
     }
 
     DepartureListPage {
-      id: departurePage
+      id: departureListPage
     }
 
     AboutDialog {

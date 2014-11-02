@@ -22,8 +22,6 @@ import Ubuntu.Components.Popups 0.1
 
 Page {
 
-    id: stationPage
-
     title: 'Perth Trains'
     tools: ToolbarItems {
         ToolbarButton {
@@ -51,8 +49,8 @@ Page {
             text: model.name
             progression: true
             onClicked: {
-                departurePage.station = model;
-                pageStack.push(departurePage);
+                departureListPage.station = model;
+                pageStack.push(departureListPage);
             }
         }
 

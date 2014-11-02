@@ -20,9 +20,6 @@ import Sailfish.Silica 1.0
 
 Page {
 
-
-    id: departurePage
-
     property var station
     property alias model: departureList.model
 
@@ -48,7 +45,7 @@ Page {
         anchors.fill: parent
 
         header: PageHeader {
-            title: departurePage.station ? departurePage.station.name : 'Departures'
+            title: station ? station.name : 'Departures'
         }
 
         PullDownMenu {

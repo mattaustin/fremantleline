@@ -22,13 +22,13 @@ CoverBackground {
 
     CoverPlaceholder {
         text: 'Perth Trains'
-        visible: departurePage.status != PageStatus.Active && departureDialog.status != PageStatus.Active
+        visible: departureListPage.status != PageStatus.Active && departureDialog.status != PageStatus.Active
     }
 
 
     CoverPlaceholder {
-        text: departurePage.station ? departurePage.station.name : 'Perth Trains'
-        visible: departurePage.status == PageStatus.Active && departureList.count < 1
+        text: departureListPage.station ? departureListPage.station.name : 'Perth Trains'
+        visible: departureListPage.status == PageStatus.Active && departureList.count < 1
 
     }
 
@@ -41,13 +41,13 @@ CoverBackground {
 
         clip: true
         interactive: false
-        model: departurePage.model
+        model: departureListPage.model
         height: 3*itemHeight + 2*Theme.paddingSmall
         width: parent.width - 2*x
         spacing: Theme.paddingSmall
         x: Theme.paddingLarge
         y: Theme.paddingMedium + Theme.paddingSmall
-        visible: departurePage.status == PageStatus.Active
+        visible: departureListPage.status == PageStatus.Active
 
         delegate: Column {
 
@@ -85,12 +85,12 @@ CoverBackground {
 
     CoverActionList {
 
-        enabled: departurePage.status == PageStatus.Active
+        enabled: departureListPage.status == PageStatus.Active
 
         CoverAction {
             iconSource: 'image://theme/icon-cover-refresh'
             onTriggered: {
-                departurePage.refresh();
+                departureListPage.refresh();
             }
         }
 
@@ -120,7 +120,7 @@ CoverBackground {
 
             Label {
                 width: parent.width
-                text: departurePage.station ? departurePage.station.name : 'Perth Trains'
+                text: departureListPage.station ? departureListPage.station.name : 'Perth Trains'
                 //wrapMode: Text.WordWrap
                 font.pixelSize: Theme.fontSizeExtraSmall
                 truncationMode: TruncationMode.Fade

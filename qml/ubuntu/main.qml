@@ -27,15 +27,15 @@ MainView {
 
         Component.onCompleted: {
             Theme.name = 'Ubuntu.Components.Themes.SuruGradient'
-            push(stationPage)
+            push(stationListPage)
         }
 
         StationListPage {
-            id: stationPage
+            id: stationListPage
         }
 
         DepartureListPage {
-            id: departurePage
+            id: departureListPage
         }
 
         AboutDialog {

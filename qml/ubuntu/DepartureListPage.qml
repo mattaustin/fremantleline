@@ -22,8 +22,6 @@ import Ubuntu.Components.Popups 0.1
 
 Page {
 
-    id: departurePage
-
     property var station
     property alias model: departureList.model
 

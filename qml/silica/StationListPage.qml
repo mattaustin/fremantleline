@@ -20,8 +20,6 @@ import Sailfish.Silica 1.0
 
 Page {
 
-    id: stationPage
-
     BusyIndicator {
         anchors.centerIn: parent
         running: stations.busy || client.busy
@@ -80,8 +78,8 @@ Page {
                 }
 
                 onClicked: {
-                    departurePage.station = model;
-                    pageStack.push(departurePage);
+                    departureListPage.station = model;
+                    pageStack.push(departureListPage);
                 }
 
                 onPressAndHold: {

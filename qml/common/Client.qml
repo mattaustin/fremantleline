@@ -26,11 +26,11 @@ Python {
 
     function getDepartures(station) {
         importModule('fremantleline.ui', function () {
-            departurePage.model = null;
+            departureListPage.model = null;
             if (station) {
                 busy += +1;
                 call('fremantleline.ui.pyotherside.get_departures', [station.name, station.url], function (result) {
-                    departurePage.model = result;
+                    departureListPage.model = result;
                     busy += -1;
                 });
             }
