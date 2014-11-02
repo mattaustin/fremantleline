@@ -38,6 +38,7 @@ Python {
     }
 
     function saveStations() {
+        addImportPath(Qt.resolvedUrl('..'));
         addImportPath(Qt.resolvedUrl('../..'));
         importModule('fremantleline.ui', function () {
             busy += +1;
@@ -59,6 +60,7 @@ Python {
     }
 
     Component.onCompleted: {
+        addImportPath(Qt.resolvedUrl('..'));
         addImportPath(Qt.resolvedUrl('../..'));
         setMeta();
     }
