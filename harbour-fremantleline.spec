@@ -29,6 +29,7 @@ TARGET=%{buildroot}/%{_datadir}/%{name}
 mkdir -p $TARGET
 cp -rpv fremantleline $TARGET/
 cp -rpv qml/silica $TARGET/qml
+cp -rpv qml/common $TARGET/qml
 ln -s main.qml $TARGET/qml/%{name}.qml
 
 # Documentation files
