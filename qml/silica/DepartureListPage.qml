@@ -22,9 +22,17 @@ Page {
 
 
     id: departurePage
+
     property var station
     property alias model: departureList.model
 
+    function refresh() {
+        client.getDepartures(station);
+    }
+
+    onStationChanged: {
+        refresh();
+    }
 
     BusyIndicator {
         anchors.centerIn: parent
@@ -33,10 +41,10 @@ Page {
         Behavior on opacity {}
     }
 
-
     SilicaListView {
 
         id: departureList
+
         anchors.fill: parent
 
         header: PageHeader {
@@ -58,6 +66,7 @@ Page {
         delegate: BackgroundItem {
 
             id: departureItem
+
             width: departureList.width
             implicitHeight: Theme.itemSizeMedium
 
@@ -146,16 +155,5 @@ Page {
         VerticalScrollDecorator {}
 
     }
-
-
-    function refresh() {
-        client.getDepartures(station);
-    }
-
-
-    onStationChanged: {
-        refresh();
-    }
-
 
 }

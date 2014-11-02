@@ -24,6 +24,7 @@ Component {
     Dialog {
 
         id: dialog
+
         property var departure
 
         title: departure.actual_time + ' to ' + departure.destination_name

@@ -26,12 +26,6 @@ Item {
     property ListModel model: ListModel {}
     property int busy: 0
 
-    visible: false;
-
-    Component.onCompleted: {
-        loadStations();
-    }
-
     function clearDatabase() {
         busy += +1;
         var db = getDatabase();
@@ -76,6 +70,12 @@ Item {
             tx.executeSql('INSERT OR REPLACE INTO stations VALUES(?, ?, ?)', [url, name, is_starred]);
         });
         busy += -1;
+    }
+
+    visible: false;
+
+    Component.onCompleted: {
+        loadStations();
     }
 
 }

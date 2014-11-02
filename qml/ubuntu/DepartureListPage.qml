@@ -23,10 +23,20 @@ import Ubuntu.Components.Popups 0.1
 Page {
 
     id: departurePage
+
     property var station
     property alias model: departureList.model
+
+    function refresh() {
+        client.getDepartures(station);
+    }
+
     title: station ? station.name : 'Departures'
     visible: false
+
+    onStationChanged: {
+        refresh();
+    }
 
     ActivityIndicator {
         anchors.centerIn: parent
@@ -161,15 +171,6 @@ Page {
                 onTriggered: {refresh();}
             }
         }
-    }
-
-
-    function refresh() {
-        client.getDepartures(station);
-    }
-
-    onStationChanged: {
-        refresh();
     }
 
 }

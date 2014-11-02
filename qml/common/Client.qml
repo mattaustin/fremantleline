@@ -24,22 +24,6 @@ Python {
     property string projectUrl: ''
     property string version: ''
 
-    Component.onCompleted: {
-        addImportPath(Qt.resolvedUrl('../..'));
-        setMeta();
-    }
-
-    onError: {
-        console.log('Python error: ' + traceback);
-    }
-
-    function setMeta() {
-        importModule('fremantleline.meta', function () {
-            projectUrl = evaluate('fremantleline.meta.PROJECT_URL');
-            version = evaluate('fremantleline.meta.VERSION');
-        });
-    }
-
     function getDepartures(station) {
         importModule('fremantleline.ui', function () {
             departurePage.model = null;
@@ -65,6 +49,22 @@ Python {
                 busy += -1;
             });
         });
+    }
+
+    function setMeta() {
+        importModule('fremantleline.meta', function () {
+            projectUrl = evaluate('fremantleline.meta.PROJECT_URL');
+            version = evaluate('fremantleline.meta.VERSION');
+        });
+    }
+
+    Component.onCompleted: {
+        addImportPath(Qt.resolvedUrl('../..'));
+        setMeta();
+    }
+
+    onError: {
+        console.log('Python error: ' + traceback);
     }
 
 }

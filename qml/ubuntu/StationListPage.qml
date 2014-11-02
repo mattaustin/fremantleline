@@ -23,7 +23,16 @@ import Ubuntu.Components.Popups 0.1
 Page {
 
     id: stationPage
+
     title: 'Perth Trains'
+    tools: ToolbarItems {
+        ToolbarButton {
+            id: actionsButton
+            iconSource: Qt.resolvedUrl('image://theme/navigation-menu')
+            text: 'Menu'
+            onTriggered: PopupUtils.open(actionSelectionPopover, actionsButton)
+        }
+    }
     visible: false
 
     ActivityIndicator {
@@ -77,16 +86,6 @@ Page {
             }
         }
 
-    }
-
-
-    tools: ToolbarItems {
-        ToolbarButton {
-            id: actionsButton
-            iconSource: Qt.resolvedUrl('image://theme/navigation-menu')
-            text: 'Menu'
-            onTriggered: PopupUtils.open(actionSelectionPopover, actionsButton)
-        }
     }
 
 

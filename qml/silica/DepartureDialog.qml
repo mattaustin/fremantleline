@@ -21,7 +21,13 @@ import Sailfish.Silica 1.0
 Page {
 
     id: dialog
+
     property var departure
+
+    function open() {
+        pageStack.push(dialog);
+    }
+
     forwardNavigation: false
 
 
@@ -61,11 +67,5 @@ Page {
         }
 
     }
-
-
-    function open() {
-        pageStack.push(dialog);
-    }
-
 
 }

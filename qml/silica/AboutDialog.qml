@@ -21,6 +21,11 @@ import Sailfish.Silica 1.0
 Page {
 
     id: dialog
+
+    function open() {
+        pageStack.push(dialog)
+    }
+
     forwardNavigation: false
 
     SilicaFlickable {
@@ -58,10 +63,6 @@ Page {
 
         }
 
-    }
-
-    function open() {
-        pageStack.push(dialog)
     }
 
 }
