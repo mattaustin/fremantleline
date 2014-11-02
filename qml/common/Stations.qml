@@ -24,7 +24,7 @@ Item {
     property string databaseVersion: '0.1'
     property string databaseDescription: ''
     property ListModel model: ListModel {}
-    property bool busy: false
+    property int busy: 0
 
     visible: false;
 
@@ -33,12 +33,12 @@ Item {
     }
 
     function clearDatabase() {
-        busy = true;
+        busy += +1;
         var db = getDatabase();
         db.transaction(function(tx) {
             tx.executeSql('DROP TABLE IF EXISTS stations');
         });
-        busy = false;
+        busy += -1;
     }
 
     function getDatabase() {
@@ -50,7 +50,7 @@ Item {
     }
 
     function loadStations() {
-        busy = true;
+        busy += +1;
         model.clear();
         var db = getDatabase();
         db.transaction(function(tx) {
@@ -64,16 +64,18 @@ Item {
                 }
             }
         });
-        busy = false;
+        busy += -1;
     }
 
     function saveStation(url, name, isStarred) {
+        busy += +1;
         isStarred = typeof isStarred !== 'undefined' ? isStarred : false;
         var is_starred = isStarred ? 1 : 0 // Database uses integer values
         var db = getDatabase();
         db.transaction(function(tx) {
             tx.executeSql('INSERT OR REPLACE INTO stations VALUES(?, ?, ?)', [url, name, is_starred]);
         });
+        busy += -1;
     }
 
 }

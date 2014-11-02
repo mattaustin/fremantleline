@@ -20,7 +20,7 @@ import io.thp.pyotherside 1.2
 
 Python {
 
-    property bool busy: false
+    property int busy: 0
     property string projectUrl: ''
     property string version: ''
 
@@ -44,10 +44,10 @@ Python {
         importModule('fremantleline.ui', function () {
             departurePage.model = null;
             if (station) {
-                busy = true;
+                busy += +1;
                 call('fremantleline.ui.pyotherside.get_departures', [station.name, station.url], function (result) {
                     departurePage.model = result;
-                    busy = false;
+                    busy += -1;
                 });
             }
         });
@@ -56,13 +56,13 @@ Python {
     function saveStations() {
         addImportPath(Qt.resolvedUrl('../..').substr('file://'.length));
         importModule('fremantleline.ui', function () {
-            busy = true;
+            busy += +1;
             call('fremantleline.ui.pyotherside.get_stations', [], function (result) {
                 result.forEach(function (item) {
                     stations.saveStation(item['url'], item['name']);
                     stations.model.append({'url': item['url'], 'name': item['name'], 'isStarred': false});
                 });
-                busy = false;
+                busy += -1;
             });
         });
     }
