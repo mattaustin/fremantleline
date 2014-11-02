@@ -18,4 +18,4 @@
 
 
 PROJECT_URL = 'http://www.perthtrains.net/'
-VERSION = '0.9.5'
+VERSION = '0.9.6-dev'
