@@ -67,7 +67,7 @@ class NetworkSessionMixin(object):
 
 class View(NetworkSessionMixin, BaseView):
 
-    platform = 'qml'
+    components = 'qml'
 
     def get_context_properties(self, *args, **kwargs):
         context_properties = super(View, self).get_context_properties(*args,
@@ -78,9 +78,9 @@ class View(NetworkSessionMixin, BaseView):
 
     def get_qml_path(self):
         if self.get_network_session().waitForOpened():
-            return 'qml/%s/main.qml' % (self.platform)
+            return 'qml/%s/main.qml' % (self.components)
         else:
-            return 'qml/%s/networkError.qml' % (self.platform)
+            return 'qml/%s/networkError.qml' % (self.components)
 
 
 class StationWrapper(QtCore.QObject):

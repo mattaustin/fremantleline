@@ -16,55 +16,56 @@
 
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import io.thp.pyotherside 1.0
 
 
 Page {
 
-
-    id: departurePage
-    property var station
-    property alias model: departureList.model
-
+    onStatusChanged: {
+        // Clear any selected departure when this page is activated
+        if (status == PageStatus.Active) {
+            application.departure = null;
+        }
+    }
 
     BusyIndicator {
         anchors.centerIn: parent
-        running: python.loading
+        running: client.busy
         size: BusyIndicatorSize.Large
         Behavior on opacity {}
     }
 
-
     SilicaListView {
 
         id: departureList
+
         anchors.fill: parent
+        model: application.departureList
 
         header: PageHeader {
-            title: departurePage.station ? departurePage.station.name : 'Departures'
+            title: application.station ? application.station.name : 'Departures'
         }
 
         PullDownMenu {
             MenuItem {
                 text: 'Refresh'
-                onClicked: {refresh();}
+                onClicked: {application.getDepartures();}
             }
         }
 
         ViewPlaceholder {
-            enabled: (!python.loading && departureList.count < 1)
+            enabled: (!client.busy && departureList.count < 1)
             text: 'No departing services were found for this station.'
         }
 
         delegate: BackgroundItem {
 
             id: departureItem
+
             width: departureList.width
             implicitHeight: Theme.itemSizeMedium
 
             onClicked: {
-                departureDialog.departure = modelData;
-                departureDialog.open();
+                application.departure = modelData;
             }
 
             Item {
@@ -147,46 +148,5 @@ Page {
         VerticalScrollDecorator {}
 
     }
-
-
-    function refresh() {
-        python.getDepartures();
-    }
-
-
-    Python {
-
-        id: python
-        property bool loading: true
-
-        Component.onCompleted: {
-            addImportPath(Qt.resolvedUrl('..').substr('file://'.length));
-            addImportPath(Qt.resolvedUrl('../fremantleline').substr('file://'.length));
-            addImportPath(Qt.resolvedUrl('../fremantleline/ui').substr('file://'.length));
-            importModule('ui', function() {});
-        }
-
-        onError: {
-            console.log('python error: ' + traceback);
-        }
-
-        function getDepartures() {
-            departureList.model = null;
-            loading = true;
-            if (departurePage.station) {
-                call('ui.pyotherside.get_departures', [departurePage.station.name, departurePage.station.url], function(result) {
-                    departureList.model = result;
-                    loading = false;
-                });
-            }
-        }
-
-    }
-
-
-    onStationChanged: {
-        python.getDepartures();
-    }
-
 
 }

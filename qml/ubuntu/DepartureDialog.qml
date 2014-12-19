@@ -16,36 +16,22 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 0.1
+import Ubuntu.Components.Popups 0.1
 
 
-MainView {
+Dialog {
 
-    width: units.gu(48)
-    height: units.gu(60)
+    id: dialog
 
-    PageStack {
+    property var departure
 
-        Component.onCompleted: {
-            Theme.name = "Ubuntu.Components.Themes.SuruGradient"
-            push(stationPage)
-        }
+    title: departure.actual_time + ' to ' + departure.destination_name
+    text: (departure.pattern_code ? departure.pattern_code + ' pattern' : 'All stops') + '\n\n' + departure.pattern_description
 
-        StationListPage {
-            id: stationPage
-        }
-
-        DepartureListPage {
-            id: departurePage
-        }
-
-        AboutDialog {
-            id: aboutDialog
-        }
-
-    }
-
-    Stations {
-        id: stations
+    Button {
+        gradient: UbuntuColors.greyGradient
+        onClicked: PopupUtils.close(dialog)
+        text: 'Close'
     }
 
 }

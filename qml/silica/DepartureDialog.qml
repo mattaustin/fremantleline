@@ -16,13 +16,14 @@
 
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import io.thp.pyotherside 1.0
 
 
 Page {
 
     id: dialog
-    property string version: ''
+
+    property var departure
+
     forwardNavigation: false
 
     SilicaFlickable {
@@ -36,11 +37,11 @@ Page {
             spacing: Theme.paddingLarge
 
             PageHeader {
-                title: 'About'
+                title: departure ? departure.actual_time + ' to ' + departure.destination_name : ''
             }
 
             Label {
-                text: 'Fremantle Line v' + dialog.version
+                text: departure ? departure.pattern_code && departure.pattern_code + ' pattern' || 'All stops' : ''
                 color: Theme.highlightColor
                 width: parent.width - Theme.paddingLarge - Theme.paddingLarge
                 x: Theme.paddingLarge
@@ -50,30 +51,16 @@ Page {
             }
 
             Label {
-                text: 'Copyright (c) 2009-2014 Matt Austin.\n\nFremantle Line (\"Perth Trains\") is free sofware licenced under the GNU Public License version 3.\n\nData is provided on an \"as is\" and \"as available\" basis. No representations or warranties of any kind, express or implied are made. Data is available free of charge from www.transperth.wa.gov.au. This program accesses data using your internet connection. Your operator may charge you for data use.'
+                text: departure ? departure.pattern_description : ''
                 color: Theme.highlightColor
                 width: parent.width - Theme.paddingLarge - Theme.paddingLarge
                 x: Theme.paddingLarge
                 wrapMode: Text.WordWrap
-                font.pixelSize: Theme.fontSizeExtraSmall
+                font.pixelSize: Theme.fontSizeMedium
             }
 
         }
 
-    }
-
-    function open() {
-        pageStack.push(dialog)
-    }
-
-    Python {
-        Component.onCompleted: {
-            addImportPath(Qt.resolvedUrl('..').substr('file://'.length));
-            addImportPath(Qt.resolvedUrl('../fremantleline').substr('file://'.length));
-            importModule('meta', function() {
-                dialog.version = evaluate('meta.VERSION');
-            });
-        }
     }
 
 }

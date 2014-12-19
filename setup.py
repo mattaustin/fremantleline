@@ -45,7 +45,7 @@ setup(
         ('/usr/share/applications', ['fremantleline.desktop']),
         ('/opt/fremantleline/icons', glob.glob('icons/*.png')),
         ('/opt/fremantleline/splash', glob.glob('splash/*.png')),
-        ('/opt/fremantleline/qml/fremantle', glob.glob('qml/fremantle/*.qml')),
-        ('/opt/fremantleline/qml/harmattan', glob.glob('qml/harmattan/*.qml')),
+        ('/opt/fremantleline/qml/hildon', glob.glob('qml/hildon/*.qml')),
+        ('/opt/fremantleline/qml/meego', glob.glob('qml/meego/*.qml')),
     ],
 )

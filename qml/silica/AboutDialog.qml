@@ -21,9 +21,8 @@ import Sailfish.Silica 1.0
 Page {
 
     id: dialog
-    property var departure
-    forwardNavigation: false
 
+    forwardNavigation: false
 
     SilicaFlickable {
 
@@ -36,11 +35,11 @@ Page {
             spacing: Theme.paddingLarge
 
             PageHeader {
-                title: departure ? departure.actual_time + ' to ' + departure.destination_name : ''
+                title: 'About'
             }
 
             Label {
-                text: departure ? departure.pattern_code && departure.pattern_code + ' pattern' || 'All stops' : ''
+                text: 'Fremantle Line v' + client.version
                 color: Theme.highlightColor
                 width: parent.width - Theme.paddingLarge - Theme.paddingLarge
                 x: Theme.paddingLarge
@@ -50,22 +49,16 @@ Page {
             }
 
             Label {
-                text: departure ? departure.pattern_description : ''
+                text: 'Copyright (c) 2009-2014 Matt Austin.\n\nFremantle Line (\"Perth Trains\") is free sofware licenced under the GNU Public License version 3.\n\nData is provided on an \"as is\" and \"as available\" basis. No representations or warranties of any kind, express or implied are made. Data is available free of charge from www.transperth.wa.gov.au. This program accesses data using your internet connection. Your operator may charge you for data use.'
                 color: Theme.highlightColor
                 width: parent.width - Theme.paddingLarge - Theme.paddingLarge
                 x: Theme.paddingLarge
                 wrapMode: Text.WordWrap
-                font.pixelSize: Theme.fontSizeMedium
+                font.pixelSize: Theme.fontSizeExtraSmall
             }
 
         }
 
     }
-
-
-    function open() {
-        pageStack.push(dialog);
-    }
-
 
 }

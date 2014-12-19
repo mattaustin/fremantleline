@@ -16,17 +16,20 @@
 
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import io.thp.pyotherside 1.0
 
 
 Page {
 
-    id: stationPage
-    property string projectUrl: ''
+    onStatusChanged: {
+        // Clear any selected station when this page is activated
+        if (status == PageStatus.Active) {
+            application.station = null;
+        }
+    }
 
     BusyIndicator {
         anchors.centerIn: parent
-        running: stations.loading
+        running: (stations.busy || client.busy) && stationList.count < 1
         size: BusyIndicatorSize.Large
         Behavior on opacity {}
     }
@@ -35,7 +38,7 @@ Page {
 
         id: stationList
         anchors.fill: parent
-        model: stations.model
+        model: application.stationList
 
         header: PageHeader {
             title: 'Perth Trains'
@@ -54,12 +57,12 @@ Page {
                 text: 'About'
                 onClicked: {
                     pullDownMenu.close();
-                    aboutDialog.open();
+                    pageStack.push(Qt.resolvedUrl('AboutDialog.qml'))
                 }
             }
             MenuItem {
                 text: 'Project homepage'
-                onClicked: {Qt.openUrlExternally(stationPage.projectUrl)}
+                onClicked: {Qt.openUrlExternally(client.projectUrl)}
             }
         }
 
@@ -73,21 +76,20 @@ Page {
                 id: contentItem
                 width: stationList.width
 
+                onClicked: {
+                    application.station = model;
+                }
+
+                onPressAndHold: {
+                    contextMenu.show(stationItem);
+                }
+
                 Label {
                     text: model.name
                     font.bold: model.isStarred
                     color: contentItem.down ? Theme.highlightColor : Theme.primaryColor
                     anchors.verticalCenter: parent.verticalCenter
                     x: Theme.paddingLarge
-                }
-
-                onClicked: {
-                    departurePage.station = model;
-                    pageStack.push(departurePage);
-                }
-
-                onPressAndHold: {
-                    contextMenu.show(stationItem);
                 }
 
             }
@@ -107,30 +109,6 @@ Page {
         }
 
         VerticalScrollDecorator {}
-
-    }
-
-
-    Stations {
-        id: stations
-    }
-
-
-    Python {
-
-        id: python
-
-        Component.onCompleted: {
-            addImportPath(Qt.resolvedUrl('..').substr('file://'.length));
-            addImportPath(Qt.resolvedUrl('../fremantleline').substr('file://'.length));
-            importModule('meta', function() {
-                stationPage.projectUrl = evaluate('meta.PROJECT_URL');
-            });
-        }
-
-        onError: {
-            console.log('python error: ' + traceback);
-        }
 
     }
 

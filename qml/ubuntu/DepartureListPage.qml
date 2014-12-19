@@ -17,42 +17,27 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
-import Ubuntu.Components.Popups 0.1
-import io.thp.pyotherside 1.0
 
 
 Page {
 
-    id: departurePage
-    property var station
-    title: station ? station.name : 'Departures'
+    title: application.station ? application.station.name : 'Departures'
     visible: false
 
     ActivityIndicator {
         anchors.centerIn: parent
-        running: python.loading
+        running: client.busy
     }
 
     ListView {
 
         id: departureList
         anchors.fill: parent
+        model: application.departureList
 
         delegate: ListItem.Base {
 
             height: Math.max(middleVisuals.height, units.gu(6))
-
-            icon: UbuntuShape {
-                color: (modelData.line_code == 'ARM' && '#fab20a' ||
-                        modelData.line_code == 'FRE' && '#155196' ||
-                        modelData.line_code == 'JDP' && '#97a509' ||
-                        modelData.line_code == 'MAN' && '#e55e16' ||
-                        modelData.line_code == 'MID' && '#b00257' ||
-                        '#16ac48')
-                implicitHeight: parent.height
-                implicitWidth: units.gu(1)
-                radius: 'large'
-            }
 
             Item  {
 
@@ -64,12 +49,30 @@ Page {
                 }
                 height: childrenRect.height + title.anchors.topMargin + subtitle.anchors.bottomMargin
 
+                UbuntuShape {
+                    id: indicator
+                    anchors {
+                        top: parent.top
+                        left: parent.left
+                    }
+                    color: (modelData.line_code == 'ARM' && '#fab20a' ||
+                            modelData.line_code == 'FRE' && '#155196' ||
+                            modelData.line_code == 'JDP' && '#97a509' ||
+                            modelData.line_code == 'MAN' && '#e55e16' ||
+                            modelData.line_code == 'MID' && '#b00257' ||
+                            '#16ac48')
+                    implicitHeight: parent.height
+                    implicitWidth: units.gu(1)
+                    radius: 'large'
+                }
+
                 Label {
                     id: title
                     anchors {
                         top: parent.top
-                        left: parent.left
                         right: parent.right
+                        left: parent.left
+                        leftMargin: units.gu(2)
                     }
                     enabled: !modelData.is_cancelled
                     font.strikeout: !enabled
@@ -80,9 +83,10 @@ Page {
                 Label {
                     id: subtitle
                     anchors {
-                        left: parent.left
                         right: parent.right
                         top: title.bottom
+                        left: parent.left
+                        leftMargin: units.gu(2)
                     }
                     color: Theme.palette.normal.backgroundText
                     enabled: !modelData.is_cancelled
@@ -110,7 +114,7 @@ Page {
             }
 
             onClicked: {
-                PopupUtils.open(departureDialog, null, {'departure': modelData});
+                application.departure = modelData;
             }
 
         }
@@ -133,12 +137,8 @@ Page {
         fontSize: 'large'
         horizontalAlignment: Text.AlignHCenter
         text: 'No departing services were found for this station.'
-        visible: (!python.loading && departureList.count < 1)
+        visible: !client.busy && station ? (departureList.count < 1) : false
         wrapMode: Text.WordWrap
-    }
-
-    DepartureDialog {
-        id: departureDialog
     }
 
     tools: ToolbarItems {
@@ -147,8 +147,7 @@ Page {
                 text: (station ? station.isStarred : false) ? 'Unstar' : 'Star'
                 iconSource: (station ? station.isStarred : false) ? Qt.resolvedUrl('image://theme/favorite-selected') : Qt.resolvedUrl('image://theme/favorite-unselected')
                 onTriggered: {
-                    stations.model.setProperty(station.index, 'isStarred', !station.isStarred);
-                    stations.saveStation(station.url, station.name, station.isStarred);
+                    stations.saveStation(station.url, station.name, !station.isStarred);
                     pageStack.pop();
                     stations.loadStations();
                 }
@@ -158,42 +157,9 @@ Page {
             action: Action {
                 text: 'Refresh'
                 iconSource: Qt.resolvedUrl('image://theme/reload')
-                onTriggered: {python.getDepartures();}
+                onTriggered: {application.getDepartures();}
             }
         }
-    }
-
-    Python {
-
-        id: python
-        property bool loading: true
-
-        Component.onCompleted: {
-            addImportPath(Qt.resolvedUrl('..').substr('file://'.length));
-            addImportPath(Qt.resolvedUrl('../fremantleline').substr('file://'.length));
-            addImportPath(Qt.resolvedUrl('../fremantleline/ui').substr('file://'.length));
-            importModule('ui', function() {});
-        }
-
-        onError: {
-            console.log('python error: ' + traceback);
-        }
-
-        function getDepartures() {
-            departureList.model = null;
-            loading = true;
-            if (departurePage.station) {
-                call('ui.pyotherside.get_departures', [departurePage.station.name, departurePage.station.url], function(result) {
-                    departureList.model = result;
-                    loading = false;
-                });
-            }
-        }
-
-    }
-
-    onStationChanged: {
-        python.getDepartures();
     }
 
 }

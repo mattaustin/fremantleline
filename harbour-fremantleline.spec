@@ -1,10 +1,10 @@
 Name: harbour-fremantleline
-Version: 0.9.5
+Version: 0.9.6
 Release: 1
 Summary: Perth trains live departure information
 URL: http://www.perthtrains.net/
 License: GPLv3
-Source: https://github.com/mattaustin/fremantleline/archive/0.9.5.tar.gz
+Source: https://github.com/mattaustin/fremantleline/archive/0.9.6.tar.gz
 BuildArch: noarch
 Requires: libsailfishapp-launcher
 Requires: pyotherside-qml-plugin-python3-qt5
@@ -28,7 +28,8 @@ rm -rf %{buildroot}
 TARGET=%{buildroot}/%{_datadir}/%{name}
 mkdir -p $TARGET
 cp -rpv fremantleline $TARGET/
-cp -rpv qml/sailfishos $TARGET/qml
+cp -rpv qml/silica $TARGET/qml
+cp -rpv qml/common $TARGET/qml
 ln -s main.qml $TARGET/qml/%{name}.qml
 
 # Documentation files
