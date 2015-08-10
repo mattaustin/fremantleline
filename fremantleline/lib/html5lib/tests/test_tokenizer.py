@@ -4,10 +4,12 @@ import json
 import warnings
 import re
 
+from six import unichr
+
 from .support import get_data_files
 
 from html5lib.tokenizer import HTMLTokenizer
-from html5lib import constants
+from html5lib import constants, utils
 
 
 class TokenizerTestParser(object):
@@ -68,8 +70,8 @@ class TokenizerTestParser(object):
 def concatenateCharacterTokens(tokens):
     outputTokens = []
     for token in tokens:
-        if not "ParseError" in token and token[0] == "Character":
-            if (outputTokens and not "ParseError" in outputTokens[-1] and
+        if "ParseError" not in token and token[0] == "Character":
+            if (outputTokens and "ParseError" not in outputTokens[-1] and
                     outputTokens[-1][0] == "Character"):
                 outputTokens[-1][1] += token[1]
             else:
@@ -112,7 +114,7 @@ def tokensMatch(expectedTokens, receivedTokens, ignoreErrorOrder,
         # Sort the tokens into two groups; non-parse errors and parse errors
         tokens = {"expected": [[], []], "received": [[], []]}
         for tokenType, tokenList in zip(list(tokens.keys()),
-                                       (expectedTokens, receivedTokens)):
+                                        (expectedTokens, receivedTokens)):
             for token in tokenList:
                 if token != "ParseError":
                     tokens[tokenType][0].append(token)
@@ -122,9 +124,38 @@ def tokensMatch(expectedTokens, receivedTokens, ignoreErrorOrder,
         return tokens["expected"] == tokens["received"]
 
 
+_surrogateRe = re.compile(r"\\u([0-9A-Fa-f]{4})(?:\\u([0-9A-Fa-f]{4}))?")
+
+
 def unescape(test):
     def decode(inp):
-        return inp.encode("utf-8").decode("unicode-escape")
+        """Decode \\uXXXX escapes
+
+        This decodes \\uXXXX escapes, possibly into non-BMP characters when
+        two surrogate character escapes are adjacent to each other.
+        """
+        # This cannot be implemented using the unicode_escape codec
+        # because that requires its input be ISO-8859-1, and we need
+        # arbitrary unicode as input.
+        def repl(m):
+            if m.group(2) is not None:
+                high = int(m.group(1), 16)
+                low = int(m.group(2), 16)
+                if 0xD800 <= high <= 0xDBFF and 0xDC00 <= low <= 0xDFFF:
+                    cp = ((high - 0xD800) << 10) + (low - 0xDC00) + 0x10000
+                    return unichr(cp)
+                else:
+                    return unichr(high) + unichr(low)
+            else:
+                return unichr(int(m.group(1), 16))
+        try:
+            return _surrogateRe.sub(repl, inp)
+        except ValueError:
+            # This occurs when unichr throws ValueError, which should
+            # only be for a lone-surrogate.
+            if utils.supports_lone_surrogates:
+                raise
+            return None
 
     test["input"] = decode(test["input"])
     for token in test["output"]:
@@ -183,6 +214,8 @@ def testTokenizer():
                         test["initialStates"] = ["Data state"]
                     if 'doubleEscaped' in test:
                         test = unescape(test)
+                        if test["input"] is None:
+                            continue  # Not valid input for this platform
                     for initialState in test["initialStates"]:
                         test["initialState"] = capitalize(initialState)
                         yield runTokenizerTest, test
