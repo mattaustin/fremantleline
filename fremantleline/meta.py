@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # Fremantle Line: Transperth trains live departure information
-# Copyright (c) 2009-2014 Matt Austin
+# Copyright (c) 2009-2015 Matt Austin
 #
 # Fremantle Line is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,4 +18,4 @@
 
 
 PROJECT_URL = 'http://www.perthtrains.net/'
-VERSION = '0.9.6.1'
+VERSION = '0.9.7'

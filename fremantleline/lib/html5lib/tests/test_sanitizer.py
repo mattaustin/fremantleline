@@ -40,6 +40,10 @@ def test_should_handle_astral_plane_characters():
     assert '<html:p xmlns:html="http://www.w3.org/1999/xhtml">\U0001d4b5 \U0001d538</html:p>' == sanitize_html("<p>&#x1d4b5; &#x1d538;</p>")
 
 
+def test_should_allow_relative_uris():
+    assert '<html:p xmlns:html="http://www.w3.org/1999/xhtml"><html:a href="/example.com" /></html:p>' == sanitize_html('<p><a href="/example.com"></a></p>')
+
+
 def test_sanitizer():
     toxml = toxmlFactory()
     for tag_name in sanitizer.HTMLSanitizer.allowed_elements:
@@ -80,9 +84,12 @@ def test_sanitizer():
             continue  # TODO
         if attribute_name == 'style':
             continue
+        attribute_value = 'foo'
+        if attribute_name in sanitizer.HTMLSanitizer.attr_val_is_uri:
+            attribute_value = '%s://sub.domain.tld/path/object.ext' % sanitizer.HTMLSanitizer.allowed_protocols[0]
         yield (runSanitizerTest, "test_should_allow_%s_attribute" % attribute_name,
-               "<p %s=\"foo\">foo &lt;bad&gt;bar&lt;/bad&gt; baz</p>" % attribute_name,
-               "<p %s='foo'>foo <bad>bar</bad> baz</p>" % attribute_name,
+               "<p %s=\"%s\">foo &lt;bad&gt;bar&lt;/bad&gt; baz</p>" % (attribute_name, attribute_value),
+               "<p %s='%s'>foo <bad>bar</bad> baz</p>" % (attribute_name, attribute_value),
                toxml)
 
     for attribute_name in sanitizer.HTMLSanitizer.allowed_attributes:
@@ -93,13 +100,30 @@ def test_sanitizer():
                toxml)
 
     for protocol in sanitizer.HTMLSanitizer.allowed_protocols:
-        yield (runSanitizerTest, "test_should_allow_%s_uris" % protocol,
-               "<a href=\"%s\">foo</a>" % protocol,
-               """<a href="%s">foo</a>""" % protocol,
+        rest_of_uri = '//sub.domain.tld/path/object.ext'
+        if protocol == 'data':
+            rest_of_uri = 'image/png;base64,aGVsbG8gd29ybGQ='
+        yield (runSanitizerTest, "test_should_allow_uppercase_%s_uris" % protocol,
+               "<img src=\"%s:%s\">foo</a>" % (protocol, rest_of_uri),
+               """<img src="%s:%s">foo</a>""" % (protocol, rest_of_uri),
                toxml)
 
+    yield (runSanitizerTest, "test_invalid_data_uri",
+           "<audio controls=\"\"></audio>",
+           "<audio controls=\"\" src=\"data:foobar\"></audio>",
+           toxml)
+
+    yield (runSanitizerTest, "test_data_uri_disallowed_type",
+           "<audio controls=\"\"></audio>",
+           "<audio controls=\"\" src=\"data:text/html,<html>\"></audio>",
+           toxml)
+
     for protocol in sanitizer.HTMLSanitizer.allowed_protocols:
+        rest_of_uri = '//sub.domain.tld/path/object.ext'
+        if protocol == 'data':
+            rest_of_uri = 'image/png;base64,aGVsbG8gd29ybGQ='
+        protocol = protocol.upper()
         yield (runSanitizerTest, "test_should_allow_uppercase_%s_uris" % protocol,
-               "<a href=\"%s\">foo</a>" % protocol,
-               """<a href="%s">foo</a>""" % protocol,
+               "<img src=\"%s:%s\">foo</a>" % (protocol, rest_of_uri),
+               """<img src="%s:%s">foo</a>""" % (protocol, rest_of_uri),
                toxml)
