@@ -70,11 +70,12 @@ Page {
 
             id: stationItem
             height: contentItem.height + contextMenu.height
+            width: stationList.width
 
             BackgroundItem {
 
                 id: contentItem
-                width: stationList.width
+                width: parent.width
 
                 onClicked: {
                     application.station = model;
