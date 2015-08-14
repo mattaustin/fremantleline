@@ -24,6 +24,8 @@ Page {
 
     property var departure
 
+    allowedOrientations: application.allowedOrientations
+
     forwardNavigation: false
 
     SilicaFlickable {

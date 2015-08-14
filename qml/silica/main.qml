@@ -34,7 +34,7 @@ ApplicationWindow {
         });
     }
 
-    allowedOrientations: Orientation.Portrait
+    allowedOrientations: defaultAllowedOrientations
     cover: Qt.resolvedUrl('CoverPage.qml')
     initialPage: Qt.resolvedUrl('StationListPage.qml')
 

@@ -22,6 +22,8 @@ Page {
 
     id: dialog
 
+    allowedOrientations: application.allowedOrientations
+
     forwardNavigation: false
 
     SilicaFlickable {

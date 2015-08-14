@@ -20,6 +20,8 @@ import Sailfish.Silica 1.0
 
 Page {
 
+    allowedOrientations: application.allowedOrientations
+
     onStatusChanged: {
         // Clear any selected station when this page is activated
         if (status == PageStatus.Active) {
