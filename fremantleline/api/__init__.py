@@ -60,15 +60,17 @@ class Operator(UnicodeMixin, object):
         return html
 
     def _parse_stations(self, html):
-        options = html.findall(
-            './/*select[@datevaluefield="StationName"]/option')
+        select = [
+            select for select
+            in html.findall('.//*div[@id="divTrainLineStationOption"]//select')
+            if select.get('name').endswith('TrainStation')][0]
         stations = []
-        for option in options[1:]:
+        for option in select.findall('option')[1:]:
             data = urlencode({'stationname': option.get('value')})
             name = '%s' % (option.get('value')).rsplit(' Stn', 1)[0]
             url = '%s?%s' % (self.url, data)
             stations += [Station(name, url)]
-        return stations
+        return sorted(stations)
 
     def get_stations(self):
         """Returns list of Station instances for this operator."""
@@ -83,7 +85,7 @@ class Station(UnicodeMixin, object):
 
     _departures = None
 
-    def __init__(self, name, url):
+    def __init__(self, name, url=None):
         self.name = name
         self.url = url  # Legacy url from website scraping, no longer used
 
@@ -92,6 +94,24 @@ class Station(UnicodeMixin, object):
 
     def __unicode__(self):
         return self.name
+
+    def __eq__(self, other):
+        return self.name == other.name
+
+    def __ne__(self, other):
+        return not self.name == other.name
+
+    def __gt__(self, other):
+        return self.name > other.name
+
+    def __lt__(self, other):
+        return self.name < other.name
+
+    def __ge__(self, other):
+        return self.name >= other.name
+
+    def __le__(self, other):
+        return self.name <= other.name
 
     def _get_departure_data(self):
         base_url = ('http://livetimes.transperth.wa.gov.au/LiveTimes.asmx'
