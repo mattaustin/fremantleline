@@ -1,5 +1,5 @@
 // Fremantle Line: Transperth trains live departure information
-// Copyright (c) 2009-2015 Matt Austin
+// Copyright (c) 2009-2018 Matt Austin
 //
 // Fremantle Line is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@ Page {
             }
 
             Label {
-                text: 'Copyright (c) 2009-2015 Matt Austin.\n\nFremantle Line (\"Perth Trains\") is free sofware licenced under the GNU Public License version 3.\n\nData is provided on an \"as is\" and \"as available\" basis. No representations or warranties of any kind, express or implied are made. Data is available free of charge from www.transperth.wa.gov.au. This program accesses data using your internet connection. Your operator may charge you for data use.'
+                text: 'Copyright (c) 2009-2018 Matt Austin.\n\nFremantle Line (\"Perth Trains\") is free sofware licenced under the GNU Public License version 3.\n\nData is provided on an \"as is\" and \"as available\" basis. No representations or warranties of any kind, express or implied are made. Data is available free of charge from www.transperth.wa.gov.au. This program accesses data using your internet connection. Your operator may charge you for data use.'
                 color: Theme.highlightColor
                 width: parent.width - Theme.paddingLarge - Theme.paddingLarge
                 x: Theme.paddingLarge
